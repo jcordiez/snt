@@ -36,7 +36,7 @@ interface AddInterventionSheetProps {
     DistrictProperties
   > | null;
   onHighlightDistricts: (districtIds: string[]) => void;
-  onApplyInterventions: (districtIds: string[], interventionIds: number[]) => void;
+  onApplyInterventions: (districtIds: string[], selectedInterventionsByCategory: Map<number, number>) => void;
 }
 
 export function AddInterventionSheet({
@@ -145,11 +145,10 @@ export function AddInterventionSheet({
   }, []);
 
   const handleApply = useCallback(() => {
-    // Convert category-based selections to flat array of intervention IDs
-    const interventionIds = Array.from(selectedInterventionsByCategory.values());
+    // Pass the category-based selections directly
     onApplyInterventions(
       Array.from(selectedDistrictIds),
-      interventionIds
+      selectedInterventionsByCategory
     );
     onOpenChange(false);
   }, [selectedDistrictIds, selectedInterventionsByCategory, onApplyInterventions, onOpenChange]);

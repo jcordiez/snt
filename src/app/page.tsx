@@ -11,10 +11,12 @@ import {
   AddInterventionSheet,
 } from "@/components/intervention-map/add-intervention";
 import { countryConfig, Province } from "@/data/districts";
-import { useOrgUnits } from "@/hooks/use-orgunits";
+import { useOrgUnits, createInterventionMix } from "@/hooks/use-orgunits";
+import { useInterventionCategories } from "@/hooks/use-intervention-categories";
 
 export default function Home() {
-  const { data: districts, provinces, isLoading } = useOrgUnits();
+  const { data: districts, provinces, isLoading, updateDistricts } = useOrgUnits();
+  const { data: interventionCategories } = useInterventionCategories();
   const [selectedProvince, setSelectedProvince] = useState<Province | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [highlightedDistrictIds, setHighlightedDistrictIds] = useState<string[]>([]);
@@ -25,10 +27,27 @@ export default function Home() {
     setHighlightedDistrictIds(districtIds);
   }, []);
 
-  const handleApplyInterventions = useCallback((districtIds: string[], interventionIds: number[]) => {
-    // In-memory only - changes reset on page refresh (per PRD decisions)
-    console.log("Applied interventions:", { districtIds, interventionIds });
-  }, []);
+  const handleApplyInterventions = useCallback((
+    districtIds: string[],
+    selectedInterventionsByCategory: Map<number, number>
+  ) => {
+    // Create the intervention mix from category selections
+    const interventionMix = createInterventionMix(
+      selectedInterventionsByCategory,
+      interventionCategories
+    );
+
+    // Update districts with the new intervention mix (in-memory only)
+    updateDistricts(districtIds, interventionMix);
+
+    console.log("Applied interventions:", {
+      districtIds,
+      interventionMix: {
+        displayLabel: interventionMix.displayLabel,
+        categoryAssignments: Object.fromEntries(interventionMix.categoryAssignments),
+      },
+    });
+  }, [interventionCategories, updateDistricts]);
 
   return (
     <div className="flex flex-col h-screen">

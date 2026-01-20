@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type { DistrictProperties, InterventionStatus, Province, OrgUnitWithGeoJSON } from "@/data/districts";
 import { extractProvinces } from "@/data/districts";
+import type { InterventionMix, InterventionCategory, Intervention } from "@/types/intervention";
 
 interface OrgUnit {
   id: number;
@@ -43,6 +44,49 @@ function getInterventionsForStatus(status: InterventionStatus): string[] {
   const shuffled = [...available].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count);
 }
+
+/**
+ * Creates an InterventionMix from category-based selections
+ */
+export function createInterventionMix(
+  selectedInterventionsByCategory: Map<number, number>,
+  interventionCategories: InterventionCategory[]
+): InterventionMix {
+  // Build a lookup map from intervention ID to intervention object
+  const interventionLookup = new Map<number, Intervention>();
+  for (const category of interventionCategories) {
+    for (const intervention of category.interventions) {
+      interventionLookup.set(intervention.id, intervention);
+    }
+  }
+
+  // Create sorted display label (using short_name, joined with " + ")
+  const sortedCategoryIds = Array.from(selectedInterventionsByCategory.keys()).sort((a, b) => a - b);
+  const interventionNames: string[] = [];
+
+  for (const categoryId of sortedCategoryIds) {
+    const interventionId = selectedInterventionsByCategory.get(categoryId);
+    if (interventionId !== undefined) {
+      const intervention = interventionLookup.get(interventionId);
+      if (intervention) {
+        interventionNames.push(intervention.short_name);
+      }
+    }
+  }
+
+  return {
+    categoryAssignments: new Map(selectedInterventionsByCategory),
+    displayLabel: interventionNames.length > 0 ? interventionNames.join(" + ") : "None",
+  };
+}
+
+/**
+ * Type for update function passed to components
+ */
+export type UpdateDistrictsFn = (
+  districtIds: string[],
+  interventionMix: InterventionMix
+) => void;
 
 function transformOrgUnitsToGeoJSON(
   orgUnits: OrgUnit[]
@@ -119,5 +163,39 @@ export function useOrgUnits() {
     fetchData();
   }, []);
 
-  return { data, provinces, isLoading, error };
+  /**
+   * Updates district properties with intervention mix data.
+   * This is an in-memory update that persists within the session.
+   */
+  const updateDistricts: UpdateDistrictsFn = useCallback((districtIds, interventionMix) => {
+    setData((prevData) => {
+      if (!prevData) return prevData;
+
+      const districtIdSet = new Set(districtIds);
+      const updatedFeatures = prevData.features.map((feature) => {
+        if (!districtIdSet.has(feature.properties.districtId)) {
+          return feature;
+        }
+
+        // Update the district with the new intervention mix
+        return {
+          ...feature,
+          properties: {
+            ...feature.properties,
+            interventionMix,
+            interventionStatus: "ongoing" as InterventionStatus, // Mark as ongoing when interventions are applied
+            interventions: [interventionMix.displayLabel], // Update legacy field
+            interventionCount: interventionMix.categoryAssignments.size,
+          },
+        };
+      });
+
+      return {
+        ...prevData,
+        features: updatedFeatures,
+      };
+    });
+  }, []);
+
+  return { data, provinces, isLoading, error, updateDistricts };
 }
