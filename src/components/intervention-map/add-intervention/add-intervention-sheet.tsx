@@ -12,7 +12,7 @@ import { DistrictSelectionStep } from "./district-selection-step";
 import { useMetricTypes } from "@/hooks/use-metric-types";
 import { useInterventionCategories } from "@/hooks/use-intervention-categories";
 import { useDistrictRules } from "@/hooks/use-district-rules";
-import type { Rule, WizardStep } from "@/types/intervention";
+import type { Rule, WizardStep, LegendSelectionPayload } from "@/types/intervention";
 import type { DistrictProperties, Province } from "@/data/districts";
 
 function generateRuleId(): string {
@@ -38,6 +38,7 @@ interface AddInterventionSheetProps {
   selectedProvince?: Province | null;
   onHighlightDistricts: (districtIds: string[]) => void;
   onApplyInterventions: (districtIds: string[], selectedInterventionsByCategory: Map<number, number>) => void;
+  initialSelectionPayload?: LegendSelectionPayload | null;
 }
 
 export function AddInterventionSheet({
@@ -47,12 +48,14 @@ export function AddInterventionSheet({
   selectedProvince,
   onHighlightDistricts,
   onApplyInterventions,
+  initialSelectionPayload,
 }: AddInterventionSheetProps) {
   const [step, setStep] = useState<WizardStep>("rules");
   const [rules, setRules] = useState<Rule[]>([createEmptyRule()]);
   const [selectedDistrictIds, setSelectedDistrictIds] = useState<Set<string>>(new Set());
   const [selectedInterventionIds, setSelectedInterventionIds] = useState<Set<number>>(new Set());
   const [selectedInterventionsByCategory, setSelectedInterventionsByCategory] = useState<Map<number, number>>(new Map());
+  const [isFromLegend, setIsFromLegend] = useState(false);
 
   const { groupedByCategory, isLoading: metricsLoading } = useMetricTypes();
   const { data: interventionCategories, isLoading: interventionsLoading } = useInterventionCategories();
@@ -62,6 +65,17 @@ export function AddInterventionSheet({
     selectedProvinceId: selectedProvince?.id ?? null,
   });
 
+  // Handle opening with legend selection payload
+  useEffect(() => {
+    if (isOpen && initialSelectionPayload) {
+      // Skip to selection step with pre-populated data
+      setStep("selection");
+      setSelectedDistrictIds(new Set(initialSelectionPayload.districtIds));
+      setSelectedInterventionsByCategory(new Map(initialSelectionPayload.interventionsByCategory));
+      setIsFromLegend(true);
+    }
+  }, [isOpen, initialSelectionPayload]);
+
   // Reset state when sheet closes
   useEffect(() => {
     if (!isOpen) {
@@ -70,6 +84,7 @@ export function AddInterventionSheet({
       setSelectedDistrictIds(new Set());
       setSelectedInterventionIds(new Set());
       setSelectedInterventionsByCategory(new Map());
+      setIsFromLegend(false);
       onHighlightDistricts([]);
     }
   }, [isOpen, onHighlightDistricts]);
@@ -204,6 +219,8 @@ export function AddInterventionSheet({
               onSelectInterventionForCategory={handleSelectInterventionForCategory}
               onBack={() => setStep("rules")}
               onApply={handleApply}
+              isFromLegendSelection={isFromLegend}
+              onClose={() => onOpenChange(false)}
             />
           )}
         </div>
