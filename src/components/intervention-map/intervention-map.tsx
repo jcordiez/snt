@@ -13,6 +13,7 @@ interface InterventionMapProps {
     GeoJSON.MultiPolygon | GeoJSON.Polygon,
     DistrictProperties
   > | null;
+  onSelectMix?: (mixLabel: string, districtIds: string[]) => void;
 }
 
 /**
@@ -53,7 +54,7 @@ function MapAutoZoom({ selectedProvince }: { selectedProvince?: Province | null 
   return null;
 }
 
-export function InterventionMap({ selectedProvince, highlightedDistrictIds = [], districts }: InterventionMapProps) {
+export function InterventionMap({ selectedProvince, highlightedDistrictIds = [], districts, onSelectMix }: InterventionMapProps) {
   return (
     <div className="relative w-full h-full">
       <Map
@@ -64,6 +65,7 @@ export function InterventionMap({ selectedProvince, highlightedDistrictIds = [],
         <DistrictLayer
           selectedProvinceId={selectedProvince?.id ?? null}
           highlightedDistrictIds={highlightedDistrictIds}
+          districts={districts}
         />
         <MapAutoZoom selectedProvince={selectedProvince} />
         <MapControls
@@ -74,7 +76,7 @@ export function InterventionMap({ selectedProvince, highlightedDistrictIds = [],
           showFullscreen={false}
         />
       </Map>
-      <MapLegend districts={districts} />
+      <MapLegend districts={districts} onSelectMix={onSelectMix} />
     </div>
   );
 }
