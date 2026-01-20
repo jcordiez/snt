@@ -13,6 +13,7 @@ import {
 import { countryConfig, Province } from "@/data/districts";
 import { useOrgUnits, createInterventionMix } from "@/hooks/use-orgunits";
 import { useInterventionCategories } from "@/hooks/use-intervention-categories";
+import { LegendSelectionPayload } from "@/types/intervention";
 
 export default function Home() {
   const { data: districts, provinces, isLoading, updateDistricts } = useOrgUnits();
@@ -20,11 +21,32 @@ export default function Home() {
   const [selectedProvince, setSelectedProvince] = useState<Province | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [highlightedDistrictIds, setHighlightedDistrictIds] = useState<string[]>([]);
+  const [legendSelectionPayload, setLegendSelectionPayload] = useState<LegendSelectionPayload | null>(null);
 
   const displayName = selectedProvince?.name ?? countryConfig.name;
 
   const handleHighlightDistricts = useCallback((districtIds: string[]) => {
     setHighlightedDistrictIds(districtIds);
+  }, []);
+
+  const handleSelectMix = useCallback((mixLabel: string, districtIds: string[]) => {
+    // Find a sample district to extract interventionsByCategory
+    const sampleDistrict = districts?.features.find(
+      f => f.properties.interventionMixLabel === mixLabel
+    );
+
+    const interventionsByCategory = sampleDistrict?.properties.interventionCategoryAssignments
+      ? new Map(Object.entries(sampleDistrict.properties.interventionCategoryAssignments)
+          .map(([k, v]) => [Number(k), v as number]))
+      : new Map();
+
+    setLegendSelectionPayload({ districtIds, interventionsByCategory, mixLabel });
+    setIsSheetOpen(true);
+  }, [districts]);
+
+  const handleSheetOpenChange = useCallback((open: boolean) => {
+    setIsSheetOpen(open);
+    if (!open) setLegendSelectionPayload(null);
   }, []);
 
   const handleApplyInterventions = useCallback((
@@ -73,17 +95,19 @@ export default function Home() {
           selectedProvince={selectedProvince}
           highlightedDistrictIds={highlightedDistrictIds}
           districts={districts}
+          onSelectMix={handleSelectMix}
         />
       </main>
 
       {/* Add Intervention Sheet */}
       <AddInterventionSheet
         isOpen={isSheetOpen}
-        onOpenChange={setIsSheetOpen}
+        onOpenChange={handleSheetOpenChange}
         districts={districts}
         selectedProvince={selectedProvince}
         onHighlightDistricts={handleHighlightDistricts}
         onApplyInterventions={handleApplyInterventions}
+        initialSelectionPayload={legendSelectionPayload}
       />
     </div>
   );
