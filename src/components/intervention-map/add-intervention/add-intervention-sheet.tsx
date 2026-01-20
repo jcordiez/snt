@@ -50,6 +50,7 @@ export function AddInterventionSheet({
   const [rules, setRules] = useState<Rule[]>([createEmptyRule()]);
   const [selectedDistrictIds, setSelectedDistrictIds] = useState<Set<string>>(new Set());
   const [selectedInterventionIds, setSelectedInterventionIds] = useState<Set<number>>(new Set());
+  const [selectedInterventionsByCategory, setSelectedInterventionsByCategory] = useState<Map<number, number>>(new Map());
 
   const { groupedByCategory, isLoading: metricsLoading } = useMetricTypes();
   const { data: interventionCategories, isLoading: interventionsLoading } = useInterventionCategories();
@@ -62,6 +63,7 @@ export function AddInterventionSheet({
       setRules([createEmptyRule()]);
       setSelectedDistrictIds(new Set());
       setSelectedInterventionIds(new Set());
+      setSelectedInterventionsByCategory(new Map());
       onHighlightDistricts([]);
     }
   }, [isOpen, onHighlightDistricts]);
@@ -130,6 +132,18 @@ export function AddInterventionSheet({
     });
   }, []);
 
+  const handleSelectInterventionForCategory = useCallback((categoryId: number, interventionId: number | null) => {
+    setSelectedInterventionsByCategory((prev) => {
+      const next = new Map(prev);
+      if (interventionId === null) {
+        next.delete(categoryId);
+      } else {
+        next.set(categoryId, interventionId);
+      }
+      return next;
+    });
+  }, []);
+
   const handleApply = useCallback(() => {
     onApplyInterventions(
       Array.from(selectedDistrictIds),
@@ -176,9 +190,11 @@ export function AddInterventionSheet({
               interventionCategories={interventionCategories}
               interventionsLoading={interventionsLoading}
               selectedInterventionIds={selectedInterventionIds}
+              selectedInterventionsByCategory={selectedInterventionsByCategory}
               onToggleDistrict={handleToggleDistrict}
               onToggleAll={handleToggleAll}
               onToggleIntervention={handleToggleIntervention}
+              onSelectInterventionForCategory={handleSelectInterventionForCategory}
               onBack={() => setStep("rules")}
               onApply={handleApply}
             />

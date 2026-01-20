@@ -57,11 +57,25 @@ export interface MetricValue {
   string_value: string;
 }
 
+/**
+ * Represents the intervention mix assigned to a district.
+ * Maps category IDs to the selected intervention ID within that category.
+ */
+export interface InterventionMix {
+  /** Maps categoryId -> interventionId for each assigned intervention */
+  categoryAssignments: Map<number, number>;
+  /** Human-readable label, e.g., "CM + IPTp + Dual AI" */
+  displayLabel: string;
+}
+
 export type WizardStep = 'rules' | 'selection';
 
 export interface AddInterventionState {
   step: WizardStep;
   rules: Rule[];
   selectedDistrictIds: Set<string>;
+  /** @deprecated Use selectedInterventionsByCategory instead */
   selectedInterventionIds: Set<number>;
+  /** Maps categoryId -> interventionId for single selection per category */
+  selectedInterventionsByCategory: Map<number, number>;
 }

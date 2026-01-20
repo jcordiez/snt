@@ -1,6 +1,8 @@
 // Sample district data for Kenya
 // Using simplified GeoJSON boundaries for demonstration
 
+import type { InterventionMix } from "../types/intervention";
+
 export type InterventionStatus = "completed" | "ongoing" | "planned" | "none";
 
 export interface DistrictProperties {
@@ -11,6 +13,8 @@ export interface DistrictProperties {
   interventionStatus: InterventionStatus;
   interventionCount: number;
   interventions: string[];
+  /** Structured intervention assignment data */
+  interventionMix?: InterventionMix;
 }
 
 export interface Region {

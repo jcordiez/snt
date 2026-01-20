@@ -12,9 +12,13 @@ interface DistrictSelectionStepProps {
   interventionCategories: InterventionCategory[];
   interventionsLoading: boolean;
   selectedInterventionIds: Set<number>;
+  /** Maps categoryId -> interventionId for single selection per category */
+  selectedInterventionsByCategory: Map<number, number>;
   onToggleDistrict: (districtId: string) => void;
   onToggleAll: () => void;
   onToggleIntervention: (interventionId: number) => void;
+  /** Handler for selecting one intervention per category (radio button behavior) */
+  onSelectInterventionForCategory: (categoryId: number, interventionId: number | null) => void;
   onBack: () => void;
   onApply: () => void;
 }
@@ -25,12 +29,18 @@ export function DistrictSelectionStep({
   interventionCategories,
   interventionsLoading,
   selectedInterventionIds,
+  selectedInterventionsByCategory: _selectedInterventionsByCategory,
   onToggleDistrict,
   onToggleAll,
   onToggleIntervention,
+  onSelectInterventionForCategory: _onSelectInterventionForCategory,
   onBack,
   onApply,
 }: DistrictSelectionStepProps) {
+  // Note: _selectedInterventionsByCategory and _onSelectInterventionForCategory
+  // are available for Phase 2 radio button implementation
+  void _selectedInterventionsByCategory;
+  void _onSelectInterventionForCategory;
   const allSelected = matchingDistricts.length > 0 &&
     matchingDistricts.every((d) => selectedDistrictIds.has(d.districtId));
   const hasDistrictSelection = selectedDistrictIds.size > 0;
