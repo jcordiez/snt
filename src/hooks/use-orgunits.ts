@@ -81,11 +81,61 @@ export function createInterventionMix(
 }
 
 /**
+ * Merges a new intervention mix with an existing one.
+ * - Preserves interventions from categories not in the new mix
+ * - Replaces interventions from categories that are in the new mix
+ */
+export function mergeInterventionMixes(
+  existing: InterventionMix | undefined,
+  incoming: InterventionMix,
+  interventionCategories: InterventionCategory[]
+): InterventionMix {
+  // If no existing mix, return the incoming mix as-is
+  if (!existing) {
+    return incoming;
+  }
+
+  // Build intervention lookup for display label generation
+  const interventionLookup = new Map<number, Intervention>();
+  for (const category of interventionCategories) {
+    for (const intervention of category.interventions) {
+      interventionLookup.set(intervention.id, intervention);
+    }
+  }
+
+  // Merge: start with existing, then apply incoming (overwriting same categories)
+  const mergedAssignments = new Map<number, number>(existing.categoryAssignments);
+  incoming.categoryAssignments.forEach((interventionId, categoryId) => {
+    mergedAssignments.set(categoryId, interventionId);
+  });
+
+  // Generate new display label from merged assignments
+  const sortedCategoryIds = Array.from(mergedAssignments.keys()).sort((a, b) => a - b);
+  const interventionNames: string[] = [];
+
+  for (const categoryId of sortedCategoryIds) {
+    const interventionId = mergedAssignments.get(categoryId);
+    if (interventionId !== undefined) {
+      const intervention = interventionLookup.get(interventionId);
+      if (intervention) {
+        interventionNames.push(intervention.short_name);
+      }
+    }
+  }
+
+  return {
+    categoryAssignments: mergedAssignments,
+    displayLabel: interventionNames.length > 0 ? interventionNames.join(" + ") : "None",
+  };
+}
+
+/**
  * Type for update function passed to components
  */
 export type UpdateDistrictsFn = (
   districtIds: string[],
-  interventionMix: InterventionMix
+  interventionMix: InterventionMix,
+  interventionCategories: InterventionCategory[]
 ) => void;
 
 function transformOrgUnitsToGeoJSON(
@@ -166,8 +216,10 @@ export function useOrgUnits() {
   /**
    * Updates district properties with intervention mix data.
    * This is an in-memory update that persists within the session.
+   * Uses additive/merge behavior: preserves existing interventions from other categories,
+   * only replaces interventions from categories being applied.
    */
-  const updateDistricts: UpdateDistrictsFn = useCallback((districtIds, interventionMix) => {
+  const updateDistricts: UpdateDistrictsFn = useCallback((districtIds, interventionMix, interventionCategories) => {
     setData((prevData) => {
       if (!prevData) return prevData;
 
@@ -177,16 +229,20 @@ export function useOrgUnits() {
           return feature;
         }
 
-        // Update the district with the new intervention mix
+        // Merge with existing intervention mix (additive behavior)
+        const existingMix = feature.properties.interventionMix;
+        const mergedMix = mergeInterventionMixes(existingMix, interventionMix, interventionCategories);
+
+        // Update the district with the merged intervention mix
         return {
           ...feature,
           properties: {
             ...feature.properties,
-            interventionMix,
-            interventionMixLabel: interventionMix.displayLabel, // Flat property for MapLibre expressions
+            interventionMix: mergedMix,
+            interventionMixLabel: mergedMix.displayLabel, // Flat property for MapLibre expressions
             interventionStatus: "ongoing" as InterventionStatus, // Mark as ongoing when interventions are applied
-            interventions: [interventionMix.displayLabel], // Update legacy field
-            interventionCount: interventionMix.categoryAssignments.size,
+            interventions: [mergedMix.displayLabel], // Update legacy field
+            interventionCount: mergedMix.categoryAssignments.size,
           },
         };
       });

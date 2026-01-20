@@ -37,8 +37,8 @@ export default function Home() {
       interventionCategories
     );
 
-    // Update districts with the new intervention mix (in-memory only)
-    updateDistricts(districtIds, interventionMix);
+    // Update districts with the new intervention mix (additive merge with existing)
+    updateDistricts(districtIds, interventionMix, interventionCategories);
 
     console.log("Applied interventions:", {
       districtIds,
