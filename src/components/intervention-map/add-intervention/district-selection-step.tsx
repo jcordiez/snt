@@ -3,6 +3,7 @@
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import type { DistrictWithProperties } from "@/hooks/use-district-rules";
 import type { InterventionCategory } from "@/types/intervention";
 
@@ -28,23 +29,24 @@ export function DistrictSelectionStep({
   selectedDistrictIds,
   interventionCategories,
   interventionsLoading,
-  selectedInterventionIds,
-  selectedInterventionsByCategory: _selectedInterventionsByCategory,
+  selectedInterventionIds: _selectedInterventionIds,
+  selectedInterventionsByCategory,
   onToggleDistrict,
   onToggleAll,
-  onToggleIntervention,
-  onSelectInterventionForCategory: _onSelectInterventionForCategory,
+  onToggleIntervention: _onToggleIntervention,
+  onSelectInterventionForCategory,
   onBack,
   onApply,
 }: DistrictSelectionStepProps) {
-  // Note: _selectedInterventionsByCategory and _onSelectInterventionForCategory
-  // are available for Phase 2 radio button implementation
-  void _selectedInterventionsByCategory;
-  void _onSelectInterventionForCategory;
+  // Note: _selectedInterventionIds and _onToggleIntervention are deprecated
+  // Keeping them for backwards compatibility but using category-based selection
+  void _selectedInterventionIds;
+  void _onToggleIntervention;
+
   const allSelected = matchingDistricts.length > 0 &&
     matchingDistricts.every((d) => selectedDistrictIds.has(d.districtId));
   const hasDistrictSelection = selectedDistrictIds.size > 0;
-  const hasInterventionSelection = selectedInterventionIds.size > 0;
+  const hasInterventionSelection = selectedInterventionsByCategory.size > 0;
   const canApply = hasDistrictSelection && hasInterventionSelection;
   const districtCount = selectedDistrictIds.size;
   const applyButtonLabel = canApply
@@ -107,39 +109,58 @@ export function DistrictSelectionStep({
         {/* Interventions section */}
         <div>
           <h3 className="text-sm font-semibold mb-3">Select Interventions</h3>
+          <p className="text-xs text-muted-foreground mb-4">
+            Select one intervention per category. Categories without a selection will not be included.
+          </p>
 
           <div className="space-y-4">
             {interventionsLoading ? (
               <p className="text-sm text-muted-foreground">Loading interventions...</p>
             ) : (
-              interventionCategories.map((category) => (
-                <div key={category.id}>
-                  <h4 className="text-sm font-medium text-muted-foreground mb-2">
-                    {category.name}
-                  </h4>
-                  <div className="space-y-2 pl-2">
-                    {category.interventions.map((intervention) => (
-                      <div
-                        key={intervention.id}
-                        className="flex items-start gap-2"
-                      >
-                        <Checkbox
-                          checked={selectedInterventionIds.has(intervention.id)}
-                          onCheckedChange={() => onToggleIntervention(intervention.id)}
-                        />
-                        <div>
-                          <div className="text-sm">{intervention.name}</div>
-                          {intervention.description && (
-                            <div className="text-xs text-muted-foreground">
-                              {intervention.description}
-                            </div>
-                          )}
+              interventionCategories.map((category) => {
+                const selectedValue = selectedInterventionsByCategory.get(category.id);
+                return (
+                  <div key={category.id}>
+                    <h4 className="text-sm font-medium text-muted-foreground mb-2">
+                      {category.name}
+                    </h4>
+                    <RadioGroup
+                      value={selectedValue?.toString() ?? ""}
+                      onValueChange={(value) => {
+                        if (value === "") {
+                          onSelectInterventionForCategory(category.id, null);
+                        } else {
+                          onSelectInterventionForCategory(category.id, parseInt(value, 10));
+                        }
+                      }}
+                      className="pl-2"
+                    >
+                      {category.interventions.map((intervention) => (
+                        <div
+                          key={intervention.id}
+                          className="flex items-start gap-2"
+                        >
+                          <RadioGroupItem
+                            value={intervention.id.toString()}
+                            id={`intervention-${intervention.id}`}
+                          />
+                          <label
+                            htmlFor={`intervention-${intervention.id}`}
+                            className="cursor-pointer flex-1"
+                          >
+                            <div className="text-sm">{intervention.name}</div>
+                            {intervention.description && (
+                              <div className="text-xs text-muted-foreground">
+                                {intervention.description}
+                              </div>
+                            )}
+                          </label>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </RadioGroup>
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </div>

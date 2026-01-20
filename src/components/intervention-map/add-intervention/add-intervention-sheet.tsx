@@ -145,12 +145,14 @@ export function AddInterventionSheet({
   }, []);
 
   const handleApply = useCallback(() => {
+    // Convert category-based selections to flat array of intervention IDs
+    const interventionIds = Array.from(selectedInterventionsByCategory.values());
     onApplyInterventions(
       Array.from(selectedDistrictIds),
-      Array.from(selectedInterventionIds)
+      interventionIds
     );
     onOpenChange(false);
-  }, [selectedDistrictIds, selectedInterventionIds, onApplyInterventions, onOpenChange]);
+  }, [selectedDistrictIds, selectedInterventionsByCategory, onApplyInterventions, onOpenChange]);
 
   const getTitle = () => {
     switch (step) {
