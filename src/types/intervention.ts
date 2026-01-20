@@ -79,3 +79,17 @@ export interface AddInterventionState {
   /** Maps categoryId -> interventionId for single selection per category */
   selectedInterventionsByCategory: Map<number, number>;
 }
+
+/**
+ * Payload for selecting districts from the map legend.
+ * Used to open the AddInterventionSheet in "direct selection" mode,
+ * skipping the rule builder step.
+ */
+export interface LegendSelectionPayload {
+  /** IDs of all districts with this intervention mix */
+  districtIds: string[];
+  /** Maps categoryId -> interventionId for the current mix */
+  interventionsByCategory: Map<number, number>;
+  /** The display label of the mix (e.g., "CM + IPTp") */
+  mixLabel: string;
+}
