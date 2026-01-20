@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
+import { useState } from "react";
+import { ArrowLeft, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -22,6 +23,10 @@ interface DistrictSelectionStepProps {
   onSelectInterventionForCategory: (categoryId: number, interventionId: number | null) => void;
   onBack: () => void;
   onApply: () => void;
+  /** Controls collapsed mode for legend selection */
+  isFromLegendSelection?: boolean;
+  /** For closing sheet directly in legend mode */
+  onClose?: () => void;
 }
 
 export function DistrictSelectionStep({
@@ -37,11 +42,15 @@ export function DistrictSelectionStep({
   onSelectInterventionForCategory,
   onBack,
   onApply,
+  isFromLegendSelection = false,
+  onClose,
 }: DistrictSelectionStepProps) {
   // Note: _selectedInterventionIds and _onToggleIntervention are deprecated
   // Keeping them for backwards compatibility but using category-based selection
   void _selectedInterventionIds;
   void _onToggleIntervention;
+
+  const [isDistrictListExpanded, setIsDistrictListExpanded] = useState(!isFromLegendSelection);
 
   const allSelected = matchingDistricts.length > 0 &&
     matchingDistricts.every((d) => selectedDistrictIds.has(d.districtId));
@@ -53,13 +62,30 @@ export function DistrictSelectionStep({
     ? `Apply to ${districtCount} district${districtCount !== 1 ? "s" : ""}`
     : "Select interventions to apply";
 
+  const handleBackOrClose = () => {
+    if (isFromLegendSelection && onClose) {
+      onClose();
+    } else {
+      onBack();
+    }
+  };
+
   return (
     <div className="flex flex-col h-full">
-      {/* Header with back button */}
+      {/* Header with back/cancel button */}
       <div className="flex items-center mb-4">
-        <Button variant="ghost" onClick={onBack} className="gap-1 px-2">
-          <ArrowLeft className="h-4 w-4" />
-          Back
+        <Button variant="ghost" onClick={handleBackOrClose} className="gap-1 px-2">
+          {isFromLegendSelection ? (
+            <>
+              <X className="h-4 w-4" />
+              Cancel
+            </>
+          ) : (
+            <>
+              <ArrowLeft className="h-4 w-4" />
+              Back
+            </>
+          )}
         </Button>
       </div>
 
@@ -69,41 +95,60 @@ export function DistrictSelectionStep({
         <div>
           <h3 className="text-sm font-semibold mb-3">Selected Districts</h3>
 
-          <div className="flex items-center gap-2 mb-3 pb-3 border-b">
-            <Checkbox
-              checked={allSelected}
-              onCheckedChange={onToggleAll}
-            />
-            <label className="text-sm">
-              {allSelected ? "Unselect all" : "Select all"} ({matchingDistricts.length} districts)
-            </label>
-          </div>
+          {isFromLegendSelection && !isDistrictListExpanded ? (
+            /* Collapsed mode: show count and Edit selection button */
+            <div className="flex items-center justify-between py-2 px-3 bg-muted/50 rounded-md">
+              <span className="text-sm">
+                {districtCount} district{districtCount !== 1 ? "s" : ""} selected
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsDistrictListExpanded(true)}
+              >
+                Edit selection
+              </Button>
+            </div>
+          ) : (
+            /* Expanded mode: show full district list */
+            <>
+              <div className="flex items-center gap-2 mb-3 pb-3 border-b">
+                <Checkbox
+                  checked={allSelected}
+                  onCheckedChange={onToggleAll}
+                />
+                <label className="text-sm">
+                  {allSelected ? "Unselect all" : "Select all"} ({matchingDistricts.length} districts)
+                </label>
+              </div>
 
-          <div className="space-y-2 max-h-[200px] overflow-y-auto">
-            {matchingDistricts.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                No districts match the selected rules.
-              </p>
-            ) : (
-              matchingDistricts.map((district) => (
-                <div
-                  key={district.districtId}
-                  className="flex items-start gap-2 py-1"
-                >
-                  <Checkbox
-                    checked={selectedDistrictIds.has(district.districtId)}
-                    onCheckedChange={() => onToggleDistrict(district.districtId)}
-                  />
-                  <div>
-                    <div className="text-sm font-medium">{district.districtName}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {district.regionName}
+              <div className="space-y-2 max-h-[200px] overflow-y-auto">
+                {matchingDistricts.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">
+                    No districts match the selected rules.
+                  </p>
+                ) : (
+                  matchingDistricts.map((district) => (
+                    <div
+                      key={district.districtId}
+                      className="flex items-start gap-2 py-1"
+                    >
+                      <Checkbox
+                        checked={selectedDistrictIds.has(district.districtId)}
+                        onCheckedChange={() => onToggleDistrict(district.districtId)}
+                      />
+                      <div>
+                        <div className="text-sm font-medium">{district.districtName}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {district.regionName}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+                  ))
+                )}
+              </div>
+            </>
+          )}
         </div>
 
         {/* Interventions section */}
