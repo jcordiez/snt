@@ -15,6 +15,8 @@ export interface DistrictProperties {
   interventions: string[];
   /** Structured intervention assignment data */
   interventionMix?: InterventionMix;
+  /** Flat property for MapLibre expressions (e.g., "CM + IPTp + Dual AI") */
+  interventionMixLabel?: string;
 }
 
 export interface Region {

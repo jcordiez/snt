@@ -183,6 +183,7 @@ export function useOrgUnits() {
           properties: {
             ...feature.properties,
             interventionMix,
+            interventionMixLabel: interventionMix.displayLabel, // Flat property for MapLibre expressions
             interventionStatus: "ongoing" as InterventionStatus, // Mark as ongoing when interventions are applied
             interventions: [interventionMix.displayLabel], // Update legacy field
             interventionCount: interventionMix.categoryAssignments.size,

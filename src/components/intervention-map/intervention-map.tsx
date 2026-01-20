@@ -4,11 +4,15 @@ import { useEffect } from "react";
 import { Map, MapControls, useMap } from "@/components/ui/map";
 import { DistrictLayer } from "./district-layer";
 import { MapLegend } from "./map-legend";
-import { countryConfig, Province } from "@/data/districts";
+import { countryConfig, Province, DistrictProperties } from "@/data/districts";
 
 interface InterventionMapProps {
   selectedProvince?: Province | null;
   highlightedDistrictIds?: string[];
+  districts?: GeoJSON.FeatureCollection<
+    GeoJSON.MultiPolygon | GeoJSON.Polygon,
+    DistrictProperties
+  > | null;
 }
 
 /**
@@ -49,7 +53,7 @@ function MapAutoZoom({ selectedProvince }: { selectedProvince?: Province | null 
   return null;
 }
 
-export function InterventionMap({ selectedProvince, highlightedDistrictIds = [] }: InterventionMapProps) {
+export function InterventionMap({ selectedProvince, highlightedDistrictIds = [], districts }: InterventionMapProps) {
   return (
     <div className="relative w-full h-full">
       <Map
@@ -70,7 +74,7 @@ export function InterventionMap({ selectedProvince, highlightedDistrictIds = [] 
           showFullscreen={false}
         />
       </Map>
-      <MapLegend />
+      <MapLegend districts={districts} />
     </div>
   );
 }

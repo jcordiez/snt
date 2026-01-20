@@ -72,6 +72,7 @@ export default function Home() {
         <InterventionMap
           selectedProvince={selectedProvince}
           highlightedDistrictIds={highlightedDistrictIds}
+          districts={districts}
         />
       </main>
 

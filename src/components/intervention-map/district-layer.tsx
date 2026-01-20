@@ -1,11 +1,47 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import maplibregl from "maplibre-gl";
 import type MapLibreGL from "maplibre-gl";
 import { useMap } from "@/components/ui/map";
 import { interventionColors } from "@/data/districts";
 import { useOrgUnits } from "@/hooks/use-orgunits";
+
+/**
+ * Generates a deterministic color based on a string hash.
+ * Uses HSL color space to ensure good saturation and lightness.
+ */
+function generateColorFromString(str: string): string {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+
+  // Use absolute value and map to hue (0-360)
+  const hue = Math.abs(hash) % 360;
+  // Fixed saturation and lightness for good visibility
+  const saturation = 65;
+  const lightness = 55;
+
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+}
+
+/**
+ * Predefined color palette for common intervention mixes.
+ */
+const PREDEFINED_COLORS: Record<string, string> = {
+  "CM": "#4ade80",           // Green - base case management
+  "None": "#e5e7eb",         // Gray - no interventions
+};
+
+/**
+ * Gets a color for an intervention mix, using predefined colors when available.
+ */
+function getColorForMix(mixLabel: string): string {
+  return PREDEFINED_COLORS[mixLabel] ?? generateColorFromString(mixLabel);
+}
 
 const SOURCE_ID = "districts";
 // Active layer IDs (districts within selected province)
@@ -27,6 +63,20 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [] 
   const { data: orgUnitsData, isLoading } = useOrgUnits();
   const layersAdded = useRef(false);
   const popupRef = useRef<maplibregl.Popup | null>(null);
+
+  // Compute unique intervention mix labels and their colors for dynamic styling
+  const mixColorMap = useMemo(() => {
+    if (!orgUnitsData?.features) return new Map<string, string>();
+
+    const colorMap = new Map<string, string>();
+    for (const feature of orgUnitsData.features) {
+      const mixLabel = feature.properties.interventionMixLabel;
+      if (mixLabel && !colorMap.has(mixLabel)) {
+        colorMap.set(mixLabel, getColorForMix(mixLabel));
+      }
+    }
+    return colorMap;
+  }, [orgUnitsData]);
 
   useEffect(() => {
     if (!isLoaded || !map || isLoading || !orgUnitsData || layersAdded.current)
@@ -175,6 +225,55 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [] 
       ]);
     }
   }, [isLoaded, map, highlightedDistrictIds]);
+
+  // Update fill colors when intervention mixes change
+  useEffect(() => {
+    if (!isLoaded || !map || !layersAdded.current) return;
+
+    // Build a dynamic match expression for intervention mix colors
+    // Fall back to interventionStatus-based colors for districts without intervention mixes
+    if (mixColorMap.size > 0) {
+      // Build match cases: [label1, color1, label2, color2, ...]
+      const matchCases: string[] = [];
+      mixColorMap.forEach((color, label) => {
+        matchCases.push(label, color);
+      });
+
+      // Use case expression to first check for interventionMixLabel, then fall back to interventionStatus
+      // Type assertion needed due to dynamic array spread - MapLibre types are strict about expression shapes
+      const colorExpression = [
+        "case",
+        // If interventionMixLabel exists and is not empty, use mix-based color
+        ["has", "interventionMixLabel"],
+        [
+          "match",
+          ["get", "interventionMixLabel"],
+          ...matchCases,
+          interventionColors.none, // Default for unknown mixes
+        ],
+        // Otherwise, use status-based color
+        [
+          "match",
+          ["get", "interventionStatus"],
+          "completed",
+          interventionColors.completed,
+          "ongoing",
+          interventionColors.ongoing,
+          "planned",
+          interventionColors.planned,
+          interventionColors.none,
+        ],
+      ] as unknown as MapLibreGL.ExpressionSpecification;
+
+      map.setPaintProperty(ACTIVE_FILL_LAYER_ID, "fill-color", colorExpression);
+    }
+
+    // Update the source data when orgUnitsData changes
+    const source = map.getSource(SOURCE_ID) as maplibregl.GeoJSONSource | undefined;
+    if (source && orgUnitsData) {
+      source.setData(orgUnitsData);
+    }
+  }, [isLoaded, map, mixColorMap, orgUnitsData]);
 
   // Tooltip on hover (only for active layer - inactive districts have no interaction)
   useEffect(() => {
