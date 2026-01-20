@@ -135,6 +135,7 @@ export function useDistrictRules({ districts, rules }: UseDistrictRulesParams) {
 
   return {
     matchingDistricts,
+    matchingCount: matchingDistricts.length,
     metricValues,
     getMetricValue,
     hasCompleteRules,

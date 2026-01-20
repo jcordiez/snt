@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/sheet";
 import { RuleBuilderStep } from "./rule-builder-step";
 import { DistrictSelectionStep } from "./district-selection-step";
-import { InterventionSelectionStep } from "./intervention-selection-step";
 import { useMetricTypes } from "@/hooks/use-metric-types";
 import { useInterventionCategories } from "@/hooks/use-intervention-categories";
 import { useDistrictRules } from "@/hooks/use-district-rules";
@@ -54,7 +53,7 @@ export function AddInterventionSheet({
 
   const { groupedByCategory, isLoading: metricsLoading } = useMetricTypes();
   const { data: interventionCategories, isLoading: interventionsLoading } = useInterventionCategories();
-  const { matchingDistricts, hasCompleteRules } = useDistrictRules({ districts, rules });
+  const { matchingDistricts, matchingCount, hasCompleteRules } = useDistrictRules({ districts, rules });
 
   // Reset state when sheet closes
   useEffect(() => {
@@ -67,9 +66,9 @@ export function AddInterventionSheet({
     }
   }, [isOpen, onHighlightDistricts]);
 
-  // Update highlighted districts when selection changes during district selection step
+  // Update highlighted districts when selection changes during selection step
   useEffect(() => {
-    if (step === "districts") {
+    if (step === "selection") {
       onHighlightDistricts(Array.from(selectedDistrictIds));
     }
   }, [step, selectedDistrictIds, onHighlightDistricts]);
@@ -90,10 +89,10 @@ export function AddInterventionSheet({
     setRules((prev) => [...prev, createEmptyRule()]);
   }, []);
 
-  const handleGoToDistricts = useCallback(() => {
+  const handleGoToSelection = useCallback(() => {
     // Select all matching districts by default
     setSelectedDistrictIds(new Set(matchingDistricts.map((d) => d.districtId)));
-    setStep("districts");
+    setStep("selection");
   }, [matchingDistricts]);
 
   const handleToggleDistrict = useCallback((districtId: string) => {
@@ -119,10 +118,6 @@ export function AddInterventionSheet({
     }
   }, [matchingDistricts, selectedDistrictIds]);
 
-  const handleGoToInterventions = useCallback(() => {
-    setStep("interventions");
-  }, []);
-
   const handleToggleIntervention = useCallback((interventionId: number) => {
     setSelectedInterventionIds((prev) => {
       const next = new Set(prev);
@@ -147,10 +142,8 @@ export function AddInterventionSheet({
     switch (step) {
       case "rules":
         return "Add intervention";
-      case "districts":
-        return "Select districts";
-      case "interventions":
-        return "Select interventions";
+      case "selection":
+        return "Select districts & interventions";
     }
   };
 
@@ -168,31 +161,25 @@ export function AddInterventionSheet({
               groupedMetricTypes={groupedByCategory}
               isLoading={metricsLoading}
               hasCompleteRules={hasCompleteRules}
+              matchingCount={matchingCount}
               onUpdateRule={handleUpdateRule}
               onDeleteRule={handleDeleteRule}
               onAddRule={handleAddRule}
-              onNext={handleGoToDistricts}
+              onNext={handleGoToSelection}
             />
           )}
 
-          {step === "districts" && (
+          {step === "selection" && (
             <DistrictSelectionStep
               matchingDistricts={matchingDistricts}
               selectedDistrictIds={selectedDistrictIds}
+              interventionCategories={interventionCategories}
+              interventionsLoading={interventionsLoading}
+              selectedInterventionIds={selectedInterventionIds}
               onToggleDistrict={handleToggleDistrict}
               onToggleAll={handleToggleAll}
-              onBack={() => setStep("rules")}
-              onNext={handleGoToInterventions}
-            />
-          )}
-
-          {step === "interventions" && (
-            <InterventionSelectionStep
-              categories={interventionCategories}
-              isLoading={interventionsLoading}
-              selectedInterventionIds={selectedInterventionIds}
               onToggleIntervention={handleToggleIntervention}
-              onBack={() => setStep("districts")}
+              onBack={() => setStep("rules")}
               onApply={handleApply}
             />
           )}

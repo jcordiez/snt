@@ -57,7 +57,7 @@ export interface MetricValue {
   string_value: string;
 }
 
-export type WizardStep = 'rules' | 'districts' | 'interventions';
+export type WizardStep = 'rules' | 'selection';
 
 export interface AddInterventionState {
   step: WizardStep;

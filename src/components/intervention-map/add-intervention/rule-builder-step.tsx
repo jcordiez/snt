@@ -9,6 +9,7 @@ interface RuleBuilderStepProps {
   groupedMetricTypes: Record<string, MetricType[]>;
   isLoading: boolean;
   hasCompleteRules: boolean;
+  matchingCount: number;
   onUpdateRule: (ruleId: string, updates: Partial<Rule>) => void;
   onDeleteRule: (ruleId: string) => void;
   onAddRule: () => void;
@@ -20,11 +21,15 @@ export function RuleBuilderStep({
   groupedMetricTypes,
   isLoading,
   hasCompleteRules,
+  matchingCount,
   onUpdateRule,
   onDeleteRule,
   onAddRule,
   onNext,
 }: RuleBuilderStepProps) {
+  const buttonLabel = hasCompleteRules
+    ? `${matchingCount} district${matchingCount !== 1 ? "s" : ""} selected - Apply intervention`
+    : "Select matching layers";
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto">
@@ -62,10 +67,10 @@ export function RuleBuilderStep({
       <div className="pt-4 border-t mt-auto">
         <Button
           onClick={onNext}
-          disabled={!hasCompleteRules}
+          disabled={!hasCompleteRules || matchingCount === 0}
           className="w-full"
         >
-          Select matching layers
+          {buttonLabel}
         </Button>
       </div>
     </div>
