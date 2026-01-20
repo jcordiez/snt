@@ -48,6 +48,15 @@ export interface InterventionCategory {
   updated_at: string;
 }
 
+export interface MetricValue {
+  id: number;
+  metric_type: number;
+  org_unit: number;
+  year: number | null;
+  value: number;
+  string_value: string;
+}
+
 export type WizardStep = 'rules' | 'districts' | 'interventions';
 
 export interface AddInterventionState {
