@@ -6,42 +6,7 @@ import type MapLibreGL from "maplibre-gl";
 import { useMap } from "@/components/ui/map";
 import { interventionColors } from "@/data/districts";
 import { useOrgUnits } from "@/hooks/use-orgunits";
-
-/**
- * Generates a deterministic color based on a string hash.
- * Uses HSL color space to ensure good saturation and lightness.
- */
-function generateColorFromString(str: string): string {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32bit integer
-  }
-
-  // Use absolute value and map to hue (0-360)
-  const hue = Math.abs(hash) % 360;
-  // Fixed saturation and lightness for good visibility
-  const saturation = 65;
-  const lightness = 55;
-
-  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-}
-
-/**
- * Predefined color palette for common intervention mixes.
- */
-const PREDEFINED_COLORS: Record<string, string> = {
-  "CM": "#4ade80",           // Green - base case management
-  "None": "#e5e7eb",         // Gray - no interventions
-};
-
-/**
- * Gets a color for an intervention mix, using predefined colors when available.
- */
-function getColorForMix(mixLabel: string): string {
-  return PREDEFINED_COLORS[mixLabel] ?? generateColorFromString(mixLabel);
-}
+import { getColorForInterventionMix } from "@/lib/intervention-colors";
 
 const SOURCE_ID = "districts";
 // Active layer IDs (districts within selected province)
@@ -72,7 +37,7 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [] 
     for (const feature of orgUnitsData.features) {
       const mixLabel = feature.properties.interventionMixLabel;
       if (mixLabel && !colorMap.has(mixLabel)) {
-        colorMap.set(mixLabel, getColorForMix(mixLabel));
+        colorMap.set(mixLabel, getColorForInterventionMix(mixLabel));
       }
     }
     return colorMap;

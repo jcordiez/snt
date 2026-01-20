@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import type { DistrictProperties } from "@/data/districts";
+import { getColorForInterventionMix } from "@/lib/intervention-colors";
 
 interface LegendItem {
   color: string;
@@ -13,43 +14,6 @@ interface MapLegendProps {
     GeoJSON.MultiPolygon | GeoJSON.Polygon,
     DistrictProperties
   > | null;
-}
-
-/**
- * Generates a deterministic color based on a string hash.
- * Uses HSL color space to ensure good saturation and lightness.
- */
-function generateColorFromString(str: string): string {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32bit integer
-  }
-
-  // Use absolute value and map to hue (0-360)
-  const hue = Math.abs(hash) % 360;
-  // Fixed saturation and lightness for good visibility
-  const saturation = 65;
-  const lightness = 55;
-
-  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-}
-
-/**
- * Predefined color palette for common intervention mixes.
- * Provides consistent colors for frequently-used combinations.
- */
-const PREDEFINED_COLORS: Record<string, string> = {
-  "CM": "#4ade80",           // Green - base case management
-  "None": "#e5e7eb",         // Gray - no interventions
-};
-
-/**
- * Gets a color for an intervention mix, using predefined colors when available.
- */
-function getColorForMix(mixLabel: string): string {
-  return PREDEFINED_COLORS[mixLabel] ?? generateColorFromString(mixLabel);
 }
 
 /**
@@ -93,7 +57,7 @@ function computeLegendItems(
   });
 
   return sortedLabels.map((label) => ({
-    color: getColorForMix(label),
+    color: getColorForInterventionMix(label),
     label,
   }));
 }
