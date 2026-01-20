@@ -4,9 +4,8 @@ import { useEffect, useRef, useMemo } from "react";
 import maplibregl from "maplibre-gl";
 import type MapLibreGL from "maplibre-gl";
 import { useMap } from "@/components/ui/map";
-import { interventionColors } from "@/data/districts";
-import { useOrgUnits } from "@/hooks/use-orgunits";
-import { getColorForInterventionMix } from "@/lib/intervention-colors";
+import { getColorForInterventionMix, PREDEFINED_INTERVENTION_COLORS } from "@/lib/intervention-colors";
+import type { DistrictProperties } from "@/data/districts";
 
 const SOURCE_ID = "districts";
 // Active layer IDs (districts within selected province)
@@ -21,36 +20,80 @@ const HIGHLIGHT_BORDER_LAYER_ID = "district-borders-highlight";
 interface DistrictLayerProps {
   selectedProvinceId?: string | null;
   highlightedDistrictIds?: string[];
+  districts?: GeoJSON.FeatureCollection<
+    GeoJSON.MultiPolygon | GeoJSON.Polygon,
+    DistrictProperties
+  > | null;
 }
 
-export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [] }: DistrictLayerProps) {
+// Helper function to build color expression from districts data
+function buildColorExpression(
+  districtsData: GeoJSON.FeatureCollection<GeoJSON.MultiPolygon | GeoJSON.Polygon, DistrictProperties> | null | undefined
+): MapLibreGL.ExpressionSpecification | string {
+  if (!districtsData?.features) {
+    return PREDEFINED_INTERVENTION_COLORS["CM"];
+  }
+
+  // Build color map from districts
+  const colorMap = new Map<string, string>();
+  for (const feature of districtsData.features) {
+    const mixLabel = feature.properties.interventionMixLabel;
+    if (mixLabel && !colorMap.has(mixLabel)) {
+      colorMap.set(mixLabel, getColorForInterventionMix(mixLabel));
+    }
+  }
+
+  // Build match cases: [label1, color1, label2, color2, ...]
+  const matchCases: string[] = [];
+  colorMap.forEach((color, label) => {
+    matchCases.push(label, color);
+  });
+
+  // Return match expression or default
+  if (matchCases.length > 0) {
+    return [
+      "match",
+      ["get", "interventionMixLabel"],
+      ...matchCases,
+      PREDEFINED_INTERVENTION_COLORS["CM"], // Default to CM color
+    ] as unknown as MapLibreGL.ExpressionSpecification;
+  }
+
+  return PREDEFINED_INTERVENTION_COLORS["CM"];
+}
+
+export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [], districts }: DistrictLayerProps) {
   const { map, isLoaded } = useMap();
-  const { data: orgUnitsData, isLoading } = useOrgUnits();
   const layersAdded = useRef(false);
   const popupRef = useRef<maplibregl.Popup | null>(null);
 
   // Compute unique intervention mix labels and their colors for dynamic styling
   const mixColorMap = useMemo(() => {
-    if (!orgUnitsData?.features) return new Map<string, string>();
+    if (!districts?.features) return new Map<string, string>();
 
     const colorMap = new Map<string, string>();
-    for (const feature of orgUnitsData.features) {
+    for (const feature of districts.features) {
       const mixLabel = feature.properties.interventionMixLabel;
       if (mixLabel && !colorMap.has(mixLabel)) {
         colorMap.set(mixLabel, getColorForInterventionMix(mixLabel));
       }
     }
     return colorMap;
-  }, [orgUnitsData]);
+  }, [districts]);
 
   useEffect(() => {
-    if (!isLoaded || !map || isLoading || !orgUnitsData || layersAdded.current)
+    // Only create layers once when map is ready and we have districts data
+    if (!isLoaded || !map || !districts || layersAdded.current)
       return;
+
+    // Compute the initial color expression from districts data
+    // This ensures colors are applied immediately when layers are added
+    const initialColorExpression = buildColorExpression(districts);
 
     // Add GeoJSON source with ALL districts (no filtering at source level)
     map.addSource(SOURCE_ID, {
       type: "geojson",
-      data: orgUnitsData,
+      data: districts,
     });
 
     // Add INACTIVE fill layer (grayed out, rendered first/below)
@@ -78,22 +121,13 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [] 
     });
 
     // Add ACTIVE fill layer with data-driven styling (rendered on top)
+    // Color expression is computed immediately from districts data for proper synchronization
     map.addLayer({
       id: ACTIVE_FILL_LAYER_ID,
       type: "fill",
       source: SOURCE_ID,
       paint: {
-        "fill-color": [
-          "match",
-          ["get", "interventionStatus"],
-          "completed",
-          interventionColors.completed,
-          "ongoing",
-          interventionColors.ongoing,
-          "planned",
-          interventionColors.planned,
-          interventionColors.none, // Default for "none" or unknown
-        ],
+        "fill-color": initialColorExpression,
         "fill-opacity": 0.7,
         "fill-opacity-transition": { duration: 300 },
       },
@@ -137,7 +171,7 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [] 
         // Ignore cleanup errors
       }
     };
-  }, [isLoaded, map, isLoading, orgUnitsData]);
+  }, [isLoaded, map]);
 
   // Update layer filters when selectedProvinceId changes
   useEffect(() => {
@@ -196,49 +230,33 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [] 
     if (!isLoaded || !map || !layersAdded.current) return;
 
     // Build a dynamic match expression for intervention mix colors
-    // Fall back to interventionStatus-based colors for districts without intervention mixes
-    if (mixColorMap.size > 0) {
-      // Build match cases: [label1, color1, label2, color2, ...]
-      const matchCases: string[] = [];
-      mixColorMap.forEach((color, label) => {
-        matchCases.push(label, color);
-      });
+    // All districts have interventionMixLabel set (CM by default)
+    // Build match cases: [label1, color1, label2, color2, ...]
+    const matchCases: string[] = [];
+    mixColorMap.forEach((color, label) => {
+      matchCases.push(label, color);
+    });
 
-      // Use case expression to first check for interventionMixLabel, then fall back to interventionStatus
-      // Type assertion needed due to dynamic array spread - MapLibre types are strict about expression shapes
-      const colorExpression = [
-        "case",
-        // If interventionMixLabel exists and is not empty, use mix-based color
-        ["has", "interventionMixLabel"],
-        [
+    // Use match expression based on interventionMixLabel
+    // Default to CM color (darker gray) for any unknown mixes
+    // Always set the color expression, even if mixColorMap is empty (use default)
+    const colorExpression = matchCases.length > 0
+      ? [
           "match",
           ["get", "interventionMixLabel"],
           ...matchCases,
-          interventionColors.none, // Default for unknown mixes
-        ],
-        // Otherwise, use status-based color
-        [
-          "match",
-          ["get", "interventionStatus"],
-          "completed",
-          interventionColors.completed,
-          "ongoing",
-          interventionColors.ongoing,
-          "planned",
-          interventionColors.planned,
-          interventionColors.none,
-        ],
-      ] as unknown as MapLibreGL.ExpressionSpecification;
+          PREDEFINED_INTERVENTION_COLORS["CM"], // Default to CM color
+        ] as unknown as MapLibreGL.ExpressionSpecification
+      : PREDEFINED_INTERVENTION_COLORS["CM"];
 
-      map.setPaintProperty(ACTIVE_FILL_LAYER_ID, "fill-color", colorExpression);
-    }
+    map.setPaintProperty(ACTIVE_FILL_LAYER_ID, "fill-color", colorExpression);
 
-    // Update the source data when orgUnitsData changes
+    // Update the source data when districts changes
     const source = map.getSource(SOURCE_ID) as maplibregl.GeoJSONSource | undefined;
-    if (source && orgUnitsData) {
-      source.setData(orgUnitsData);
+    if (source && districts) {
+      source.setData(districts);
     }
-  }, [isLoaded, map, mixColorMap, orgUnitsData]);
+  }, [isLoaded, map, mixColorMap, districts]);
 
   // Tooltip on hover (only for active layer - inactive districts have no interaction)
   useEffect(() => {
@@ -258,11 +276,13 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [] 
       if (!e.features?.length) return;
 
       const props = e.features[0].properties;
-      const interventions: string[] = JSON.parse(props.interventions || "[]");
+      const mixLabel = props.interventionMixLabel || "CM";
 
-      const interventionList = interventions.length
-        ? interventions.map((i: string) => `• ${i}`).join("<br>")
-        : "No interventions";
+      // Split the intervention mix label (e.g., "CM + IPTp + Dual AI") into individual interventions
+      const interventions = mixLabel.split(" + ");
+      const interventionList = interventions
+        .map((intervention: string) => `• ${intervention}`)
+        .join("<br>");
 
       map.getCanvas().style.cursor = "pointer";
 
@@ -270,7 +290,8 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [] 
         .setLngLat(e.lngLat)
         .setHTML(`
           <strong>${props.districtName}</strong>
-          <div style="margin-top: 4px; font-size: 12px;">${interventionList}</div>
+          <div style="margin-top: 4px; font-size: 12px; color: #666;">Interventions:</div>
+          <div style="margin-top: 2px; font-size: 12px;">${interventionList}</div>
         `)
         .addTo(map);
     };
