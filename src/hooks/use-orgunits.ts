@@ -23,28 +23,6 @@ interface OrgUnit {
   geo_json: GeoJSON.FeatureCollection | null;
 }
 
-const MOCK_INTERVENTIONS = {
-  completed: ["Vaccination Campaign", "Health Education", "Maternal Health", "Nutrition Program"],
-  ongoing: ["Malaria Prevention", "Nutrition Program", "Health Education"],
-  planned: ["Water Sanitation", "Maternal Health"],
-  none: [] as string[],
-};
-
-function getRandomInterventionStatus(): InterventionStatus {
-  const statuses: InterventionStatus[] = ["completed", "ongoing", "planned", "none"];
-  return statuses[Math.floor(Math.random() * statuses.length)];
-}
-
-function getInterventionsForStatus(status: InterventionStatus): string[] {
-  const available = MOCK_INTERVENTIONS[status];
-  if (available.length === 0) return [];
-
-  // Randomly select a subset of interventions
-  const count = Math.floor(Math.random() * available.length) + 1;
-  const shuffled = [...available].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, count);
-}
-
 /**
  * Creates an InterventionMix from category-based selections
  */
@@ -149,9 +127,8 @@ function transformOrgUnitsToGeoJSON(
     const geometry = unit.geo_json.features[0]?.geometry;
     if (!geometry) continue;
 
-    const status = getRandomInterventionStatus();
-    const interventions = getInterventionsForStatus(status);
-
+    // Initialize districts without any intervention data (no mock/fake interventions)
+    // Interventions are assigned by the user through the intervention wizard
     features.push({
       type: "Feature",
       properties: {
@@ -159,9 +136,9 @@ function transformOrgUnitsToGeoJSON(
         districtName: unit.name,
         regionId: String(unit.parent_id),
         regionName: unit.parent_name,
-        interventionStatus: status,
-        interventionCount: interventions.length,
-        interventions,
+        interventionStatus: "none" as InterventionStatus,
+        interventionCount: 0,
+        interventions: [],
       },
       geometry: geometry as GeoJSON.MultiPolygon | GeoJSON.Polygon,
     });
