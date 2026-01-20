@@ -81,6 +81,7 @@ export default function Home() {
         isOpen={isSheetOpen}
         onOpenChange={setIsSheetOpen}
         districts={districts}
+        selectedProvince={selectedProvince}
         onHighlightDistricts={handleHighlightDistricts}
         onApplyInterventions={handleApplyInterventions}
       />

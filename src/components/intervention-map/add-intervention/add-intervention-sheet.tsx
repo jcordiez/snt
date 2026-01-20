@@ -13,7 +13,7 @@ import { useMetricTypes } from "@/hooks/use-metric-types";
 import { useInterventionCategories } from "@/hooks/use-intervention-categories";
 import { useDistrictRules } from "@/hooks/use-district-rules";
 import type { Rule, WizardStep } from "@/types/intervention";
-import type { DistrictProperties } from "@/data/districts";
+import type { DistrictProperties, Province } from "@/data/districts";
 
 function generateRuleId(): string {
   return `rule-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -35,6 +35,7 @@ interface AddInterventionSheetProps {
     GeoJSON.MultiPolygon | GeoJSON.Polygon,
     DistrictProperties
   > | null;
+  selectedProvince?: Province | null;
   onHighlightDistricts: (districtIds: string[]) => void;
   onApplyInterventions: (districtIds: string[], selectedInterventionsByCategory: Map<number, number>) => void;
 }
@@ -43,6 +44,7 @@ export function AddInterventionSheet({
   isOpen,
   onOpenChange,
   districts,
+  selectedProvince,
   onHighlightDistricts,
   onApplyInterventions,
 }: AddInterventionSheetProps) {
@@ -54,7 +56,11 @@ export function AddInterventionSheet({
 
   const { groupedByCategory, isLoading: metricsLoading } = useMetricTypes();
   const { data: interventionCategories, isLoading: interventionsLoading } = useInterventionCategories();
-  const { matchingDistricts, matchingCount, hasCompleteRules } = useDistrictRules({ districts, rules });
+  const { matchingDistricts, matchingCount, hasCompleteRules } = useDistrictRules({
+    districts,
+    rules,
+    selectedProvinceId: selectedProvince?.id ?? null,
+  });
 
   // Reset state when sheet closes
   useEffect(() => {
