@@ -15,8 +15,10 @@ import { Province } from "@/data/districts";
 import { useOrgUnits, createInterventionMix } from "@/hooks/use-orgunits";
 import { useInterventionCategories } from "@/hooks/use-intervention-categories";
 import { useMetricTypes } from "@/hooks/use-metric-types";
+import { findMatchingDistrictIds } from "@/hooks/use-district-rules";
 import { LegendSelectionPayload } from "@/types/intervention";
 import type { SavedRule } from "@/types/rule";
+import type { Rule } from "@/types/intervention";
 
 export default function Home() {
   const { data: districts, provinces, isLoading, updateDistricts } = useOrgUnits();
@@ -93,6 +95,7 @@ export default function Home() {
   }, []);
 
   const handleSaveRule = useCallback((rule: SavedRule) => {
+    // Update the saved rules state
     setSavedRules((prev) => {
       const existingIndex = prev.findIndex((r) => r.id === rule.id);
       if (existingIndex >= 0) {
@@ -102,7 +105,44 @@ export default function Home() {
       }
       return [...prev, rule];
     });
-  }, []);
+
+    // Convert SavedRule criteria to Rule[] format for evaluation
+    const rulesForEvaluation: Rule[] = rule.criteria.map((criterion) => ({
+      id: criterion.id,
+      metricTypeId: criterion.metricTypeId,
+      operator: criterion.operator,
+      value: criterion.value,
+    }));
+
+    // Find districts matching the rule's criteria
+    const matchingDistrictIds = findMatchingDistrictIds(
+      districts,
+      rulesForEvaluation,
+      selectedProvince?.id ?? null
+    );
+
+    // Only update if there are matching districts and interventions selected
+    if (matchingDistrictIds.length > 0 && rule.interventionsByCategory.size > 0) {
+      const interventionMix = createInterventionMix(
+        rule.interventionsByCategory,
+        interventionCategories ?? []
+      );
+
+      updateDistricts(
+        matchingDistrictIds,
+        interventionMix,
+        interventionCategories ?? [],
+        { replace: false }
+      );
+
+      console.log("Rule applied:", {
+        ruleId: rule.id,
+        ruleTitle: rule.title,
+        matchingDistricts: matchingDistrictIds.length,
+        interventionMix: interventionMix.displayLabel,
+      });
+    }
+  }, [districts, selectedProvince, interventionCategories, updateDistricts]);
 
   const handleRuleModalOpenChange = useCallback((open: boolean) => {
     setIsRuleModalOpen(open);

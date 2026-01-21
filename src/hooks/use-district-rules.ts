@@ -39,7 +39,7 @@ const METRIC_CONFIGS: Record<number, { min: number; max: number }> = {
  * Uses a simple hash-based approach to ensure consistent values per district.
  * Values are scaled to realistic ranges based on metric type.
  */
-function generateMockMetricValue(districtId: string, metricTypeId: number): number {
+export function generateMockMetricValue(districtId: string, metricTypeId: number): number {
   // Create a simple hash from districtId and metricTypeId
   let hash = 0;
   const seed = `${districtId}-${metricTypeId}`;
@@ -63,7 +63,7 @@ function generateMockMetricValue(districtId: string, metricTypeId: number): numb
 /**
  * Evaluates a single rule against a metric value
  */
-function evaluateRule(value: number, operator: RuleOperator, threshold: number): boolean {
+export function evaluateRule(value: number, operator: RuleOperator, threshold: number): boolean {
   switch (operator) {
     case "<":
       return value < threshold;
@@ -83,8 +83,50 @@ function evaluateRule(value: number, operator: RuleOperator, threshold: number):
 /**
  * Checks if a rule is complete (has all required values)
  */
-function isRuleComplete(rule: Rule): boolean {
+export function isRuleComplete(rule: Rule): boolean {
   return rule.metricTypeId !== null && rule.value !== "" && !isNaN(Number(rule.value));
+}
+
+/**
+ * Finds all district IDs that match the given rules criteria.
+ * This is a standalone utility function for use outside of React hooks.
+ */
+export function findMatchingDistrictIds(
+  districts: GeoJSON.FeatureCollection<
+    GeoJSON.MultiPolygon | GeoJSON.Polygon,
+    DistrictProperties
+  > | null,
+  rules: Rule[],
+  selectedProvinceId?: string | null
+): string[] {
+  if (!districts) return [];
+
+  // Filter districts by province if provided
+  const filteredFeatures = selectedProvinceId
+    ? districts.features.filter((f) => f.properties.regionId === selectedProvinceId)
+    : districts.features;
+
+  const completeRules = rules.filter(isRuleComplete);
+  if (completeRules.length === 0) return [];
+
+  const matchingIds: string[] = [];
+
+  for (const feature of filteredFeatures) {
+    const districtId = feature.properties.districtId;
+
+    // Check if all rules match (AND logic)
+    const allRulesMatch = completeRules.every((rule) => {
+      const metricValue = generateMockMetricValue(districtId, rule.metricTypeId!);
+      const threshold = Number(rule.value);
+      return evaluateRule(metricValue, rule.operator, threshold);
+    });
+
+    if (allRulesMatch) {
+      matchingIds.push(districtId);
+    }
+  }
+
+  return matchingIds;
 }
 
 export interface DistrictWithProperties {
