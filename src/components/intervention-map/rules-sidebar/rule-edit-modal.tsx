@@ -140,10 +140,16 @@ function CriterionRow({
   );
 }
 
+const DEFAULT_COLORS = [
+  "#3b82f6", "#ef4444", "#22c55e", "#f59e0b", "#8b5cf6",
+  "#ec4899", "#06b6d4", "#84cc16", "#f97316", "#6366f1",
+];
+
 interface RuleEditModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   rule: SavedRule | null;
+  rulesCount: number;
   metricTypes: MetricType[];
   groupedMetricTypes: Record<string, MetricType[]>;
   interventionCategories: InterventionCategory[];
@@ -154,6 +160,7 @@ export function RuleEditModal({
   isOpen,
   onOpenChange,
   rule,
+  rulesCount,
   metricTypes: _metricTypes,
   groupedMetricTypes,
   interventionCategories,
@@ -162,6 +169,7 @@ export function RuleEditModal({
   void _metricTypes;
 
   const [title, setTitle] = useState("");
+  const [color, setColor] = useState(DEFAULT_COLORS[0]);
   const [criteria, setCriteria] = useState<RuleCriterion[]>([createEmptyCriterion()]);
   const [interventionsByCategory, setInterventionsByCategory] = useState<Map<number, number>>(new Map());
 
@@ -170,15 +178,19 @@ export function RuleEditModal({
     if (isOpen) {
       if (rule) {
         setTitle(rule.title);
+        setColor(rule.color);
         setCriteria(rule.criteria.length > 0 ? [...rule.criteria] : [createEmptyCriterion()]);
         setInterventionsByCategory(new Map(rule.interventionsByCategory));
       } else {
-        setTitle("");
+        const defaultTitle = `Category ${rulesCount + 1}`;
+        const defaultColor = DEFAULT_COLORS[rulesCount % DEFAULT_COLORS.length];
+        setTitle(defaultTitle);
+        setColor(defaultColor);
         setCriteria([createEmptyCriterion()]);
         setInterventionsByCategory(new Map());
       }
     }
-  }, [isOpen, rule]);
+  }, [isOpen, rule, rulesCount]);
 
   const handleUpdateCriterion = useCallback((id: string, updates: Partial<RuleCriterion>) => {
     setCriteria((prev) =>
@@ -211,16 +223,18 @@ export function RuleEditModal({
       (c) => c.metricTypeId !== null && c.value !== ""
     );
 
+    const defaultTitle = `Category ${rulesCount + 1}`;
     const savedRule: SavedRule = {
       id: rule?.id ?? generateId(),
-      title: title.trim() || "Untitled Rule",
+      title: title.trim() || defaultTitle,
+      color,
       criteria: validCriteria,
       interventionsByCategory: new Map(interventionsByCategory),
     };
 
     onSave(savedRule);
     onOpenChange(false);
-  }, [rule, title, criteria, interventionsByCategory, onSave, onOpenChange]);
+  }, [rule, title, color, criteria, interventionsByCategory, rulesCount, onSave, onOpenChange]);
 
   const isEditing = rule !== null;
   const hasValidCriteria = criteria.some((c) => c.metricTypeId !== null && c.value !== "");
@@ -238,17 +252,26 @@ export function RuleEditModal({
         </DialogHeader>
 
         <div className="flex-1 overflow-y-auto space-y-6 py-4">
-          {/* Title input */}
+          {/* Title input with color picker */}
           <div>
             <label htmlFor="rule-title" className="text-sm font-medium mb-2 block">
               Rule Name
             </label>
-            <Input
-              id="rule-title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter rule name..."
-            />
+            <div className="flex items-center gap-2">
+              <input
+                type="color"
+                value={color}
+                onChange={(e) => setColor(e.target.value)}
+                className="w-10 h-10 rounded border cursor-pointer p-1"
+              />
+              <Input
+                id="rule-title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Enter rule name..."
+                className="flex-1"
+              />
+            </div>
           </div>
 
           {/* Criteria section */}

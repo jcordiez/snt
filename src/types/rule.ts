@@ -18,6 +18,7 @@ export interface RuleCriterion {
 export interface SavedRule {
   id: string;
   title: string;
+  color: string;
   criteria: RuleCriterion[];
   /** Maps categoryId -> interventionId for each assigned intervention */
   interventionsByCategory: Map<number, number>;

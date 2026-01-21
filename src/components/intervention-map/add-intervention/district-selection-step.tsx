@@ -180,28 +180,44 @@ export function DistrictSelectionStep({
                       }}
                       className="pl-2"
                     >
-                      {category.interventions.map((intervention) => (
-                        <div
-                          key={intervention.id}
-                          className="flex items-start gap-2"
-                        >
-                          <RadioGroupItem
-                            value={intervention.id.toString()}
-                            id={`intervention-${intervention.id}`}
-                          />
-                          <label
-                            htmlFor={`intervention-${intervention.id}`}
-                            className="cursor-pointer flex-1"
+                      {category.interventions.map((intervention) => {
+                        const isSelected = selectedValue === intervention.id;
+                        return (
+                          <div
+                            key={intervention.id}
+                            className="flex items-start gap-2"
                           >
-                            <div className="text-sm">{intervention.name}</div>
-                            {intervention.description && (
-                              <div className="text-xs text-muted-foreground">
-                                {intervention.description}
-                              </div>
+                            <RadioGroupItem
+                              value={intervention.id.toString()}
+                              id={`intervention-${intervention.id}`}
+                            />
+                            <label
+                              htmlFor={`intervention-${intervention.id}`}
+                              className="cursor-pointer flex-1"
+                            >
+                              <div className="text-sm">{intervention.name}</div>
+                              {intervention.description && (
+                                <div className="text-xs text-muted-foreground">
+                                  {intervention.description}
+                                </div>
+                              )}
+                            </label>
+                            {isSelected && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 px-2 text-xs text-muted-foreground hover:text-destructive"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  onSelectInterventionForCategory(category.id, null);
+                                }}
+                              >
+                                Remove
+                              </Button>
                             )}
-                          </label>
-                        </div>
-                      ))}
+                          </div>
+                        );
+                      })}
                     </RadioGroup>
                   </div>
                 );

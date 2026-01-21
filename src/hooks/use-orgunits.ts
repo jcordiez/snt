@@ -113,8 +113,14 @@ export function mergeInterventionMixes(
 export type UpdateDistrictsFn = (
   districtIds: string[],
   interventionMix: InterventionMix,
-  interventionCategories: InterventionCategory[]
+  interventionCategories: InterventionCategory[],
+  options?: { replace?: boolean; ruleColor?: string }
 ) => void;
+
+// Default CM intervention: all districts have Case Management by default
+const DEFAULT_CM_CATEGORY_ID = 37;
+const DEFAULT_CM_INTERVENTION_ID = 78;
+const DEFAULT_CM_LABEL = "CM";
 
 function transformOrgUnitsToGeoJSON(
   orgUnits: OrgUnit[]
@@ -127,8 +133,8 @@ function transformOrgUnitsToGeoJSON(
     const geometry = unit.geo_json.features[0]?.geometry;
     if (!geometry) continue;
 
-    // Initialize districts without any intervention data (no mock/fake interventions)
-    // Interventions are assigned by the user through the intervention wizard
+    // Initialize all districts with CM (Case Management) by default
+    // This reflects the baseline standard of care across all health zones
     features.push({
       type: "Feature",
       properties: {
@@ -136,9 +142,11 @@ function transformOrgUnitsToGeoJSON(
         districtName: unit.name,
         regionId: String(unit.parent_id),
         regionName: unit.parent_name,
-        interventionStatus: "none" as InterventionStatus,
-        interventionCount: 0,
-        interventions: [],
+        interventionStatus: "ongoing" as InterventionStatus,
+        interventionCount: 1,
+        interventions: [DEFAULT_CM_LABEL],
+        // Note: interventionMix with Map is set lazily when needed (not here to avoid serialization issues)
+        interventionMixLabel: DEFAULT_CM_LABEL, // Flat property for MapLibre expressions
       },
       geometry: geometry as GeoJSON.MultiPolygon | GeoJSON.Polygon,
     });
@@ -193,36 +201,83 @@ export function useOrgUnits() {
   /**
    * Updates district properties with intervention mix data.
    * This is an in-memory update that persists within the session.
-   * Uses additive/merge behavior: preserves existing interventions from other categories,
+   * By default uses additive/merge behavior: preserves existing interventions from other categories,
    * only replaces interventions from categories being applied.
+   * When options.replace is true, fully replaces the intervention mix (used when editing from legend).
+   * CM (Case Management) is always included as the baseline intervention.
    */
-  const updateDistricts: UpdateDistrictsFn = useCallback((districtIds, interventionMix, interventionCategories) => {
+  const updateDistricts: UpdateDistrictsFn = useCallback((districtIds, interventionMix, interventionCategories, options) => {
+    console.log("updateDistricts called with:", {
+      districtIds,
+      interventionMixLabel: interventionMix.displayLabel,
+      numCategories: interventionCategories.length,
+    });
+
     setData((prevData) => {
-      if (!prevData) return prevData;
+      if (!prevData) {
+        console.log("updateDistricts: prevData is null");
+        return prevData;
+      }
 
       const districtIdSet = new Set(districtIds);
+      console.log("updateDistricts: looking for district IDs:", Array.from(districtIdSet));
+      console.log("updateDistricts: first few feature IDs:", prevData.features.slice(0, 3).map(f => f.properties.districtId));
+
+      let matchCount = 0;
       const updatedFeatures = prevData.features.map((feature) => {
         if (!districtIdSet.has(feature.properties.districtId)) {
           return feature;
         }
+        matchCount++;
 
-        // Merge with existing intervention mix (additive behavior)
-        const existingMix = feature.properties.interventionMix;
-        const mergedMix = mergeInterventionMixes(existingMix, interventionMix, interventionCategories);
+        // Determine the final mix based on replace mode
+        let finalMix: InterventionMix;
 
-        // Update the district with the merged intervention mix
+        if (options?.replace) {
+          // Replace mode: use the incoming mix directly (for editing from legend)
+          finalMix = interventionMix;
+        } else {
+          // Merge mode: preserve existing interventions from other categories
+          // Get existing mix from serialized format, or create default CM mix if none exists
+          // This ensures CM is always preserved as the baseline intervention
+          const existingAssignments = feature.properties.interventionCategoryAssignments
+            ? new Map(Object.entries(feature.properties.interventionCategoryAssignments).map(([k, v]) => [Number(k), v as number]))
+            : new Map([[DEFAULT_CM_CATEGORY_ID, DEFAULT_CM_INTERVENTION_ID]]);
+
+          const existingMix: InterventionMix = {
+            categoryAssignments: existingAssignments,
+            displayLabel: feature.properties.interventionMixLabel ?? DEFAULT_CM_LABEL,
+          };
+          finalMix = mergeInterventionMixes(existingMix, interventionMix, interventionCategories);
+        }
+
+        // Update the district with the final intervention mix
+        // NOTE: Do NOT store interventionMix directly in properties - it contains a Map
+        // which cannot be serialized by MapLibre. Only store serializable properties.
         return {
           ...feature,
           properties: {
             ...feature.properties,
-            interventionMix: mergedMix,
-            interventionMixLabel: mergedMix.displayLabel, // Flat property for MapLibre expressions
+            // Store category assignments as a plain object for potential future use
+            // (converted from Map to Object for JSON serialization)
+            interventionCategoryAssignments: Object.fromEntries(finalMix.categoryAssignments),
+            interventionMixLabel: finalMix.displayLabel, // Flat property for MapLibre expressions
             interventionStatus: "ongoing" as InterventionStatus, // Mark as ongoing when interventions are applied
-            interventions: [mergedMix.displayLabel], // Update legacy field
-            interventionCount: mergedMix.categoryAssignments.size,
+            interventions: [finalMix.displayLabel], // Update legacy field
+            interventionCount: finalMix.categoryAssignments.size,
+            // Apply rule color if provided (used for map rendering)
+            ...(options?.ruleColor ? { ruleColor: options.ruleColor } : {}),
           },
         };
       });
+
+      console.log("updateDistricts: matched and updated", matchCount, "features");
+      console.log("updateDistricts: sample updated labels:",
+        updatedFeatures
+          .filter(f => districtIdSet.has(f.properties.districtId))
+          .slice(0, 3)
+          .map(f => ({ id: f.properties.districtId, label: f.properties.interventionMixLabel }))
+      );
 
       return {
         ...prevData,

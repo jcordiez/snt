@@ -94,6 +94,10 @@ export default function Home() {
     setIsRuleModalOpen(true);
   }, []);
 
+  const handleDeleteRule = useCallback((ruleId: string) => {
+    setSavedRules((prev) => prev.filter((r) => r.id !== ruleId));
+  }, []);
+
   const handleSaveRule = useCallback((rule: SavedRule) => {
     // Update the saved rules state
     setSavedRules((prev) => {
@@ -114,12 +118,20 @@ export default function Home() {
       value: criterion.value,
     }));
 
+    // Debug: Log criteria being used for matching
+    console.log("handleSaveRule: criteria for evaluation:", rulesForEvaluation);
+    console.log("handleSaveRule: total districts:", districts?.features.length);
+
     // Find districts matching the rule's criteria
     const matchingDistrictIds = findMatchingDistrictIds(
       districts,
       rulesForEvaluation,
       selectedProvince?.id ?? null
     );
+
+    // Debug: Log matching results
+    console.log("handleSaveRule: matching district count:", matchingDistrictIds.length);
+    console.log("handleSaveRule: first 5 matching IDs:", matchingDistrictIds.slice(0, 5));
 
     // Only update if there are matching districts and interventions selected
     if (matchingDistrictIds.length > 0 && rule.interventionsByCategory.size > 0) {
@@ -128,19 +140,24 @@ export default function Home() {
         interventionCategories ?? []
       );
 
+      console.log("handleSaveRule: applying color", rule.color, "to", matchingDistrictIds.length, "districts");
+
       updateDistricts(
         matchingDistrictIds,
         interventionMix,
         interventionCategories ?? [],
-        { replace: false }
+        { replace: false, ruleColor: rule.color }
       );
 
       console.log("Rule applied:", {
         ruleId: rule.id,
         ruleTitle: rule.title,
+        ruleColor: rule.color,
         matchingDistricts: matchingDistrictIds.length,
         interventionMix: interventionMix.displayLabel,
       });
+    } else {
+      console.log("handleSaveRule: no districts updated - matching:", matchingDistrictIds.length, "interventions:", rule.interventionsByCategory.size);
     }
   }, [districts, selectedProvince, interventionCategories, updateDistricts]);
 
@@ -192,6 +209,7 @@ export default function Home() {
           interventionCategories={interventionCategories ?? []}
           onAddRule={handleAddRule}
           onEditRule={handleEditRule}
+          onDeleteRule={handleDeleteRule}
         />
       </main>
 
@@ -211,6 +229,7 @@ export default function Home() {
         isOpen={isRuleModalOpen}
         onOpenChange={handleRuleModalOpenChange}
         rule={editingRule}
+        rulesCount={savedRules.length}
         metricTypes={metricTypes}
         groupedMetricTypes={metricTypes.reduce<Record<string, typeof metricTypes>>((acc, metric) => {
           const category = metric.category || "Other";

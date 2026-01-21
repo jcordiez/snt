@@ -37,7 +37,7 @@ interface AddInterventionSheetProps {
   > | null;
   selectedProvince?: Province | null;
   onHighlightDistricts: (districtIds: string[]) => void;
-  onApplyInterventions: (districtIds: string[], selectedInterventionsByCategory: Map<number, number>) => void;
+  onApplyInterventions: (districtIds: string[], selectedInterventionsByCategory: Map<number, number>, options?: { replace?: boolean }) => void;
   initialSelectionPayload?: LegendSelectionPayload | null;
 }
 
@@ -167,12 +167,14 @@ export function AddInterventionSheet({
 
   const handleApply = useCallback(() => {
     // Pass the category-based selections directly
+    // When editing from legend, use replace mode to fully replace the intervention mix
     onApplyInterventions(
       Array.from(selectedDistrictIds),
-      selectedInterventionsByCategory
+      selectedInterventionsByCategory,
+      { replace: isFromLegend }
     );
     onOpenChange(false);
-  }, [selectedDistrictIds, selectedInterventionsByCategory, onApplyInterventions, onOpenChange]);
+  }, [selectedDistrictIds, selectedInterventionsByCategory, isFromLegend, onApplyInterventions, onOpenChange]);
 
   const getTitle = () => {
     switch (step) {

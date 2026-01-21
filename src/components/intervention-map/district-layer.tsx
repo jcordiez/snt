@@ -27,6 +27,7 @@ interface DistrictLayerProps {
 }
 
 // Helper function to build color expression from districts data
+// Priority: ruleColor (if set) > interventionMixLabel-based color
 function buildColorExpression(
   districtsData: GeoJSON.FeatureCollection<GeoJSON.MultiPolygon | GeoJSON.Polygon, DistrictProperties> | null | undefined
 ): MapLibreGL.ExpressionSpecification | string {
@@ -34,7 +35,7 @@ function buildColorExpression(
     return PREDEFINED_INTERVENTION_COLORS["CM"];
   }
 
-  // Build color map from districts
+  // Build color map from districts for fallback (interventionMixLabel-based)
   const colorMap = new Map<string, string>();
   for (const feature of districtsData.features) {
     const mixLabel = feature.properties.interventionMixLabel;
@@ -49,17 +50,23 @@ function buildColorExpression(
     matchCases.push(label, color);
   });
 
-  // Return match expression or default
-  if (matchCases.length > 0) {
-    return [
-      "match",
-      ["get", "interventionMixLabel"],
-      ...matchCases,
-      PREDEFINED_INTERVENTION_COLORS["CM"], // Default to CM color
-    ] as unknown as MapLibreGL.ExpressionSpecification;
-  }
+  // Build fallback expression for when ruleColor is not set
+  const fallbackExpression = matchCases.length > 0
+    ? [
+        "match",
+        ["get", "interventionMixLabel"],
+        ...matchCases,
+        PREDEFINED_INTERVENTION_COLORS["CM"],
+      ]
+    : PREDEFINED_INTERVENTION_COLORS["CM"];
 
-  return PREDEFINED_INTERVENTION_COLORS["CM"];
+  // Use case expression: if ruleColor exists and is not empty, use it; otherwise fallback
+  return [
+    "case",
+    ["all", ["has", "ruleColor"], ["!=", ["get", "ruleColor"], ""]],
+    ["get", "ruleColor"],
+    fallbackExpression,
+  ] as unknown as MapLibreGL.ExpressionSpecification;
 }
 
 export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [], districts }: DistrictLayerProps) {
@@ -82,9 +89,15 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
   }, [districts]);
 
   useEffect(() => {
-    // Only create layers once when map is ready and we have districts data
-    if (!isLoaded || !map || !districts || layersAdded.current)
+    // Wait for map to be ready and districts data to be loaded
+    if (!isLoaded || !map || !districts) return;
+
+    // Check if source already exists (layers already added)
+    // This prevents re-adding layers when districts data updates
+    if (map.getSource(SOURCE_ID)) {
+      layersAdded.current = true;
       return;
+    }
 
     // Compute the initial color expression from districts data
     // This ensures colors are applied immediately when layers are added
@@ -156,9 +169,38 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
       filter: ["in", ["get", "districtId"], ["literal", []]], // Initially empty
     });
 
-    layersAdded.current = true;
+    // Set initial filters immediately after creating layers
+    // Without this, the filter effect may not run (its deps don't include districts)
+    if (selectedProvinceId) {
+      const activeFilter: MapLibreGL.FilterSpecification = [
+        "==",
+        ["get", "regionId"],
+        selectedProvinceId,
+      ];
+      const inactiveFilter: MapLibreGL.FilterSpecification = [
+        "!=",
+        ["get", "regionId"],
+        selectedProvinceId,
+      ];
+      map.setFilter(ACTIVE_FILL_LAYER_ID, activeFilter);
+      map.setFilter(ACTIVE_BORDER_LAYER_ID, activeFilter);
+      map.setFilter(INACTIVE_FILL_LAYER_ID, inactiveFilter);
+      map.setFilter(INACTIVE_BORDER_LAYER_ID, inactiveFilter);
+    } else {
+      // No province selected - show all districts as active, hide inactive layers
+      map.setFilter(ACTIVE_FILL_LAYER_ID, null);
+      map.setFilter(ACTIVE_BORDER_LAYER_ID, null);
+      map.setFilter(INACTIVE_FILL_LAYER_ID, ["==", ["get", "regionId"], "__none__"]);
+      map.setFilter(INACTIVE_BORDER_LAYER_ID, ["==", ["get", "regionId"], "__none__"]);
+    }
 
+    layersAdded.current = true;
+  }, [isLoaded, map, districts, selectedProvinceId]);
+
+  // Cleanup effect - only runs on unmount
+  useEffect(() => {
     return () => {
+      if (!map) return;
       try {
         if (map.getLayer(HIGHLIGHT_BORDER_LAYER_ID)) map.removeLayer(HIGHLIGHT_BORDER_LAYER_ID);
         if (map.getLayer(ACTIVE_BORDER_LAYER_ID)) map.removeLayer(ACTIVE_BORDER_LAYER_ID);
@@ -171,7 +213,7 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
         // Ignore cleanup errors
       }
     };
-  }, [isLoaded, map]);
+  }, [map]);
 
   // Update layer filters when selectedProvinceId changes
   useEffect(() => {
@@ -229,7 +271,17 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
   useEffect(() => {
     if (!isLoaded || !map || !layersAdded.current) return;
 
-    // Build a dynamic match expression for intervention mix colors
+    // Debug: Log all unique interventionMixLabels in the data
+    const labels = new Set<string>();
+    districts?.features.forEach(f => {
+      if (f.properties.interventionMixLabel) {
+        labels.add(f.properties.interventionMixLabel);
+      }
+    });
+    console.log("Unique interventionMixLabels in districts:", Array.from(labels));
+    console.log("mixColorMap entries:", Array.from(mixColorMap.entries()));
+
+    // Build a dynamic match expression for intervention mix colors (fallback)
     // All districts have interventionMixLabel set (CM by default)
     // Build match cases: [label1, color1, label2, color2, ...]
     const matchCases: string[] = [];
@@ -237,25 +289,71 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
       matchCases.push(label, color);
     });
 
-    // Use match expression based on interventionMixLabel
-    // Default to CM color (darker gray) for any unknown mixes
-    // Always set the color expression, even if mixColorMap is empty (use default)
-    const colorExpression = matchCases.length > 0
+    // Build fallback expression based on interventionMixLabel
+    const fallbackExpression = matchCases.length > 0
       ? [
           "match",
           ["get", "interventionMixLabel"],
           ...matchCases,
-          PREDEFINED_INTERVENTION_COLORS["CM"], // Default to CM color
-        ] as unknown as MapLibreGL.ExpressionSpecification
+          PREDEFINED_INTERVENTION_COLORS["CM"],
+        ]
       : PREDEFINED_INTERVENTION_COLORS["CM"];
 
-    map.setPaintProperty(ACTIVE_FILL_LAYER_ID, "fill-color", colorExpression);
+    // Use case expression: if ruleColor exists and is not empty, use it; otherwise fallback
+    // This allows rule-based coloring to take priority over label-based coloring
+    const colorExpression = [
+      "case",
+      ["all", ["has", "ruleColor"], ["!=", ["get", "ruleColor"], ""]],
+      ["get", "ruleColor"],
+      fallbackExpression,
+    ] as unknown as MapLibreGL.ExpressionSpecification;
+
+    console.log("Setting fill-color expression:", colorExpression);
+
+    // Verify layer exists before setting property
+    const layer = map.getLayer(ACTIVE_FILL_LAYER_ID);
+    console.log("Active fill layer exists:", !!layer);
+    if (!layer) {
+      console.error("ACTIVE_FILL_LAYER does not exist!");
+      return;
+    }
+
+    try {
+      map.setPaintProperty(ACTIVE_FILL_LAYER_ID, "fill-color", colorExpression);
+      console.log("setPaintProperty succeeded");
+    } catch (e) {
+      console.error("setPaintProperty failed:", e);
+    }
 
     // Update the source data when districts changes
     const source = map.getSource(SOURCE_ID) as maplibregl.GeoJSONSource | undefined;
     if (source && districts) {
+      console.log("Updating source data with", districts.features.length, "features");
+
+      // Debug: Check a sample feature's interventionMixLabel before sending to MapLibre
+      const sampleFeature = districts.features.find(f => f.properties.interventionMixLabel !== "CM");
+      console.log("Sample non-CM feature to send:", sampleFeature?.properties);
+
       source.setData(districts);
+
+      // Debug: Query features from MapLibre to verify they have the updated properties
+      setTimeout(() => {
+        const renderedFeatures = map.querySourceFeatures(SOURCE_ID);
+        const nonCmFeatures = renderedFeatures.filter(f => f.properties?.interventionMixLabel !== "CM");
+        console.log("MapLibre source features count:", renderedFeatures.length);
+        console.log("Non-CM features in MapLibre:", nonCmFeatures.length);
+        if (nonCmFeatures.length > 0) {
+          console.log("Sample non-CM feature from MapLibre:", nonCmFeatures[0].properties);
+        }
+      }, 100);
     }
+
+    // Debug: Check what filters are set on layers
+    console.log("Active fill filter:", map.getFilter(ACTIVE_FILL_LAYER_ID));
+    console.log("Inactive fill filter:", map.getFilter(INACTIVE_FILL_LAYER_ID));
+
+    // Force repaint
+    map.triggerRepaint();
   }, [isLoaded, map, mixColorMap, districts]);
 
   // Tooltip on hover (only for active layer - inactive districts have no interaction)
@@ -277,7 +375,7 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
 
       const props = e.features[0].properties;
       const mixLabel = props.interventionMixLabel || "CM";
-
+     
       // Split the intervention mix label (e.g., "CM + IPTp + Dual AI") into individual interventions
       const interventions = mixLabel.split(" + ");
       const interventionList = interventions

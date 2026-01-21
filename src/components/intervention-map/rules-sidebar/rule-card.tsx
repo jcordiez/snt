@@ -1,6 +1,6 @@
 "use client";
 
-import { Pencil } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { SavedRule, RuleCriterion } from "@/types/rule";
 import type { MetricType, InterventionCategory } from "@/types/intervention";
@@ -10,6 +10,7 @@ interface RuleCardProps {
   metricTypes: MetricType[];
   interventionCategories: InterventionCategory[];
   onEdit: (ruleId: string) => void;
+  onDelete: (ruleId: string) => void;
 }
 
 function formatCriterion(
@@ -53,6 +54,7 @@ export function RuleCard({
   metricTypes,
   interventionCategories,
   onEdit,
+  onDelete,
 }: RuleCardProps) {
   const criteriaDescription = rule.criteria
     .map((c) => formatCriterion(c, metricTypes))
@@ -67,15 +69,31 @@ export function RuleCard({
     <div className="group rounded-lg border bg-card text-card-foreground shadow-sm">
       {/* Header */}
       <div className="py-3 px-4 flex items-center justify-between">
-        <h3 className="text-sm font-medium">{rule.title}</h3>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
-          onClick={() => onEdit(rule.id)}
-        >
-          <Pencil className="h-3.5 w-3.5" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <div
+            className="w-3 h-3 rounded-sm flex-shrink-0"
+            style={{ backgroundColor: rule.color }}
+          />
+          <h3 className="text-sm font-medium">{rule.title}</h3>
+        </div>
+        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7"
+            onClick={() => onEdit(rule.id)}
+          >
+            <Pencil className="h-3.5 w-3.5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 text-muted-foreground hover:text-destructive"
+            onClick={() => onDelete(rule.id)}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </Button>
+        </div>
       </div>
       {/* Content */}
       <div className="py-2 px-4 pt-0 space-y-2">

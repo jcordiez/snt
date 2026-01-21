@@ -22,6 +22,7 @@ interface MapLegendProps {
 
 /**
  * Extracts unique intervention mixes from district data and generates legend items.
+ * Uses ruleColor when available for color display.
  */
 function computeLegendItems(
   districts: GeoJSON.FeatureCollection<
@@ -33,16 +34,21 @@ function computeLegendItems(
     return [{ color: "#e5e7eb", label: "No data", districtCount: 0, districtIds: [] }];
   }
 
-  // Collect unique intervention mix labels and district IDs per mix
-  const mixData = new Map<string, string[]>();
+  // Collect unique intervention mix labels, district IDs, and ruleColor per mix
+  const mixData = new Map<string, { districtIds: string[]; ruleColor?: string }>();
 
   for (const feature of districts.features) {
     const mixLabel = feature.properties.interventionMixLabel;
     const districtId = feature.properties.districtId;
+    const ruleColor = feature.properties.ruleColor;
     if (mixLabel && districtId) {
-      const ids = mixData.get(mixLabel) ?? [];
-      ids.push(districtId);
-      mixData.set(mixLabel, ids);
+      const existing = mixData.get(mixLabel) ?? { districtIds: [], ruleColor: undefined };
+      existing.districtIds.push(districtId);
+      // Use the first ruleColor found for this mix (they should be consistent)
+      if (!existing.ruleColor && ruleColor) {
+        existing.ruleColor = ruleColor;
+      }
+      mixData.set(mixLabel, existing);
     }
   }
 
@@ -64,12 +70,14 @@ function computeLegendItems(
   });
 
   return sortedLabels.map((label) => {
-    const districtIds = mixData.get(label) ?? [];
+    const data = mixData.get(label) ?? { districtIds: [], ruleColor: undefined };
+    // Use ruleColor if available, otherwise fall back to label-based color
+    const color = data.ruleColor || getColorForInterventionMix(label);
     return {
-      color: getColorForInterventionMix(label),
+      color,
       label,
-      districtCount: districtIds.length,
-      districtIds,
+      districtCount: data.districtIds.length,
+      districtIds: data.districtIds,
     };
   });
 }
