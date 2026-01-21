@@ -6,6 +6,7 @@ import {
   CountryName,
   GeographicFilter,
 } from "@/components/intervention-map";
+import { Button } from "@/components/ui/button";
 import {
   AddInterventionButton,
   AddInterventionSheet,
@@ -241,11 +242,82 @@ export default function Home() {
     ? savedRules.find((r) => r.id === editingRuleId) ?? null
     : null;
 
+  const handleExportPlan = useCallback(() => {
+    if (!districts?.features.length || !interventionCategories?.length) {
+      return;
+    }
+
+    // Build a flat list of all interventions with their column headers
+    // Format: "{name} - {code}"
+    const interventionColumns: Array<{
+      categoryId: number;
+      interventionId: number;
+      header: string;
+    }> = [];
+
+    for (const category of interventionCategories) {
+      for (const intervention of category.interventions) {
+        interventionColumns.push({
+          categoryId: category.id,
+          interventionId: intervention.id,
+          header: `${intervention.name} - ${intervention.code}`,
+        });
+      }
+    }
+
+    // Build CSV header
+    const headers = ["org_unit_id", "org_unit_name", ...interventionColumns.map((col) => col.header)];
+
+    // Build CSV rows
+    const rows = districts.features.map((feature) => {
+      const props = feature.properties;
+      const assignments = props.interventionCategoryAssignments || {};
+
+      // For each intervention column, output 1 if assigned, 0 otherwise
+      const interventionValues = interventionColumns.map((col) => {
+        const assignedInterventionId = assignments[String(col.categoryId)];
+        return assignedInterventionId === col.interventionId ? "1" : "0";
+      });
+
+      return [props.districtId, props.districtName, ...interventionValues];
+    });
+
+    // Escape CSV values (handle commas and quotes)
+    const escapeCSV = (value: string) => {
+      if (value.includes(",") || value.includes('"') || value.includes("\n")) {
+        return `"${value.replace(/"/g, '""')}"`;
+      }
+      return value;
+    };
+
+    // Build CSV content
+    const csvContent = [
+      headers.map(escapeCSV).join(","),
+      ...rows.map((row) => row.map(escapeCSV).join(",")),
+    ].join("\n");
+
+    // Create download
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const date = new Date().toISOString().split("T")[0];
+    link.setAttribute("href", url);
+    link.setAttribute("download", `intervention-plan-${date}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, [districts, interventionCategories]);
+
   return (
     <div className="flex flex-col h-screen">
-      {/* Header - Row 1: Country Name */}
-      <header className="px-6 py-4 border-b">
+      {/* Header - Row 1: Country Name + Export */}
+      <header className="px-6 py-4 border-b flex items-center justify-between">
         <CountryName name={displayName} />
+        <Button onClick={handleExportPlan} variant="outline">
+          Export Plan
+        </Button>
       </header>
 
       {/* Header - Row 2: Filters and Actions */}
