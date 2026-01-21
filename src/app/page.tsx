@@ -10,7 +10,7 @@ import {
   AddInterventionButton,
   AddInterventionSheet,
 } from "@/components/intervention-map/add-intervention";
-import { countryConfig, Province } from "@/data/districts";
+import { Province } from "@/data/districts";
 import { useOrgUnits, createInterventionMix } from "@/hooks/use-orgunits";
 import { useInterventionCategories } from "@/hooks/use-intervention-categories";
 import { LegendSelectionPayload } from "@/types/intervention";
@@ -23,7 +23,7 @@ export default function Home() {
   const [highlightedDistrictIds, setHighlightedDistrictIds] = useState<string[]>([]);
   const [legendSelectionPayload, setLegendSelectionPayload] = useState<LegendSelectionPayload | null>(null);
 
-  const displayName = selectedProvince?.name ?? countryConfig.name;
+  const displayName = "NSP 2026-2030"; //selectedProvince?.name ?? countryConfig.name;
 
   const handleHighlightDistricts = useCallback((districtIds: string[]) => {
     setHighlightedDistrictIds(districtIds);
@@ -51,7 +51,8 @@ export default function Home() {
 
   const handleApplyInterventions = useCallback((
     districtIds: string[],
-    selectedInterventionsByCategory: Map<number, number>
+    selectedInterventionsByCategory: Map<number, number>,
+    options?: { replace?: boolean }
   ) => {
     // Create the intervention mix from category selections
     const interventionMix = createInterventionMix(
@@ -59,11 +60,14 @@ export default function Home() {
       interventionCategories
     );
 
-    // Update districts with the new intervention mix (additive merge with existing)
-    updateDistricts(districtIds, interventionMix, interventionCategories);
+    // Update districts with the new intervention mix
+    // When replace is true (editing from legend), fully replaces the mix
+    // Otherwise uses additive merge with existing interventions
+    updateDistricts(districtIds, interventionMix, interventionCategories, options);
 
     console.log("Applied interventions:", {
       districtIds,
+      replace: options?.replace,
       interventionMix: {
         displayLabel: interventionMix.displayLabel,
         categoryAssignments: Object.fromEntries(interventionMix.categoryAssignments),
