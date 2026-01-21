@@ -24,10 +24,18 @@ export function RulesSidebar({
   onDeleteRule,
 }: RulesSidebarProps) {
   return (
-    <div className="w-80 border-l bg-background flex flex-col h-full">
+    <div className="w-80 border-l bg-gray-50 flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b">
+      <div className="flex items-center justify-between px-4 py-3 border-b bg-white">
         <h2 className="text-sm font-semibold">Rules</h2>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
+          onClick={onAddRule}
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
       </div>
 
       {/* Scrollable list of rules */}
@@ -35,7 +43,7 @@ export function RulesSidebar({
         <div className="p-4 space-y-3">
           {rules.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-4">
-              No rules yet. Click the button below to add a rule.
+              No rules yet. Click + to add a rule.
             </p>
           ) : (
             rules.map((rule) => (
@@ -49,14 +57,6 @@ export function RulesSidebar({
               />
             ))
           )}
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={onAddRule}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Rule
-          </Button>
         </div>
       </div>
     </div>
