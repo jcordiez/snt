@@ -10,18 +10,24 @@ import {
   AddInterventionButton,
   AddInterventionSheet,
 } from "@/components/intervention-map/add-intervention";
+import { RulesSidebar } from "@/components/intervention-map/rules-sidebar";
 import { Province } from "@/data/districts";
 import { useOrgUnits, createInterventionMix } from "@/hooks/use-orgunits";
 import { useInterventionCategories } from "@/hooks/use-intervention-categories";
+import { useMetricTypes } from "@/hooks/use-metric-types";
 import { LegendSelectionPayload } from "@/types/intervention";
+import type { SavedRule } from "@/types/rule";
 
 export default function Home() {
   const { data: districts, provinces, isLoading, updateDistricts } = useOrgUnits();
   const { data: interventionCategories } = useInterventionCategories();
+  const { data: metricTypes } = useMetricTypes();
   const [selectedProvince, setSelectedProvince] = useState<Province | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [highlightedDistrictIds, setHighlightedDistrictIds] = useState<string[]>([]);
   const [legendSelectionPayload, setLegendSelectionPayload] = useState<LegendSelectionPayload | null>(null);
+  const [savedRules, setSavedRules] = useState<SavedRule[]>([]);
+  const [editingRuleId, setEditingRuleId] = useState<string | null>(null);
 
   const displayName = "NSP 2026-2030"; //selectedProvince?.name ?? countryConfig.name;
 
@@ -75,6 +81,18 @@ export default function Home() {
     });
   }, [interventionCategories, updateDistricts]);
 
+  const handleAddRule = useCallback(() => {
+    setEditingRuleId(null);
+    // TODO: Open rule edit modal (Phase 4)
+    console.log("Add rule clicked", { editingRuleId, setSavedRules });
+  }, [editingRuleId]);
+
+  const handleEditRule = useCallback((ruleId: string) => {
+    setEditingRuleId(ruleId);
+    // TODO: Open rule edit modal (Phase 4)
+    console.log("Edit rule clicked:", ruleId);
+  }, []);
+
   return (
     <div className="flex flex-col h-screen">
       {/* Header - Row 1: Country Name */}
@@ -93,13 +111,25 @@ export default function Home() {
         <AddInterventionButton onClick={() => setIsSheetOpen(true)} />
       </div>
 
-      {/* Map Container */}
-      <main className="flex-1 relative">
-        <InterventionMap
-          selectedProvince={selectedProvince}
-          highlightedDistrictIds={highlightedDistrictIds}
-          districts={districts}
-          onSelectMix={handleSelectMix}
+      {/* Main Content: Map + Rules Sidebar */}
+      <main className="flex-1 flex min-h-0">
+        {/* Map Container */}
+        <div className="flex-1 relative">
+          <InterventionMap
+            selectedProvince={selectedProvince}
+            highlightedDistrictIds={highlightedDistrictIds}
+            districts={districts}
+            onSelectMix={handleSelectMix}
+          />
+        </div>
+
+        {/* Rules Sidebar */}
+        <RulesSidebar
+          rules={savedRules}
+          metricTypes={metricTypes}
+          interventionCategories={interventionCategories ?? []}
+          onAddRule={handleAddRule}
+          onEditRule={handleEditRule}
         />
       </main>
 
