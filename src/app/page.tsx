@@ -320,30 +320,33 @@ export default function Home() {
         </Button>
       </header>
 
-      {/* Header - Row 2: Filters and Actions */}
-      <div className="px-6 py-3 border-b flex items-center justify-between">
-        <GeographicFilter
-          provinces={provinces}
-          selectedProvinceId={selectedProvince?.id ?? null}
-          onProvinceChange={setSelectedProvince}
-          isLoading={isLoading}
-        />
-        <AddInterventionButton onClick={() => setIsSheetOpen(true)} />
-      </div>
-
-      {/* Main Content: Map + Rules Sidebar */}
+      {/* Main Content: Two columns below header */}
       <main className="flex-1 flex min-h-0">
-        {/* Map Container */}
-        <div className="flex-1 relative">
-          <InterventionMap
-            selectedProvince={selectedProvince}
-            highlightedDistrictIds={highlightedDistrictIds}
-            districts={districts}
-            onSelectMix={handleSelectMix}
-          />
+        {/* Left Column: Filter bar + Map */}
+        <div className="flex-1 flex flex-col min-h-0">
+          {/* Filter bar - only above map */}
+          <div className="px-6 py-3 border-b flex items-center justify-between">
+            <GeographicFilter
+              provinces={provinces}
+              selectedProvinceId={selectedProvince?.id ?? null}
+              onProvinceChange={setSelectedProvince}
+              isLoading={isLoading}
+            />
+            <AddInterventionButton onClick={() => setIsSheetOpen(true)} />
+          </div>
+
+          {/* Map Container */}
+          <div className="flex-1 relative">
+            <InterventionMap
+              selectedProvince={selectedProvince}
+              highlightedDistrictIds={highlightedDistrictIds}
+              districts={districts}
+              onSelectMix={handleSelectMix}
+            />
+          </div>
         </div>
 
-        {/* Rules Sidebar */}
+        {/* Rules Sidebar - extends full height below header */}
         <RulesSidebar
           rules={savedRules}
           metricTypes={metricTypes}
