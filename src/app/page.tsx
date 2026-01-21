@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import {
   InterventionMap,
   CountryName,
@@ -31,6 +31,61 @@ export default function Home() {
   const [savedRules, setSavedRules] = useState<SavedRule[]>([]);
   const [editingRuleId, setEditingRuleId] = useState<string | null>(null);
   const [isRuleModalOpen, setIsRuleModalOpen] = useState(false);
+  const defaultRuleInitialized = useRef(false);
+
+  // Initialize default rule on load
+  useEffect(() => {
+    if (
+      defaultRuleInitialized.current ||
+      !districts?.features.length ||
+      !interventionCategories?.length
+    ) {
+      return;
+    }
+
+    defaultRuleInitialized.current = true;
+
+    // Default rule spec from PRD:
+    // - CM (category 37, intervention 78)
+    // - Standard Pyrethroid Campaign (category 40, intervention 85)
+    // - Standard Pyrethroid Routine (category 41, intervention 88)
+    const defaultInterventions = new Map<number, number>([
+      [37, 78], // CM
+      [40, 85], // Standard Pyrethroid Campaign
+      [41, 88], // Standard Pyrethroid Routine
+    ]);
+
+    const defaultRule: SavedRule = {
+      id: "default-rule",
+      title: "Default",
+      color: "#9ca3af",
+      criteria: [],
+      interventionsByCategory: defaultInterventions,
+      isAllDistricts: true,
+    };
+
+    setSavedRules([defaultRule]);
+
+    // Apply the default rule to all districts
+    const allDistrictIds = districts.features.map((f) => f.properties.districtId);
+    const interventionMix = createInterventionMix(
+      defaultInterventions,
+      interventionCategories
+    );
+
+    updateDistricts(allDistrictIds, interventionMix, interventionCategories, {
+      replace: false,
+      ruleColor: defaultRule.color,
+    });
+
+    console.log("Default rule initialized:", {
+      ruleId: defaultRule.id,
+      ruleTitle: defaultRule.title,
+      ruleColor: defaultRule.color,
+      appliedToDistricts: allDistrictIds.length,
+      interventionMix: interventionMix.displayLabel,
+    });
+  }, [districts, interventionCategories, updateDistricts]);
 
   const displayName = "NSP 2026-2030"; //selectedProvince?.name ?? countryConfig.name;
 
@@ -110,28 +165,42 @@ export default function Home() {
       return [...prev, rule];
     });
 
-    // Convert SavedRule criteria to Rule[] format for evaluation
-    const rulesForEvaluation: Rule[] = rule.criteria.map((criterion) => ({
-      id: criterion.id,
-      metricTypeId: criterion.metricTypeId,
-      operator: criterion.operator,
-      value: criterion.value,
-    }));
+    let matchingDistrictIds: string[];
 
-    // Debug: Log criteria being used for matching
-    console.log("handleSaveRule: criteria for evaluation:", rulesForEvaluation);
-    console.log("handleSaveRule: total districts:", districts?.features.length);
+    if (rule.isAllDistricts) {
+      // For "all districts" rules, match all districts (optionally filtered by province)
+      matchingDistrictIds = districts?.features
+        .filter((f) =>
+          selectedProvince
+            ? f.properties.regionId === selectedProvince.id
+            : true
+        )
+        .map((f) => f.properties.districtId) ?? [];
+      console.log("handleSaveRule: isAllDistricts rule, matching all districts:", matchingDistrictIds.length);
+    } else {
+      // Convert SavedRule criteria to Rule[] format for evaluation
+      const rulesForEvaluation: Rule[] = rule.criteria.map((criterion) => ({
+        id: criterion.id,
+        metricTypeId: criterion.metricTypeId,
+        operator: criterion.operator,
+        value: criterion.value,
+      }));
 
-    // Find districts matching the rule's criteria
-    const matchingDistrictIds = findMatchingDistrictIds(
-      districts,
-      rulesForEvaluation,
-      selectedProvince?.id ?? null
-    );
+      // Debug: Log criteria being used for matching
+      console.log("handleSaveRule: criteria for evaluation:", rulesForEvaluation);
+      console.log("handleSaveRule: total districts:", districts?.features.length);
 
-    // Debug: Log matching results
-    console.log("handleSaveRule: matching district count:", matchingDistrictIds.length);
-    console.log("handleSaveRule: first 5 matching IDs:", matchingDistrictIds.slice(0, 5));
+      // Find districts matching the rule's criteria
+      matchingDistrictIds = findMatchingDistrictIds(
+        districts,
+        rulesForEvaluation,
+        selectedProvince?.id ?? null
+      );
+
+      // Debug: Log matching results
+      console.log("handleSaveRule: matching district count:", matchingDistrictIds.length);
+      console.log("handleSaveRule: first 5 matching IDs:", matchingDistrictIds.slice(0, 5));
+    }
 
     // Only update if there are matching districts and interventions selected
     if (matchingDistrictIds.length > 0 && rule.interventionsByCategory.size > 0) {

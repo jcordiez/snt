@@ -56,9 +56,9 @@ export function RuleCard({
   onEdit,
   onDelete,
 }: RuleCardProps) {
-  const criteriaDescription = rule.criteria
-    .map((c) => formatCriterion(c, metricTypes))
-    .join(" AND ");
+  const criteriaDescription = rule.isAllDistricts
+    ? "All districts"
+    : rule.criteria.map((c) => formatCriterion(c, metricTypes)).join(" AND ");
 
   const interventionMix = formatInterventionMix(
     rule.interventionsByCategory,

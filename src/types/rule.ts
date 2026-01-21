@@ -22,4 +22,6 @@ export interface SavedRule {
   criteria: RuleCriterion[];
   /** Maps categoryId -> interventionId for each assigned intervention */
   interventionsByCategory: Map<number, number>;
+  /** When true, the rule applies to all districts regardless of criteria */
+  isAllDistricts?: boolean;
 }
