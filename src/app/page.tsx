@@ -10,7 +10,7 @@ import {
   AddInterventionButton,
   AddInterventionSheet,
 } from "@/components/intervention-map/add-intervention";
-import { RulesSidebar } from "@/components/intervention-map/rules-sidebar";
+import { RulesSidebar, RuleEditModal } from "@/components/intervention-map/rules-sidebar";
 import { Province } from "@/data/districts";
 import { useOrgUnits, createInterventionMix } from "@/hooks/use-orgunits";
 import { useInterventionCategories } from "@/hooks/use-intervention-categories";
@@ -28,6 +28,7 @@ export default function Home() {
   const [legendSelectionPayload, setLegendSelectionPayload] = useState<LegendSelectionPayload | null>(null);
   const [savedRules, setSavedRules] = useState<SavedRule[]>([]);
   const [editingRuleId, setEditingRuleId] = useState<string | null>(null);
+  const [isRuleModalOpen, setIsRuleModalOpen] = useState(false);
 
   const displayName = "NSP 2026-2030"; //selectedProvince?.name ?? countryConfig.name;
 
@@ -83,15 +84,36 @@ export default function Home() {
 
   const handleAddRule = useCallback(() => {
     setEditingRuleId(null);
-    // TODO: Open rule edit modal (Phase 4)
-    console.log("Add rule clicked", { editingRuleId, setSavedRules });
-  }, [editingRuleId]);
+    setIsRuleModalOpen(true);
+  }, []);
 
   const handleEditRule = useCallback((ruleId: string) => {
     setEditingRuleId(ruleId);
-    // TODO: Open rule edit modal (Phase 4)
-    console.log("Edit rule clicked:", ruleId);
+    setIsRuleModalOpen(true);
   }, []);
+
+  const handleSaveRule = useCallback((rule: SavedRule) => {
+    setSavedRules((prev) => {
+      const existingIndex = prev.findIndex((r) => r.id === rule.id);
+      if (existingIndex >= 0) {
+        const updated = [...prev];
+        updated[existingIndex] = rule;
+        return updated;
+      }
+      return [...prev, rule];
+    });
+  }, []);
+
+  const handleRuleModalOpenChange = useCallback((open: boolean) => {
+    setIsRuleModalOpen(open);
+    if (!open) {
+      setEditingRuleId(null);
+    }
+  }, []);
+
+  const editingRule = editingRuleId
+    ? savedRules.find((r) => r.id === editingRuleId) ?? null
+    : null;
 
   return (
     <div className="flex flex-col h-screen">
@@ -142,6 +164,22 @@ export default function Home() {
         onHighlightDistricts={handleHighlightDistricts}
         onApplyInterventions={handleApplyInterventions}
         initialSelectionPayload={legendSelectionPayload}
+      />
+
+      {/* Rule Edit Modal */}
+      <RuleEditModal
+        isOpen={isRuleModalOpen}
+        onOpenChange={handleRuleModalOpenChange}
+        rule={editingRule}
+        metricTypes={metricTypes}
+        groupedMetricTypes={metricTypes.reduce<Record<string, typeof metricTypes>>((acc, metric) => {
+          const category = metric.category || "Other";
+          if (!acc[category]) acc[category] = [];
+          acc[category].push(metric);
+          return acc;
+        }, {})}
+        interventionCategories={interventionCategories ?? []}
+        onSave={handleSaveRule}
       />
     </div>
   );
