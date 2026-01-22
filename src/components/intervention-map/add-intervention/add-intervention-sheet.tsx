@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
@@ -176,20 +177,32 @@ export function AddInterventionSheet({
     onOpenChange(false);
   }, [selectedDistrictIds, selectedInterventionsByCategory, isFromLegend, onApplyInterventions, onOpenChange]);
 
-  const getTitle = () => {
+  const getHeaderContent = () => {
     switch (step) {
       case "rules":
-        return "Add intervention";
+        return {
+          title: "Add intervention",
+          description: null,
+        };
       case "selection":
-        return "Select districts & interventions";
+        const count = selectedDistrictIds.size;
+        return {
+          title: `${count} ${count === 1 ? "district" : "districts"} selected`,
+          description: "Assign interventions",
+        };
     }
   };
+
+  const headerContent = getHeaderContent();
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetContent className="w-[540px] sm:max-w-[540px] flex flex-col">
         <SheetHeader>
-          <SheetTitle>{getTitle()}</SheetTitle>
+          <SheetTitle>{headerContent.title}</SheetTitle>
+          {headerContent.description && (
+            <SheetDescription>{headerContent.description}</SheetDescription>
+          )}
         </SheetHeader>
 
         <div className="flex-1 mt-4 overflow-hidden">
