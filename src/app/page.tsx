@@ -7,6 +7,7 @@ import {
   GeographicFilter,
   NavigationTabs,
   ListView,
+  BudgetView,
   type ViewTab,
 } from "@/components/intervention-map";
 import { Button } from "@/components/ui/button";
@@ -401,9 +402,11 @@ export default function Home() {
               />
             )}
             {activeTab === "budget" && (
-              <div className="flex items-center justify-center h-full text-muted-foreground">
-                Budget view coming soon
-              </div>
+              <BudgetView
+                districts={districts}
+                selectedProvince={selectedProvince}
+                interventionCategories={interventionCategories ?? []}
+              />
             )}
           </div>
         </div>
