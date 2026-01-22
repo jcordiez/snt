@@ -5,31 +5,45 @@ import {
   InterventionMap,
   CountryName,
   GeographicFilter,
+  NavigationTabs,
+  type ViewTab,
 } from "@/components/intervention-map";
 import { Button } from "@/components/ui/button";
-import {
-  AddInterventionButton,
-  AddInterventionSheet,
-} from "@/components/intervention-map/add-intervention";
+import { AddInterventionSheet } from "@/components/intervention-map/add-intervention";
 import { RulesSidebar, RuleEditModal } from "@/components/intervention-map/rules-sidebar";
 import { Province } from "@/data/districts";
 import { useOrgUnits, createInterventionMix } from "@/hooks/use-orgunits";
 import { useInterventionCategories } from "@/hooks/use-intervention-categories";
 import { useMetricTypes } from "@/hooks/use-metric-types";
+import { useMetricValues } from "@/hooks/use-metric-values";
+import { useMultipleMetricValues } from "@/hooks/use-multiple-metric-values";
 import { findMatchingDistrictIds } from "@/hooks/use-district-rules";
 import { LegendSelectionPayload } from "@/types/intervention";
 import type { SavedRule } from "@/types/rule";
 import type { Rule } from "@/types/intervention";
 
+// All metric IDs that have data files available - defined outside component
+// to maintain stable reference and prevent infinite re-fetch loops
+const ALL_METRIC_IDS_WITH_DATA = [404, 406, 407, 410, 412, 413];
+
 export default function Home() {
   const { data: districts, provinces, isLoading, updateDistricts } = useOrgUnits();
   const { data: interventionCategories } = useInterventionCategories();
   const { data: metricTypes } = useMetricTypes();
+  // Load metric values for tooltip display
+  const { valuesByOrgUnit: mortalityByOrgUnit } = useMetricValues(407);      // Mortalité infanto-juvénile
+  const { valuesByOrgUnit: incidenceByOrgUnit } = useMetricValues(410);      // Incidence
+  const { valuesByOrgUnit: resistanceByOrgUnit } = useMetricValues(412);     // Résistance aux insecticides
+  const { valuesByOrgUnit: seasonalityByOrgUnit } = useMetricValues(413);    // Saisonnalité
   const [selectedProvince, setSelectedProvince] = useState<Province | null>(null);
+  const [activeTab, setActiveTab] = useState<ViewTab>("map");
+  const [savedRules, setSavedRules] = useState<SavedRule[]>([]);
+
+  // Pre-load all metric values that have data files (eliminates race condition)
+  const { metricValuesByType } = useMultipleMetricValues(ALL_METRIC_IDS_WITH_DATA);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [highlightedDistrictIds, setHighlightedDistrictIds] = useState<string[]>([]);
   const [legendSelectionPayload, setLegendSelectionPayload] = useState<LegendSelectionPayload | null>(null);
-  const [savedRules, setSavedRules] = useState<SavedRule[]>([]);
   const [editingRuleId, setEditingRuleId] = useState<string | null>(null);
   const [isRuleModalOpen, setIsRuleModalOpen] = useState(false);
   const defaultRuleInitialized = useRef(false);
@@ -87,6 +101,96 @@ export default function Home() {
       interventionMix: interventionMix.displayLabel,
     });
   }, [districts, interventionCategories, updateDistricts]);
+
+  // Re-apply all rules whenever savedRules changes (handles edits, deletions, reordering)
+  const prevSavedRulesRef = useRef<string>("");
+  useEffect(() => {
+    // Skip if no districts or intervention categories loaded yet
+    if (!districts?.features.length || !interventionCategories?.length) {
+      return;
+    }
+
+    // Serialize rules to detect actual changes (not just reference changes)
+    const rulesKey = JSON.stringify(
+      savedRules.map((r) => ({
+        id: r.id,
+        criteria: r.criteria,
+        interventionsByCategory: Array.from(r.interventionsByCategory.entries()),
+        isAllDistricts: r.isAllDistricts,
+        color: r.color,
+      }))
+    );
+
+    // Skip if rules haven't actually changed
+    if (rulesKey === prevSavedRulesRef.current) {
+      return;
+    }
+    prevSavedRulesRef.current = rulesKey;
+
+    console.log("Re-applying all rules due to savedRules change:", savedRules.length, "rules");
+
+    // Find the default rule (isAllDistricts=true, usually first) to reset all districts first
+    const defaultRule = savedRules.find((r) => r.isAllDistricts);
+    const nonDefaultRules = savedRules.filter((r) => !r.isAllDistricts);
+
+    // First, apply default rule to all districts (this resets any deleted rule's effects)
+    if (defaultRule && defaultRule.interventionsByCategory.size > 0) {
+      const allDistrictIds = districts.features
+        .filter((f) =>
+          selectedProvince
+            ? f.properties.regionId === selectedProvince.id
+            : true
+        )
+        .map((f) => f.properties.districtId);
+
+      const defaultMix = createInterventionMix(
+        defaultRule.interventionsByCategory,
+        interventionCategories
+      );
+
+      updateDistricts(
+        allDistrictIds,
+        defaultMix,
+        interventionCategories,
+        { replace: false, ruleColor: defaultRule.color }
+      );
+
+      console.log("Reset all districts to default rule:", defaultRule.title);
+    }
+
+    // Then apply non-default rules in order (later rules override earlier for overlapping districts)
+    for (const rule of nonDefaultRules) {
+      const rulesForEvaluation: Rule[] = rule.criteria.map((criterion) => ({
+        id: criterion.id,
+        metricTypeId: criterion.metricTypeId,
+        operator: criterion.operator,
+        value: criterion.value,
+      }));
+
+      const matchingDistrictIds = findMatchingDistrictIds(
+        districts,
+        rulesForEvaluation,
+        selectedProvince?.id ?? null,
+        metricValuesByType
+      );
+
+      if (matchingDistrictIds.length > 0 && rule.interventionsByCategory.size > 0) {
+        const interventionMix = createInterventionMix(
+          rule.interventionsByCategory,
+          interventionCategories
+        );
+
+        updateDistricts(
+          matchingDistrictIds,
+          interventionMix,
+          interventionCategories,
+          { replace: false, ruleColor: rule.color }
+        );
+
+        console.log("Re-applied rule:", rule.title, "to", matchingDistrictIds.length, "districts");
+      }
+    }
+  }, [savedRules, districts, selectedProvince, interventionCategories, updateDistricts, metricValuesByType]);
 
   const displayName = "NSP 2026-2030"; //selectedProvince?.name ?? countryConfig.name;
 
@@ -155,7 +259,7 @@ export default function Home() {
   }, []);
 
   const handleSaveRule = useCallback((rule: SavedRule) => {
-    // Update the saved rules state
+    // Update the saved rules state - the useEffect will handle applying rules to the map
     setSavedRules((prev) => {
       const existingIndex = prev.findIndex((r) => r.id === rule.id);
       if (existingIndex >= 0) {
@@ -165,71 +269,8 @@ export default function Home() {
       }
       return [...prev, rule];
     });
-
-    let matchingDistrictIds: string[];
-
-    if (rule.isAllDistricts) {
-      // For "all districts" rules, match all districts (optionally filtered by province)
-      matchingDistrictIds = districts?.features
-        .filter((f) =>
-          selectedProvince
-            ? f.properties.regionId === selectedProvince.id
-            : true
-        )
-        .map((f) => f.properties.districtId) ?? [];
-      console.log("handleSaveRule: isAllDistricts rule, matching all districts:", matchingDistrictIds.length);
-    } else {
-      // Convert SavedRule criteria to Rule[] format for evaluation
-      const rulesForEvaluation: Rule[] = rule.criteria.map((criterion) => ({
-        id: criterion.id,
-        metricTypeId: criterion.metricTypeId,
-        operator: criterion.operator,
-        value: criterion.value,
-      }));
-
-      // Debug: Log criteria being used for matching
-      console.log("handleSaveRule: criteria for evaluation:", rulesForEvaluation);
-      console.log("handleSaveRule: total districts:", districts?.features.length);
-
-      // Find districts matching the rule's criteria
-      matchingDistrictIds = findMatchingDistrictIds(
-        districts,
-        rulesForEvaluation,
-        selectedProvince?.id ?? null
-      );
-
-      // Debug: Log matching results
-      console.log("handleSaveRule: matching district count:", matchingDistrictIds.length);
-      console.log("handleSaveRule: first 5 matching IDs:", matchingDistrictIds.slice(0, 5));
-    }
-
-    // Only update if there are matching districts and interventions selected
-    if (matchingDistrictIds.length > 0 && rule.interventionsByCategory.size > 0) {
-      const interventionMix = createInterventionMix(
-        rule.interventionsByCategory,
-        interventionCategories ?? []
-      );
-
-      console.log("handleSaveRule: applying color", rule.color, "to", matchingDistrictIds.length, "districts");
-
-      updateDistricts(
-        matchingDistrictIds,
-        interventionMix,
-        interventionCategories ?? [],
-        { replace: false, ruleColor: rule.color }
-      );
-
-      console.log("Rule applied:", {
-        ruleId: rule.id,
-        ruleTitle: rule.title,
-        ruleColor: rule.color,
-        matchingDistricts: matchingDistrictIds.length,
-        interventionMix: interventionMix.displayLabel,
-      });
-    } else {
-      console.log("handleSaveRule: no districts updated - matching:", matchingDistrictIds.length, "interventions:", rule.interventionsByCategory.size);
-    }
-  }, [districts, selectedProvince, interventionCategories, updateDistricts]);
+    console.log("handleSaveRule: saved rule", rule.id, rule.title);
+  }, []);
 
   const handleRuleModalOpenChange = useCallback((open: boolean) => {
     setIsRuleModalOpen(open);
@@ -332,17 +373,35 @@ export default function Home() {
               onProvinceChange={setSelectedProvince}
               isLoading={isLoading}
             />
-            <AddInterventionButton onClick={() => setIsSheetOpen(true)} />
+            <NavigationTabs activeTab={activeTab} onTabChange={setActiveTab} />
           </div>
 
-          {/* Map Container */}
+          {/* View Container */}
           <div className="flex-1 relative">
-            <InterventionMap
-              selectedProvince={selectedProvince}
-              highlightedDistrictIds={highlightedDistrictIds}
-              districts={districts}
-              onSelectMix={handleSelectMix}
-            />
+            {activeTab === "map" && (
+              <InterventionMap
+                selectedProvince={selectedProvince}
+                highlightedDistrictIds={highlightedDistrictIds}
+                districts={districts}
+                onSelectMix={handleSelectMix}
+                metricValuesByOrgUnit={{
+                  mortality: mortalityByOrgUnit,
+                  incidence: incidenceByOrgUnit,
+                  resistance: resistanceByOrgUnit,
+                  seasonality: seasonalityByOrgUnit,
+                }}
+              />
+            )}
+            {activeTab === "list" && (
+              <div className="flex items-center justify-center h-full text-muted-foreground">
+                List view coming soon
+              </div>
+            )}
+            {activeTab === "budget" && (
+              <div className="flex items-center justify-center h-full text-muted-foreground">
+                Budget view coming soon
+              </div>
+            )}
           </div>
         </div>
 

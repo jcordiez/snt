@@ -1,6 +1,9 @@
 export { InterventionMap } from "./intervention-map";
+export type { MetricValuesByOrgUnit } from "./intervention-map";
 export { DistrictLayer } from "./district-layer";
 export { MapLegend } from "./map-legend";
 export { CountryName } from "./country-name";
 export { GeographicFilter } from "./geographic-filter";
+export { NavigationTabs } from "./navigation-tabs";
+export type { ViewTab } from "./navigation-tabs";
 export * from "./add-intervention";
