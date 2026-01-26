@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, X, Plus, ChevronDown, ChevronRight } from "lucide-react";
+import { Search, X, Plus, ChevronDown, ChevronRight, Info, MoreHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useMetricTypes } from "@/hooks/use-metric-types";
@@ -103,7 +103,14 @@ export default function LayersPage() {
                         key={metric.id}
                         className="flex items-center px-4 py-2 hover:bg-muted/50 transition-colors border-b last:border-b-0"
                       >
+                        <button className="p-1 rounded hover:bg-muted mr-2">
+                          <Info className="h-4 w-4 text-muted-foreground" />
+                        </button>
                         <span className="flex-1">{metric.name}</span>
+                        <span className="text-sm text-muted-foreground mr-4">Source</span>
+                        <button className="p-1 rounded hover:bg-muted">
+                          <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                        </button>
                       </div>
                     ))}
                   </div>
