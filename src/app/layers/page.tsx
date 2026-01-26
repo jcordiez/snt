@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Search, X } from "lucide-react";
+import { Search, X, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function LayersPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -30,6 +31,10 @@ export default function LayersPage() {
             </button>
           )}
         </div>
+        <Button className="ml-auto">
+          <Plus className="h-4 w-4 mr-2" />
+          Create layer
+        </Button>
       </div>
     </div>
   );
