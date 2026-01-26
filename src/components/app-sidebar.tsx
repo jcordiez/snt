@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { FileText, Map, Plus } from "lucide-react"
+import { FileText, GitCompareArrows, Map, Plus } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -138,7 +138,23 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Task 6-8: Other navigation items will go here */}
+        {/* Scenario Comparisons */}
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Scenario comparisons">
+                  <a href="/scenario-comparisons">
+                    <GitCompareArrows className="size-4" />
+                    <span>Scenario comparisons</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Task 7-8: Other navigation items will go here */}
       </SidebarContent>
 
       <SidebarFooter>
