@@ -1,10 +1,14 @@
 "use client"
 
-import { Map } from "lucide-react"
+import { useState } from "react"
+import { FileText, Map } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -12,7 +16,14 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 
+const plans = [
+  { id: "bau", name: "BAU" },
+  { id: "nsp-2026-30", name: "NSP 2026-30" },
+]
+
 export function AppSidebar() {
+  const [activePlanId, setActivePlanId] = useState<string>("nsp-2026-30")
+
   return (
     <Sidebar variant="inset" collapsible="icon">
       <SidebarHeader>
@@ -36,7 +47,29 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
-        {/* Task 4-8: Navigation groups will go here */}
+        {/* Plans Group */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Plans</SidebarGroupLabel>
+          {/* Task 5: Plus button will go here */}
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {plans.map((plan) => (
+                <SidebarMenuItem key={plan.id}>
+                  <SidebarMenuButton
+                    isActive={activePlanId === plan.id}
+                    onClick={() => setActivePlanId(plan.id)}
+                    tooltip={plan.name}
+                  >
+                    <FileText className="size-4" />
+                    <span>{plan.name}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Task 6-8: Other navigation items will go here */}
       </SidebarContent>
 
       <SidebarFooter>
