@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { FileText, GitCompareArrows, Layers, Map, Plus } from "lucide-react"
+import { CircleDollarSign, FileText, GitCompareArrows, Layers, Map, Plus } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -170,7 +170,21 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Task 8: Cost settings will go here */}
+        {/* Cost Settings */}
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Cost settings">
+                  <a href="/cost-settings">
+                    <CircleDollarSign className="size-4" />
+                    <span>Cost settings</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter>
