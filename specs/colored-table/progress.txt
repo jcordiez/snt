@@ -1,0 +1,44 @@
+# Colored Table Rows - Implementation Progress
+
+## Tasks
+
+[x] 1. Add rule color lookup utility
+      - Create helper function to get the last matching rule for a district
+      - Return rule color or null if no match
+      - ALREADY EXISTS: getLastMatchingRuleColor() in src/hooks/use-district-rules.ts:153-198
+
+[ ] 2. Remove zebra striping from List View table
+      - Identify and remove alternating row background styles
+
+[ ] 3. Apply base background color to rows
+      - Add inline style with rule color at 30% opacity
+      - Handle null case (no background for unmatched districts)
+
+[ ] 4. Implement hover state
+      - Darken row to 45% opacity on hover
+      - Apply to entire row uniformly
+      - Use 100ms transition
+
+[ ] 5. Implement selection state
+      - Darken row to 50% opacity when selected
+      - Persist darkened state until deselected
+      - No additional effect when hovering selected row
+
+[ ] 6. Add smooth transitions for rule changes
+      - 200-300ms transition when rule color is modified
+      - Animate fade-out when rule is deleted
+      - Smooth transition when district's matching rule changes
+
+[ ] 7. Testing & QA
+      - Verify text readability at all opacity states
+      - Test with light colors (pale yellow, etc.)
+      - Test rule creation, modification, deletion
+      - Test hover and selection interactions
+      - Verify header row is unchanged
+
+---
+
+## Status
+
+Started: 2026-01-26
+Completed: 1/7 tasks
