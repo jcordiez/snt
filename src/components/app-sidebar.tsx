@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { FileText, GitCompareArrows, Map, Plus } from "lucide-react"
+import { FileText, GitCompareArrows, Layers, Map, Plus } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -154,7 +154,23 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Task 7-8: Other navigation items will go here */}
+        {/* Layers */}
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Layers">
+                  <a href="/layers">
+                    <Layers className="size-4" />
+                    <span>Layers</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Task 8: Cost settings will go here */}
       </SidebarContent>
 
       <SidebarFooter>
