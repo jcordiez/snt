@@ -1,7 +1,17 @@
 "use client"
 
 import { useState } from "react"
-import { CircleDollarSign, FileText, GitCompareArrows, Layers, Map, Plus } from "lucide-react"
+import {
+  CircleDollarSign,
+  CircleHelp,
+  CircleUser,
+  FileText,
+  GitCompareArrows,
+  Layers,
+  Map,
+  MessageSquareMore,
+  Plus,
+} from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -188,7 +198,32 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter>
-        {/* Task 9: Footer items will go here */}
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip="Help">
+              <a href="/help">
+                <CircleHelp className="size-4" />
+                <span>Help</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip="Feedback">
+              <a href="/feedback">
+                <MessageSquareMore className="size-4" />
+                <span>Feedback</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip="User account">
+              <a href="/account">
+                <CircleUser className="size-4" />
+                <span>User account</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
 
       <SidebarRail />
