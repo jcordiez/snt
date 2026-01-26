@@ -18,20 +18,29 @@
       - DONE: Added hexToRgba helper (line 48-53), get rule color via getLastMatchingRuleColor,
         apply rowStyle with 30% opacity to each <tr> in intervention-table.tsx:166-180
 
-[ ] 4. Implement hover state
+[x] 4. Implement hover state
       - Darken row to 45% opacity on hover
       - Apply to entire row uniformly
       - Use 100ms transition
+      - DONE: Added useState to track hoveredDistrictId, change opacity from 0.3 to 0.45 on hover,
+        added 100ms transition, removed Tailwind hover:bg-muted/50 class, added onMouseEnter/onMouseLeave
+        handlers in intervention-table.tsx:175-190
 
-[ ] 5. Implement selection state
+[x] 5. Implement selection state
       - Darken row to 50% opacity when selected
       - Persist darkened state until deselected
       - No additional effect when hovering selected row
+      - DONE: Added selectedDistrictId state (line 32), updated opacity logic to prioritize
+        selection over hover (line 178-180), added onClick handler to toggle selection
+        (line 195-197), added cursor-pointer class to rows in intervention-table.tsx
 
-[ ] 6. Add smooth transitions for rule changes
+[x] 6. Add smooth transitions for rule changes
       - 200-300ms transition when rule color is modified
       - Animate fade-out when rule is deleted
       - Smooth transition when district's matching rule changes
+      - DONE: Changed transition from 100ms to 250ms (within 200-300ms range),
+        always set backgroundColor (even 'transparent') so fade-out transitions work
+        when rules are deleted in intervention-table.tsx:181-188
 
 [ ] 7. Testing & QA
       - Verify text readability at all opacity states
@@ -45,4 +54,4 @@
 ## Status
 
 Started: 2026-01-26
-Completed: 3/7 tasks
+Completed: 6/7 tasks
