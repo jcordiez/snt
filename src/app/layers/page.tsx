@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, X, Plus, ChevronDown, ChevronRight, Info, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import type { MetricType } from "@/types/intervention";
 
 function formatDate(dateString: string): string {
@@ -26,6 +33,166 @@ function formatDate(dateString: string): string {
     month: "short",
     day: "numeric",
   });
+}
+
+interface LayerEditModalProps {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  metric: MetricType | null;
+  onSave: (metric: MetricType) => void;
+}
+
+function LayerEditModal({ isOpen, onOpenChange, metric, onSave }: LayerEditModalProps) {
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [source, setSource] = useState("");
+  const [units, setUnits] = useState("");
+  const [unitSymbol, setUnitSymbol] = useState("");
+
+  // Reset form when modal opens with a metric
+  useEffect(() => {
+    if (isOpen && metric) {
+      setName(metric.name);
+      setDescription(metric.description || "");
+      setCategory(metric.category || "");
+      setSource(metric.source || "");
+      setUnits(metric.units || "");
+      setUnitSymbol(metric.unit_symbol || "");
+    }
+  }, [isOpen, metric]);
+
+  const handleSave = () => {
+    if (!metric) return;
+
+    const updatedMetric: MetricType = {
+      ...metric,
+      name: name.trim(),
+      description: description.trim(),
+      category: category.trim(),
+      source: source.trim(),
+      units: units.trim(),
+      unit_symbol: unitSymbol.trim(),
+    };
+
+    onSave(updatedMetric);
+    onOpenChange(false);
+    // Reset form
+    setName("");
+    setDescription("");
+    setCategory("");
+    setSource("");
+    setUnits("");
+    setUnitSymbol("");
+  };
+
+  const handleClose = () => {
+    onOpenChange(false);
+    // Reset form
+    setName("");
+    setDescription("");
+    setCategory("");
+    setSource("");
+    setUnits("");
+    setUnitSymbol("");
+  };
+
+  const canSave = name.trim() !== "";
+
+  return (
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>Edit Layer</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-4 py-4">
+          <div className="space-y-2">
+            <label htmlFor="layer-name" className="text-sm font-medium">
+              Name <span className="text-destructive">*</span>
+            </label>
+            <Input
+              id="layer-name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Layer name"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="layer-description" className="text-sm font-medium">
+              Description
+            </label>
+            <Input
+              id="layer-description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Layer description"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="layer-category" className="text-sm font-medium">
+              Category
+            </label>
+            <Input
+              id="layer-category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              placeholder="Category"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="layer-source" className="text-sm font-medium">
+              Source
+            </label>
+            <Input
+              id="layer-source"
+              value={source}
+              onChange={(e) => setSource(e.target.value)}
+              placeholder="Data source"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label htmlFor="layer-units" className="text-sm font-medium">
+                Units
+              </label>
+              <Input
+                id="layer-units"
+                value={units}
+                onChange={(e) => setUnits(e.target.value)}
+                placeholder="e.g., people"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="layer-unit-symbol" className="text-sm font-medium">
+                Unit Symbol
+              </label>
+              <Input
+                id="layer-unit-symbol"
+                value={unitSymbol}
+                onChange={(e) => setUnitSymbol(e.target.value)}
+                placeholder="e.g., %"
+              />
+            </div>
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button onClick={handleSave} disabled={!canSave}>
+            Save
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
 }
 
 function LayerInfoTooltip({ metric }: { metric: MetricType }) {
@@ -68,7 +235,20 @@ export default function LayersPage() {
   const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(
     new Set()
   );
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editingMetric, setEditingMetric] = useState<MetricType | null>(null);
   const { groupedByCategory, isLoading } = useMetricTypes();
+
+  const handleEditLayer = (metric: MetricType) => {
+    setEditingMetric(metric);
+    setEditModalOpen(true);
+  };
+
+  const handleSaveLayer = (updatedMetric: MetricType) => {
+    // TODO: Implement actual save to API
+    console.log("Saving layer:", updatedMetric);
+    setEditingMetric(null);
+  };
 
   const toggleCategory = (category: string) => {
     setCollapsedCategories((prev) => {
@@ -180,7 +360,7 @@ export default function LayersPage() {
                             </button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleEditLayer(metric)}>
                               <Pencil className="h-4 w-4 mr-2" />
                               Edit
                             </DropdownMenuItem>
@@ -200,6 +380,13 @@ export default function LayersPage() {
         )}
       </div>
       </div>
+
+      <LayerEditModal
+        isOpen={editModalOpen}
+        onOpenChange={setEditModalOpen}
+        metric={editingMetric}
+        onSave={handleSaveLayer}
+      />
     </TooltipProvider>
   );
 }
