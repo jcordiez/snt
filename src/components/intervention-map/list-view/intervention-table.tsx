@@ -1,13 +1,17 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Check } from "lucide-react";
 import type { DistrictProperties } from "@/data/districts";
 import type { InterventionCategory, Intervention } from "@/types/intervention";
+import type { SavedRule } from "@/types/rule";
+import { getLastMatchingRuleColor } from "@/hooks/use-district-rules";
 
 interface InterventionTableProps {
   districts: DistrictProperties[];
   interventionCategories: InterventionCategory[];
+  rules: SavedRule[];
+  metricValuesByType: Record<number, Record<string, number>>;
 }
 
 interface FlattenedIntervention {
@@ -19,7 +23,37 @@ interface FlattenedIntervention {
 export function InterventionTable({
   districts,
   interventionCategories,
+  rules,
+  metricValuesByType,
 }: InterventionTableProps) {
+  // Track which row is currently being hovered
+  const [hoveredDistrictId, setHoveredDistrictId] = useState<string | null>(null);
+
+  // Transform metricValuesByType from Record<metricId, Record<districtId, value>>
+  // to Record<districtId, Record<metricId, value>> for getLastMatchingRuleColor
+  const metricValuesByDistrict = useMemo(() => {
+    const result: Record<string, Record<number, number>> = {};
+
+    for (const [metricIdStr, districtValues] of Object.entries(metricValuesByType)) {
+      const metricId = Number(metricIdStr);
+      for (const [districtId, value] of Object.entries(districtValues)) {
+        if (!result[districtId]) {
+          result[districtId] = {};
+        }
+        result[districtId][metricId] = value;
+      }
+    }
+
+    return result;
+  }, [metricValuesByType]);
+
+  // Helper to convert hex color to rgba with opacity
+  const hexToRgba = (hex: string, opacity: number): string => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  };
   // Flatten all interventions with their category info for column rendering
   const flattenedInterventions = useMemo(() => {
     const result: FlattenedIntervention[] = [];
@@ -132,10 +166,28 @@ export function InterventionTable({
           </tr>
         </thead>
         <tbody>
-          {districts.map((district, index) => (
+          {districts.map((district) => {
+            const ruleColor = getLastMatchingRuleColor(
+              district.districtId,
+              rules,
+              metricValuesByDistrict
+            );
+            const isHovered = hoveredDistrictId === district.districtId;
+            const opacity = isHovered ? 0.45 : 0.3;
+            const rowStyle = ruleColor
+              ? {
+                  backgroundColor: hexToRgba(ruleColor, opacity),
+                  transition: "background-color 100ms",
+                }
+              : undefined;
+
+            return (
             <tr
               key={district.districtId}
-              className="border-b hover:bg-muted/50 transition-colors"
+              className="border-b"
+              style={rowStyle}
+              onMouseEnter={() => setHoveredDistrictId(district.districtId)}
+              onMouseLeave={() => setHoveredDistrictId(null)}
             >
               <td className="sticky left-0 z-10 bg-inherit border-r px-4 py-2 font-medium">
                 {district.districtName}
@@ -158,7 +210,8 @@ export function InterventionTable({
                 </td>
               ))}
             </tr>
-          ))}
+            );
+          })}
         </tbody>
       </table>
     </div>
