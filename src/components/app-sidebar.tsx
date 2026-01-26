@@ -1,12 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { FileText, Map } from "lucide-react"
+import { FileText, Map, Plus } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupAction,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
@@ -15,14 +16,47 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
-const plans = [
+interface Plan {
+  id: string
+  name: string
+}
+
+const initialPlans: Plan[] = [
   { id: "bau", name: "BAU" },
   { id: "nsp-2026-30", name: "NSP 2026-30" },
 ]
 
 export function AppSidebar() {
   const [activePlanId, setActivePlanId] = useState<string>("nsp-2026-30")
+  const [plans, setPlans] = useState<Plan[]>(initialPlans)
+  const [newPlanName, setNewPlanName] = useState("")
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+  const handleCreatePlan = () => {
+    if (!newPlanName.trim()) return
+
+    const newPlan: Plan = {
+      id: newPlanName.toLowerCase().replace(/\s+/g, "-"),
+      name: newPlanName.trim(),
+    }
+
+    setPlans([...plans, newPlan])
+    setActivePlanId(newPlan.id)
+    setNewPlanName("")
+    setIsDialogOpen(false)
+  }
 
   return (
     <Sidebar variant="inset" collapsible="icon">
@@ -50,7 +84,42 @@ export function AppSidebar() {
         {/* Plans Group */}
         <SidebarGroup>
           <SidebarGroupLabel>Plans</SidebarGroupLabel>
-          {/* Task 5: Plus button will go here */}
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <SidebarGroupAction title="Create new plan">
+                <Plus className="size-4" />
+                <span className="sr-only">Create new plan</span>
+              </SidebarGroupAction>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create new plan</DialogTitle>
+                <DialogDescription>
+                  Enter a name for your new plan. You can change this later.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="py-4">
+                <Input
+                  placeholder="Plan name"
+                  value={newPlanName}
+                  onChange={(e) => setNewPlanName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleCreatePlan()
+                    }
+                  }}
+                />
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleCreatePlan} disabled={!newPlanName.trim()}>
+                  Create
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           <SidebarGroupContent>
             <SidebarMenu>
               {plans.map((plan) => (
