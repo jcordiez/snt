@@ -1,12 +1,44 @@
 "use client";
 
 import { useState } from "react";
-import { Search, X, Plus } from "lucide-react";
+import { Search, X, Plus, ChevronDown, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useMetricTypes } from "@/hooks/use-metric-types";
 
 export default function LayersPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(
+    new Set()
+  );
+  const { groupedByCategory, isLoading } = useMetricTypes();
+
+  const toggleCategory = (category: string) => {
+    setCollapsedCategories((prev) => {
+      const next = new Set(prev);
+      if (next.has(category)) {
+        next.delete(category);
+      } else {
+        next.add(category);
+      }
+      return next;
+    });
+  };
+
+  // Filter layers by search query
+  const filteredGroupedByCategory = Object.entries(groupedByCategory).reduce<
+    Record<string, typeof groupedByCategory[string]>
+  >((acc, [category, metrics]) => {
+    const filteredMetrics = metrics.filter((metric) =>
+      metric.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    if (filteredMetrics.length > 0) {
+      acc[category] = filteredMetrics;
+    }
+    return acc;
+  }, {});
+
+  const categories = Object.keys(filteredGroupedByCategory).sort();
 
   return (
     <div className="flex flex-col h-full p-6">
@@ -35,6 +67,51 @@ export default function LayersPage() {
           <Plus className="h-4 w-4 mr-2" />
           Create layer
         </Button>
+      </div>
+
+      <div className="mt-6 space-y-2">
+        {isLoading ? (
+          <div className="text-muted-foreground">Loading layers...</div>
+        ) : categories.length === 0 ? (
+          <div className="text-muted-foreground">No layers found</div>
+        ) : (
+          categories.map((category) => {
+            const isCollapsed = collapsedCategories.has(category);
+            const metrics = filteredGroupedByCategory[category];
+
+            return (
+              <div key={category} className="border rounded-lg">
+                <button
+                  onClick={() => toggleCategory(category)}
+                  className="flex items-center gap-2 w-full px-4 py-3 text-left hover:bg-muted/50 transition-colors"
+                >
+                  {isCollapsed ? (
+                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                  )}
+                  <span className="font-semibold">{category}</span>
+                  <span className="text-muted-foreground text-sm">
+                    ({metrics.length})
+                  </span>
+                </button>
+
+                {!isCollapsed && (
+                  <div className="border-t">
+                    {metrics.map((metric) => (
+                      <div
+                        key={metric.id}
+                        className="flex items-center px-4 py-2 hover:bg-muted/50 transition-colors border-b last:border-b-0"
+                      >
+                        <span className="flex-1">{metric.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );
