@@ -4,7 +4,6 @@ import { useMemo } from "react";
 import { Check } from "lucide-react";
 import type { DistrictProperties } from "@/data/districts";
 import type { InterventionCategory, Intervention } from "@/types/intervention";
-import { cn } from "@/lib/utils";
 
 interface InterventionTableProps {
   districts: DistrictProperties[];
@@ -136,10 +135,7 @@ export function InterventionTable({
           {districts.map((district, index) => (
             <tr
               key={district.districtId}
-              className={cn(
-                "border-b hover:bg-muted/50 transition-colors",
-                index % 2 === 0 ? "bg-background" : "bg-muted/20"
-              )}
+              className="border-b hover:bg-muted/50 transition-colors"
             >
               <td className="sticky left-0 z-10 bg-inherit border-r px-4 py-2 font-medium">
                 {district.districtName}
