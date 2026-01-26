@@ -354,7 +354,7 @@ export default function Home() {
   }, [districts, interventionCategories]);
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-full">
       {/* Header - Row 1: Country Name + Export */}
       <header className="px-6 py-4 border-b flex items-center justify-between">
         <CountryName name={displayName} />
@@ -399,6 +399,8 @@ export default function Home() {
                 districts={districts}
                 selectedProvince={selectedProvince}
                 interventionCategories={interventionCategories ?? []}
+                rules={savedRules}
+                metricValuesByType={metricValuesByType}
               />
             )}
             {activeTab === "budget" && (
