@@ -23,6 +23,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import type { MetricType } from "@/types/intervention";
 
@@ -195,6 +196,41 @@ function LayerEditModal({ isOpen, onOpenChange, metric, onSave }: LayerEditModal
   );
 }
 
+interface DeleteConfirmDialogProps {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  metric: MetricType | null;
+  onConfirm: () => void;
+}
+
+function DeleteConfirmDialog({ isOpen, onOpenChange, metric, onConfirm }: DeleteConfirmDialogProps) {
+  const handleConfirm = () => {
+    onConfirm();
+    onOpenChange(false);
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>Delete Layer</DialogTitle>
+          <DialogDescription>
+            Are you sure you want to delete &quot;{metric?.name}&quot;? This action cannot be undone.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button variant="destructive" onClick={handleConfirm}>
+            Delete
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function LayerInfoTooltip({ metric }: { metric: MetricType }) {
   const hasUnits = metric.units || metric.unit_symbol;
 
@@ -237,6 +273,8 @@ export default function LayersPage() {
   );
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingMetric, setEditingMetric] = useState<MetricType | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deletingMetric, setDeletingMetric] = useState<MetricType | null>(null);
   const { groupedByCategory, isLoading } = useMetricTypes();
 
   const handleEditLayer = (metric: MetricType) => {
@@ -248,6 +286,17 @@ export default function LayersPage() {
     // TODO: Implement actual save to API
     console.log("Saving layer:", updatedMetric);
     setEditingMetric(null);
+  };
+
+  const handleDeleteLayer = (metric: MetricType) => {
+    setDeletingMetric(metric);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    // TODO: Implement actual delete to API
+    console.log("Deleting layer:", deletingMetric);
+    setDeletingMetric(null);
   };
 
   const toggleCategory = (category: string) => {
@@ -364,7 +413,10 @@ export default function LayersPage() {
                               <Pencil className="h-4 w-4 mr-2" />
                               Edit
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive focus:text-destructive">
+                            <DropdownMenuItem
+                              className="text-destructive focus:text-destructive"
+                              onClick={() => handleDeleteLayer(metric)}
+                            >
                               <Trash2 className="h-4 w-4 mr-2" />
                               Delete
                             </DropdownMenuItem>
@@ -386,6 +438,13 @@ export default function LayersPage() {
         onOpenChange={setEditModalOpen}
         metric={editingMetric}
         onSave={handleSaveLayer}
+      />
+
+      <DeleteConfirmDialog
+        isOpen={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        metric={deletingMetric}
+        onConfirm={handleConfirmDelete}
       />
     </TooltipProvider>
   );
