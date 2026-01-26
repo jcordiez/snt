@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, X, Plus, ChevronDown, ChevronRight, Info, MoreHorizontal } from "lucide-react";
+import { Search, X, Plus, ChevronDown, ChevronRight, Info, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useMetricTypes } from "@/hooks/use-metric-types";
@@ -11,6 +11,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { MetricType } from "@/types/intervention";
 
 function formatDate(dateString: string): string {
@@ -167,9 +173,23 @@ export default function LayersPage() {
                         </Tooltip>
                         <span className="flex-1">{metric.name}</span>
                         <span className="text-sm text-muted-foreground mr-4">Source</span>
-                        <button className="p-1 rounded hover:bg-muted">
-                          <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-                        </button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="p-1 rounded hover:bg-muted">
+                              <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem>
+                              <Pencil className="h-4 w-4 mr-2" />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="text-destructive focus:text-destructive">
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     ))}
                   </div>
