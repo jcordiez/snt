@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 import {
   CircleDollarSign,
   CircleHelp,
@@ -49,6 +51,7 @@ const initialPlans: Plan[] = [
 ]
 
 export function AppSidebar() {
+  const pathname = usePathname()
   const [activePlanId, setActivePlanId] = useState<string>("nsp-2026-30")
   const [plans, setPlans] = useState<Plan[]>(initialPlans)
   const [newPlanName, setNewPlanName] = useState("")
@@ -74,7 +77,7 @@ export function AppSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="/">
+              <Link href="/">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                   <Map className="size-4" />
                 </div>
@@ -84,7 +87,7 @@ export function AppSidebar() {
                     Subnational Tailoring
                   </span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -148,79 +151,63 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Scenario Comparisons */}
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
+
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Scenario comparisons">
-                  <a href="/scenario-comparisons">
+                <SidebarMenuButton asChild tooltip="Scenario comparisons" isActive={pathname === "/scenario-comparisons"}>
+                  <Link href="/scenario-comparisons">
                     <GitCompareArrows className="size-4" />
                     <span>Scenario comparisons</span>
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
 
-        {/* Layers */}
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
+
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Layers">
-                  <a href="/layers">
+                <SidebarMenuButton asChild tooltip="Layers" isActive={pathname === "/layers"}>
+                  <Link href="/layers">
                     <Layers className="size-4" />
                     <span>Layers</span>
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
 
-        {/* Cost Settings */}
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
+
+
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Cost settings">
-                  <a href="/cost-settings">
+                <SidebarMenuButton asChild tooltip="Cost settings" isActive={pathname === "/cost-settings"}>
+                  <Link href="/cost-settings">
                     <CircleDollarSign className="size-4" />
                     <span>Cost settings</span>
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+
       </SidebarContent>
 
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Help">
-              <a href="/help">
+            <SidebarMenuButton asChild tooltip="Help" isActive={pathname === "/help"}>
+              <Link href="/help">
                 <CircleHelp className="size-4" />
                 <span>Help</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Feedback">
-              <a href="/feedback">
+            <SidebarMenuButton asChild tooltip="Feedback" isActive={pathname === "/feedback"}>
+              <Link href="/feedback">
                 <MessageSquareMore className="size-4" />
                 <span>Feedback</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="User account">
-              <a href="/account">
+            <SidebarMenuButton asChild tooltip="User account" isActive={pathname === "/account"}>
+              <Link href="/account">
                 <CircleUser className="size-4" />
                 <span>User account</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
