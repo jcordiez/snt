@@ -153,7 +153,10 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-
+        {/* Scenario Comparisons */}
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Scenario comparisons" isActive={pathname === "/scenario-comparisons"}>
                   <Link href="/scenario-comparisons">
@@ -162,8 +165,14 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
-
+        {/* Layers */}
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Layers" isActive={pathname === "/layers"}>
                   <Link href="/layers">
@@ -172,9 +181,14 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
-
-
+        {/* Cost Settings */}
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Cost settings" isActive={pathname === "/cost-settings"}>
                   <Link href="/cost-settings">
@@ -183,7 +197,9 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter>
