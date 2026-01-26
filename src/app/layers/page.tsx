@@ -5,6 +5,57 @@ import { Search, X, Plus, ChevronDown, ChevronRight, Info, MoreHorizontal } from
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useMetricTypes } from "@/hooks/use-metric-types";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import type { MetricType } from "@/types/intervention";
+
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function LayerInfoTooltip({ metric }: { metric: MetricType }) {
+  const hasUnits = metric.units || metric.unit_symbol;
+
+  return (
+    <div className="space-y-2 text-sm max-w-xs">
+      <div>
+        <div className="font-medium text-primary-foreground">{metric.name}</div>
+        {metric.description && (
+          <p className="text-primary-foreground/80 mt-1">{metric.description}</p>
+        )}
+      </div>
+      <div className="space-y-1 text-primary-foreground/80">
+        {metric.source && (
+          <div>
+            <span className="font-medium">Source:</span> {metric.source}
+          </div>
+        )}
+        {hasUnits && (
+          <div>
+            <span className="font-medium">Units:</span>{" "}
+            {metric.units}
+            {metric.unit_symbol && ` (${metric.unit_symbol})`}
+          </div>
+        )}
+        {metric.updated_at && (
+          <div>
+            <span className="font-medium">Last updated:</span>{" "}
+            {formatDate(metric.updated_at)}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default function LayersPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,8 +92,9 @@ export default function LayersPage() {
   const categories = Object.keys(filteredGroupedByCategory).sort();
 
   return (
-    <div className="flex flex-col h-full p-6">
-      <h1 className="text-2xl font-semibold">Available metrics</h1>
+    <TooltipProvider>
+      <div className="flex flex-col h-full p-6">
+        <h1 className="text-2xl font-semibold">Available metrics</h1>
 
       <div className="flex items-center gap-4 mt-4">
         <div className="relative flex-1 max-w-sm">
@@ -103,9 +155,16 @@ export default function LayersPage() {
                         key={metric.id}
                         className="flex items-center px-4 py-2 hover:bg-muted/50 transition-colors border-b last:border-b-0"
                       >
-                        <button className="p-1 rounded hover:bg-muted mr-2">
-                          <Info className="h-4 w-4 text-muted-foreground" />
-                        </button>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button className="p-1 rounded hover:bg-muted mr-2">
+                              <Info className="h-4 w-4 text-muted-foreground" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="right" className="p-3">
+                            <LayerInfoTooltip metric={metric} />
+                          </TooltipContent>
+                        </Tooltip>
                         <span className="flex-1">{metric.name}</span>
                         <span className="text-sm text-muted-foreground mr-4">Source</span>
                         <button className="p-1 rounded hover:bg-muted">
@@ -120,6 +179,7 @@ export default function LayersPage() {
           })
         )}
       </div>
-    </div>
+      </div>
+    </TooltipProvider>
   );
 }
