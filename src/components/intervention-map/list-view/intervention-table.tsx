@@ -178,12 +178,14 @@ export function InterventionTable({
             const isSelected = selectedDistrictId === district.districtId;
             // Selected: 50%, Hovered (not selected): 45%, Default: 30%
             const opacity = isSelected ? 0.5 : (isHovered ? 0.45 : 0.3);
-            const rowStyle = ruleColor
-              ? {
-                  backgroundColor: hexToRgba(ruleColor, opacity),
-                  transition: "background-color 100ms",
-                }
-              : undefined;
+            // Always set background-color (even transparent) so transitions work
+            // when rule colors change or rules are deleted
+            const rowStyle = {
+              backgroundColor: ruleColor
+                ? hexToRgba(ruleColor, opacity)
+                : 'transparent',
+              transition: "background-color 250ms",
+            };
 
             return (
             <tr
