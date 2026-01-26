@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useSidebarKeyboardNav } from "@/hooks/use-sidebar-keyboard-nav"
 import {
   CircleDollarSign,
   CircleHelp,
@@ -52,6 +53,7 @@ const initialPlans: Plan[] = [
 
 export function AppSidebar() {
   const pathname = usePathname()
+  const sidebarRef = useSidebarKeyboardNav()
   const [activePlanId, setActivePlanId] = useState<string>("nsp-2026-30")
   const [plans, setPlans] = useState<Plan[]>(initialPlans)
   const [newPlanName, setNewPlanName] = useState("")
@@ -72,7 +74,7 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar variant="inset" collapsible="icon">
+    <Sidebar ref={sidebarRef} variant="inset" collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
