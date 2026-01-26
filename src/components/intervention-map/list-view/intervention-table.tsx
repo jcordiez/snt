@@ -28,6 +28,8 @@ export function InterventionTable({
 }: InterventionTableProps) {
   // Track which row is currently being hovered
   const [hoveredDistrictId, setHoveredDistrictId] = useState<string | null>(null);
+  // Track which row is currently selected
+  const [selectedDistrictId, setSelectedDistrictId] = useState<string | null>(null);
 
   // Transform metricValuesByType from Record<metricId, Record<districtId, value>>
   // to Record<districtId, Record<metricId, value>> for getLastMatchingRuleColor
@@ -173,7 +175,9 @@ export function InterventionTable({
               metricValuesByDistrict
             );
             const isHovered = hoveredDistrictId === district.districtId;
-            const opacity = isHovered ? 0.45 : 0.3;
+            const isSelected = selectedDistrictId === district.districtId;
+            // Selected: 50%, Hovered (not selected): 45%, Default: 30%
+            const opacity = isSelected ? 0.5 : (isHovered ? 0.45 : 0.3);
             const rowStyle = ruleColor
               ? {
                   backgroundColor: hexToRgba(ruleColor, opacity),
@@ -184,10 +188,13 @@ export function InterventionTable({
             return (
             <tr
               key={district.districtId}
-              className="border-b"
+              className="border-b cursor-pointer"
               style={rowStyle}
               onMouseEnter={() => setHoveredDistrictId(district.districtId)}
               onMouseLeave={() => setHoveredDistrictId(null)}
+              onClick={() => setSelectedDistrictId(
+                selectedDistrictId === district.districtId ? null : district.districtId
+              )}
             >
               <td className="sticky left-0 z-10 bg-inherit border-r px-4 py-2 font-medium">
                 {district.districtName}
