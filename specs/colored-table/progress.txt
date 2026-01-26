@@ -7,12 +7,16 @@
       - Return rule color or null if no match
       - ALREADY EXISTS: getLastMatchingRuleColor() in src/hooks/use-district-rules.ts:153-198
 
-[ ] 2. Remove zebra striping from List View table
+[x] 2. Remove zebra striping from List View table
       - Identify and remove alternating row background styles
+      - DONE: Removed `index % 2 === 0 ? "bg-background" : "bg-muted/20"` from intervention-table.tsx:139
+      - Also removed unused `cn` import
 
-[ ] 3. Apply base background color to rows
+[x] 3. Apply base background color to rows
       - Add inline style with rule color at 30% opacity
       - Handle null case (no background for unmatched districts)
+      - DONE: Added hexToRgba helper (line 48-53), get rule color via getLastMatchingRuleColor,
+        apply rowStyle with 30% opacity to each <tr> in intervention-table.tsx:166-180
 
 [ ] 4. Implement hover state
       - Darken row to 45% opacity on hover
@@ -41,4 +45,4 @@
 ## Status
 
 Started: 2026-01-26
-Completed: 1/7 tasks
+Completed: 3/7 tasks
