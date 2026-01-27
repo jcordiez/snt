@@ -142,6 +142,86 @@ export function findMatchingDistrictIds(
 }
 
 /**
+ * Finds which rules match a given district based on criteria evaluation.
+ * Used to determine which rules' exception lists should be updated when
+ * setting/removing exceptions for selected districts.
+ *
+ * @param districtId - The district ID to check
+ * @param rules - Array of SavedRules to evaluate
+ * @param metricValues - Map of districtId -> metricTypeId -> value
+ * @returns Array of rule IDs that match this district (excluding isAllDistricts rules and already-excepted)
+ */
+export function findRulesMatchingDistrict(
+  districtId: string,
+  rules: SavedRule[],
+  metricValues: Record<string, Record<number, number>>
+): string[] {
+  const matchingRuleIds: string[] = [];
+  const districtMetrics = metricValues[districtId];
+
+  for (const rule of rules) {
+    // Skip isAllDistricts rules - they don't have meaningful criteria to match against
+    // and shouldn't have exceptions added via this mechanism
+    if (rule.isAllDistricts) {
+      continue;
+    }
+
+    // Skip if district is already excluded from this rule
+    if (rule.excludedDistrictIds?.includes(districtId)) {
+      continue;
+    }
+
+    // Skip rules with no criteria
+    if (rule.criteria.length === 0) {
+      continue;
+    }
+
+    // Check if all criteria match (AND logic)
+    const allCriteriaMatch = rule.criteria.every((criterion) => {
+      if (criterion.metricTypeId === null || criterion.value === "") {
+        return false;
+      }
+
+      const metricValue = districtMetrics?.[criterion.metricTypeId];
+      if (metricValue === undefined) {
+        return false;
+      }
+
+      const threshold = Number(criterion.value);
+      if (isNaN(threshold)) {
+        return false;
+      }
+
+      return evaluateRule(metricValue, criterion.operator, threshold);
+    });
+
+    if (allCriteriaMatch) {
+      matchingRuleIds.push(rule.id);
+    }
+  }
+
+  return matchingRuleIds;
+}
+
+/**
+ * Finds which rules have a given district in their exception list.
+ * Used to determine which rules' exception lists should be cleaned when
+ * removing a district from exceptions.
+ *
+ * @param districtId - The district ID to check
+ * @param rules - Array of SavedRules to search
+ * @returns Array of rule IDs that have this district in their excludedDistrictIds
+ */
+export function findRulesWithDistrictAsException(
+  districtId: string,
+  rules: SavedRule[]
+): string[] {
+  return rules
+    .filter((rule) => rule.excludedDistrictIds?.includes(districtId))
+    .map((rule) => rule.id);
+}
+
+/**
  * Gets the color of the last matching rule for a given district.
  * Rules are evaluated in order, and the last matching rule's color is returned.
  *
@@ -215,9 +295,11 @@ interface UseDistrictRulesParams {
   > | null;
   rules: Rule[];
   selectedProvinceId?: string | null;
+  /** Pre-loaded metric values by type: metricTypeId -> orgUnitId -> value */
+  externalMetricValues?: Record<number, Record<number, number>>;
 }
 
-export function useDistrictRules({ districts, rules, selectedProvinceId }: UseDistrictRulesParams) {
+export function useDistrictRules({ districts, rules, selectedProvinceId, externalMetricValues }: UseDistrictRulesParams) {
   // Filter districts by province if a province is selected
   const filteredDistricts = useMemo(() => {
     if (!districts) return null;
@@ -263,13 +345,20 @@ export function useDistrictRules({ districts, rules, selectedProvinceId }: UseDi
 
     for (const feature of filteredDistricts.features) {
       const districtId = feature.properties.districtId;
+      // Use external metric values when available, otherwise fall back to mock values
       const districtMetrics = metricValues[districtId];
-
-      if (!districtMetrics) continue;
 
       // Check if all rules match (AND logic)
       const allRulesMatch = completeRules.every((rule) => {
-        const metricValue = districtMetrics[rule.metricTypeId!];
+        const metricTypeId = rule.metricTypeId!;
+        // Prefer external metric values (real API data) over mock values
+        // External values use numeric org unit IDs, so convert districtId
+        const externalValue = externalMetricValues?.[metricTypeId]?.[Number(districtId)];
+        const mockValue = districtMetrics?.[metricTypeId];
+        const metricValue = externalValue ?? mockValue;
+
+        if (metricValue === undefined) return false;
+
         const threshold = Number(rule.value);
         return evaluateRule(metricValue, rule.operator, threshold);
       });
@@ -284,7 +373,7 @@ export function useDistrictRules({ districts, rules, selectedProvinceId }: UseDi
     }
 
     return matches;
-  }, [filteredDistricts, rules, metricValues]);
+  }, [filteredDistricts, rules, metricValues, externalMetricValues]);
 
   // Get metric value for a specific district and metric
   const getMetricValue = (districtId: string, metricTypeId: number): number | undefined => {
