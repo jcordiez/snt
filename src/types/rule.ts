@@ -22,6 +22,8 @@ export interface SavedRule {
   criteria: RuleCriterion[];
   /** Maps categoryId -> interventionId for each assigned intervention */
   interventionsByCategory: Map<number, number>;
+  /** Maps categoryId -> coverage percentage (0-100) for each intervention */
+  coverageByCategory?: Map<number, number>;
   /** When true, the rule applies to all districts regardless of criteria */
   isAllDistricts?: boolean;
   /** Array of district IDs to exclude from this rule's selection criteria */
