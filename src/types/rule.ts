@@ -24,4 +24,6 @@ export interface SavedRule {
   interventionsByCategory: Map<number, number>;
   /** When true, the rule applies to all districts regardless of criteria */
   isAllDistricts?: boolean;
+  /** Array of district IDs to exclude from this rule's selection criteria */
+  excludedDistrictIds?: string[];
 }
