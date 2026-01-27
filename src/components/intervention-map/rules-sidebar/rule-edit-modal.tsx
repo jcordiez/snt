@@ -312,6 +312,32 @@ export function RuleEditModal({
             </Button>
           </CollapsibleSection>
 
+          {/* Exceptions section */}
+          <CollapsibleSection title="Exceptions">
+            {excludedDistrictIds.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                No exceptions. All matching districts will be included.
+              </p>
+            ) : (
+              <div className="space-y-1">
+                {excludedDistrictIds.map((districtId) => (
+                  <div key={districtId} className="text-sm">
+                    {districtId}
+                  </div>
+                ))}
+              </div>
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-3"
+              disabled
+            >
+              <Plus className="h-4 w-4 mr-1" />
+              Add Exception
+            </Button>
+          </CollapsibleSection>
+
           {/* Interventions section */}
           <CollapsibleSection title="Assign Interventions">
             <div className="space-y-4">
