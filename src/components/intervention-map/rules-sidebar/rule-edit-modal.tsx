@@ -159,6 +159,9 @@ const DEFAULT_INTERVENTIONS = new Map<number, number>([
   [41, 88], // Standard Pyrethroid Routine
 ]);
 
+// Default coverage percentage for interventions (PRD intervention-coverage)
+const DEFAULT_COVERAGE = 70;
+
 interface RuleEditModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -175,6 +178,8 @@ interface RuleEditModalProps {
     GeoJSON.MultiPolygon | GeoJSON.Polygon,
     DistrictProperties
   > | null;
+  /** Pre-loaded metric values by type: metricTypeId -> orgUnitId -> value */
+  metricValuesByType?: Record<number, Record<number, number>>;
 }
 
 export function RuleEditModal({
@@ -188,6 +193,7 @@ export function RuleEditModal({
   onSave,
   getDistrictName,
   districts,
+  metricValuesByType,
 }: RuleEditModalProps) {
   void _metricTypes;
 
@@ -212,6 +218,7 @@ export function RuleEditModal({
     districts,
     rules: rulesForHook,
     selectedProvinceId: null, // Don't filter by province in rule editor
+    externalMetricValues: metricValuesByType,
   });
 
   // Convert matching districts to format expected by AddExceptionPopover
