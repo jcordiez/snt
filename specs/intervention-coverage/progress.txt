@@ -1,0 +1,44 @@
+# Intervention Coverage Percentage - Implementation Progress
+
+## Phase 1: Data Model
+- [x] 1.1 Update `SavedRule` type in src/types/rule.ts with `coverageByCategory?: Map<number, number>`
+- [x] 1.2 Add `DEFAULT_COVERAGE = 70` constant in rule-edit-modal.tsx
+- [x] 1.3 Add `COVERAGE_OPTIONS = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]` array
+- [x] 1.4 Update rule saving logic to include coverageByCategory
+- [x] 1.5 Update rule loading logic to initialize missing coverage values to 70%
+
+## Phase 2: Rule Editor UI
+- [x] 2.1 Add coverage Select dropdown in intervention row (RuleEditModal)
+- [ ] 2.2 Position dropdown to the left of Remove button
+- [ ] 2.3 Style dropdown (compact ~80px width, text-xs/text-sm font)
+- [ ] 2.4 Initialize coverage to 70% when intervention is selected
+- [ ] 2.5 Remove coverage from map when intervention is deselected
+- [ ] 2.6 Wire up state management for coverageByCategory in modal
+
+## Phase 3: Rule Card Display
+- [ ] 3.1 Update formatInterventionMix function signature to accept coverageByCategory
+- [ ] 3.2 Modify formatInterventionMix to return format: "ShortName (XX%)"
+- [ ] 3.3 Handle missing coverage data (default to 70%)
+- [ ] 3.4 Update RuleCard component to pass coverageByCategory to formatInterventionMix
+
+## Phase 4: Polish
+- [ ] 4.1 Ensure proper tab order for coverage dropdown
+- [ ] 4.2 Add aria-label="Coverage percentage" to Select component
+- [ ] 4.3 Test keyboard navigation (Tab focus, arrow keys)
+- [ ] 4.4 Test backward compatibility with existing rules (no coverage data)
+- [ ] 4.5 Verify local storage serialization/deserialization of coverageByCategory
+- [ ] 4.6 Test with various intervention combinations
+
+## Acceptance Criteria Checklist
+- [ ] AC1: Coverage dropdown appears when intervention is selected
+- [ ] AC2: Dropdown positioned to left of Remove button
+- [ ] AC3: Dropdown shows 0%-100% in 10% increments
+- [ ] AC4: Default coverage is 70% for new selections
+- [ ] AC5: Coverage persists when saving rule
+- [ ] AC6: Editing rule restores saved coverage values
+- [ ] AC7: Rules without coverage data default to 70%
+- [ ] AC8: Rule cards display coverage next to intervention name
+- [ ] AC9: Format is "InterventionName (XX%)" with + separator
+- [ ] AC10: Removing intervention removes its coverage
+- [ ] AC11: Dropdown is keyboard accessible
+- [ ] AC12: Screen readers can access coverage info
