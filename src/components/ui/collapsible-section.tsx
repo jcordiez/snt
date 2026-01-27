@@ -23,6 +23,8 @@ export function CollapsibleSection({
   className,
 }: CollapsibleSectionProps) {
   const [isOpen, setIsOpen] = React.useState(defaultOpen);
+  // Generate a stable ID for aria-controls
+  const contentId = React.useId();
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className={className}>
@@ -33,16 +35,19 @@ export function CollapsibleSection({
           "transition-colors cursor-pointer"
         )}
         aria-expanded={isOpen}
+        aria-controls={contentId}
       >
         <ChevronDown
           className={cn(
             "h-4 w-4 shrink-0 transition-transform duration-150 ease-out",
             !isOpen && "-rotate-90"
           )}
+          aria-hidden="true"
         />
         {title}
       </CollapsibleTrigger>
       <CollapsibleContent
+        id={contentId}
         className={cn(
           "overflow-hidden",
           "data-[state=open]:animate-collapsible-down",

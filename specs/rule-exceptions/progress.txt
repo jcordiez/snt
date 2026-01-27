@@ -27,7 +27,7 @@
 - [x] 18. Add exceptions state management in RuleEditModal
 
 ### Phase 4: Polish & Accessibility
-- [ ] 19. Add ARIA attributes to collapsible sections
+- [x] 19. Add ARIA attributes to collapsible sections
 - [ ] 20. Add ARIA attributes to exception list
 - [ ] 21. Implement keyboard navigation for exceptions
 - [ ] 22. Handle edge cases (empty states, large district lists)
@@ -35,7 +35,7 @@
 
 ## Status
 
-Current task: Task 18 completed
+Current task: Task 19 completed
 Last updated: 2026-01-27
 
 ## Completed Work
@@ -215,6 +215,15 @@ Last updated: 2026-01-27
   - Exceptions included in SavedRule object on save (only when non-empty)
   - Proper useCallback dependency arrays for both handlers
 - No additional code changes required - previous tasks already implemented full state management
+
+### Task 19: Add ARIA attributes to collapsible sections
+- Updated CollapsibleSection component (src/components/ui/collapsible-section.tsx)
+- Added `aria-controls` attribute to CollapsibleTrigger, referencing content ID
+- Used React.useId() to generate stable unique IDs for each section
+- Added matching `id` attribute to CollapsibleContent
+- Added `aria-hidden="true"` to ChevronDown icon (decorative element)
+- Existing `aria-expanded` attribute was already in place from Task 2
+- Component now fully compliant with PRD accessibility requirements
 
 ## Notes
 
