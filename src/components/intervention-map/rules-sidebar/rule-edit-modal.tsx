@@ -163,7 +163,6 @@ const DEFAULT_INTERVENTIONS = new Map<number, number>([
 const DEFAULT_COVERAGE = 70;
 
 // Coverage percentage options (0-100 in increments of 10)
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const COVERAGE_OPTIONS = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
 interface RuleEditModalProps {
@@ -314,6 +313,14 @@ export function RuleEditModal({
     setExcludedDistrictIds((prev) => prev.filter((id) => id !== districtId));
   }, []);
 
+  const handleCoverageChange = useCallback((categoryId: number, coverage: number) => {
+    setCoverageByCategory((prev) => {
+      const next = new Map(prev);
+      next.set(categoryId, coverage);
+      return next;
+    });
+  }, []);
+
   const handleSave = useCallback(() => {
     const validCriteria = criteria.filter(
       (c) => c.metricTypeId !== null && c.value !== ""
@@ -453,17 +460,34 @@ export function RuleEditModal({
                               )}
                             </label>
                             {isSelected && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-6 px-2 text-xs text-muted-foreground hover:text-destructive"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  handleSelectIntervention(category.id, null);
-                                }}
-                              >
-                                Remove
-                              </Button>
+                              <div className="flex items-center gap-2">
+                                <Select
+                                  value={(coverageByCategory.get(category.id) ?? DEFAULT_COVERAGE).toString()}
+                                  onValueChange={(value) => handleCoverageChange(category.id, parseInt(value, 10))}
+                                >
+                                  <SelectTrigger className="h-6 w-[75px] text-xs">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {COVERAGE_OPTIONS.map((option) => (
+                                      <SelectItem key={option} value={option.toString()}>
+                                        {option}%
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-6 px-2 text-xs text-muted-foreground hover:text-destructive"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    handleSelectIntervention(category.id, null);
+                                  }}
+                                >
+                                  Remove
+                                </Button>
+                              </div>
                             )}
                           </div>
                         );
