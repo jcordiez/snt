@@ -28,14 +28,14 @@
 
 ### Phase 4: Polish & Accessibility
 - [x] 19. Add ARIA attributes to collapsible sections
-- [ ] 20. Add ARIA attributes to exception list
-- [ ] 21. Implement keyboard navigation for exceptions
-- [ ] 22. Handle edge cases (empty states, large district lists)
+- [x] 20. Add ARIA attributes to exception list
+- [x] 21. Implement keyboard navigation for exceptions
+- [x] 22. Handle edge cases (empty states, large district lists)
 - [ ] 23. Testing & QA
 
 ## Status
 
-Current task: Task 19 completed
+Current task: Task 22 completed
 Last updated: 2026-01-27
 
 ## Completed Work
@@ -224,6 +224,54 @@ Last updated: 2026-01-27
 - Added `aria-hidden="true"` to ChevronDown icon (decorative element)
 - Existing `aria-expanded` attribute was already in place from Task 2
 - Component now fully compliant with PRD accessibility requirements
+
+### Task 20: Add ARIA attributes to exception list
+- Updated ExceptionList component (src/components/intervention-map/rules-sidebar/exception-list.tsx)
+- Added `aria-label="Excluded districts"` to the ul element to identify the list to screen readers
+- Added `aria-label` to each li element with district name and keyboard hint for removal
+- Added `aria-hidden="true"` to the X icon (decorative, the button already has aria-label)
+- Refactored to cache districtName in a variable to avoid repeated lookups within map callback
+- Existing attributes already in place: `role="list"`, `role="listitem"`, button `aria-label`
+- Commit: 5323150
+
+### Task 21: Implement keyboard navigation for exceptions
+- Updated ExceptionList component (exception-list.tsx):
+  - Added Arrow Up/Down navigation between exception items
+  - Added Home/End keys to jump to first/last item
+  - Added Enter/Space as alternative keys to remove (in addition to Delete/Backspace)
+  - Added focus management after removal: focus moves to next item, or previous if removing the last item
+  - Used useRef to track list element for DOM queries
+  - Used useCallback for optimized key handler
+- Updated AddExceptionPopover component (add-exception-popover.tsx):
+  - Added Arrow Down from search input to move focus into list
+  - Added Arrow Up/Down navigation between list options
+  - Arrow Up from first option returns focus to search input
+  - Added Home/End keys to jump to first/last option
+  - Added Enter from search input to select first match
+  - Added Enter/Space on options to select
+  - Added Escape key handling to close popover
+  - Focus returns to trigger button after selection or Escape
+  - Added activeIndex state to track keyboard focus for aria-selected
+  - Added proper ARIA: aria-controls, aria-activedescendant, aria-label on listbox
+  - Added visible focus ring on list options
+- Commit: 7cac628
+
+### Task 22: Handle edge cases (empty states, large district lists)
+- Verified empty states already handled in both components:
+  - ExceptionList: Shows "No exceptions. All matching districts will be included." when empty
+  - AddExceptionPopover: Shows appropriate messages for:
+    - "No districts match the current criteria" (no matching districts)
+    - "No districts match your search" (search yields no results)
+    - "All matching districts are already excluded" (all available excluded)
+- Added virtualization for large district lists in AddExceptionPopover:
+  - Installed @tanstack/react-virtual dependency
+  - Created VirtualizedDistrictList internal component
+  - Uses virtualization when there are 100+ matching districts (VIRTUALIZATION_THRESHOLD)
+  - Virtualizer renders only visible items plus 5 overscan items above/below
+  - Fixed item height of 36px for consistent scrolling
+  - Maintains same keyboard navigation and ARIA attributes as non-virtualized list
+  - Callback ref pattern to share listRef between parent and virtualized component
+- Commit: f1b5381
 
 ## Notes
 
