@@ -22,9 +22,9 @@
 - [x] 13. Create ExceptionList component with empty state
 - [x] 14. Create AddExceptionPopover component
 - [x] 15. Implement district search/filter in popover
-- [ ] 16. Wire up add exception functionality
-- [ ] 17. Implement remove exception on hover (X icon)
-- [ ] 18. Add exceptions state management in RuleEditModal
+- [x] 16. Wire up add exception functionality
+- [x] 17. Implement remove exception on hover (X icon)
+- [x] 18. Add exceptions state management in RuleEditModal
 
 ### Phase 4: Polish & Accessibility
 - [ ] 19. Add ARIA attributes to collapsible sections
@@ -35,7 +35,7 @@
 
 ## Status
 
-Current task: Task 15 completed
+Current task: Task 18 completed
 Last updated: 2026-01-27
 
 ## Completed Work
@@ -180,6 +180,41 @@ Last updated: 2026-01-27
   - Search query cleared when popover closes or when district is selected
   - Proper empty state: "No districts match your search" when search yields no results
 - No additional code changes required
+
+### Task 16: Wire up add exception functionality
+- Updated RuleEditModal to import AddExceptionPopover and useDistrictRules hook
+- Added `districts` prop to RuleEditModalProps interface (GeoJSON FeatureCollection)
+- Added `rulesForHook` useMemo to convert current criteria state to Rule[] format for the hook
+- Used `useDistrictRules` hook to compute matching districts based on current criteria
+- Added `matchingDistrictOptions` useMemo to convert hook output to format expected by popover
+- Added `handleAddException` callback that appends district ID to excludedDistrictIds state
+- Replaced disabled "Add Exception" button with AddExceptionPopover component
+- Updated page.tsx to pass `districts` prop to RuleEditModal
+- Commit: d15fd75
+
+### Task 17: Implement remove exception on hover (X icon)
+- Verified that this functionality was already implemented in Task 13 (ExceptionList component)
+- ExceptionList component in exception-list.tsx includes:
+  - X icon (lucide-react X) that appears on hover via Tailwind `opacity-0 group-hover:opacity-100`
+  - Click handler that calls `onRemove(districtId)` callback
+  - Smooth opacity transition for the icon
+  - Proper hover styling with `hover:bg-destructive/10 hover:text-destructive`
+  - Keyboard support: Delete/Backspace to remove focused exception
+  - Accessibility: `aria-label="Remove [District Name] from exceptions"`
+- RuleEditModal already has `handleRemoveException` callback wired to ExceptionList's `onRemove` prop
+- No additional code changes required - Task 13's implementation already covers this
+
+### Task 18: Add exceptions state management in RuleEditModal
+- Verified that this functionality was already implemented in Tasks 7 and 13
+- State management features already in place:
+  - `excludedDistrictIds` state variable (useState<string[]>([]))
+  - State initialized from rule on modal open (rule.excludedDistrictIds ?? [])
+  - State reset to empty array for new rules
+  - `handleAddException` callback to add districts to exceptions
+  - `handleRemoveException` callback to remove districts from exceptions
+  - Exceptions included in SavedRule object on save (only when non-empty)
+  - Proper useCallback dependency arrays for both handlers
+- No additional code changes required - previous tasks already implemented full state management
 
 ## Notes
 
