@@ -163,6 +163,7 @@ const DEFAULT_INTERVENTIONS = new Map<number, number>([
 const DEFAULT_COVERAGE = 70;
 
 // Coverage percentage options (0-100 in increments of 10)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const COVERAGE_OPTIONS = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
 interface RuleEditModalProps {
@@ -204,6 +205,7 @@ export function RuleEditModal({
   const [color, setColor] = useState(DEFAULT_COLORS[0]);
   const [criteria, setCriteria] = useState<RuleCriterion[]>([createEmptyCriterion()]);
   const [interventionsByCategory, setInterventionsByCategory] = useState<Map<number, number>>(new Map());
+  const [coverageByCategory, setCoverageByCategory] = useState<Map<number, number>>(new Map());
   const [excludedDistrictIds, setExcludedDistrictIds] = useState<string[]>([]);
 
   // Convert criteria state to Rule format for the hook
@@ -244,6 +246,13 @@ export function RuleEditModal({
         setColor(rule.color);
         setCriteria(rule.criteria.length > 0 ? [...rule.criteria] : [createEmptyCriterion()]);
         setInterventionsByCategory(new Map(rule.interventionsByCategory));
+        // Initialize coverage: use saved values or default to 70% for each intervention
+        const initialCoverage = new Map<number, number>();
+        Array.from(rule.interventionsByCategory.keys()).forEach((categoryId) => {
+          const savedCoverage = rule.coverageByCategory?.get(categoryId);
+          initialCoverage.set(categoryId, savedCoverage ?? DEFAULT_COVERAGE);
+        });
+        setCoverageByCategory(initialCoverage);
         setExcludedDistrictIds(rule.excludedDistrictIds ?? []);
       } else {
         const defaultTitle = `Category ${rulesCount + 1}`;
@@ -253,6 +262,12 @@ export function RuleEditModal({
         setCriteria([createEmptyCriterion()]);
         // Pre-select default interventions for new rules (PRD Phase 7.1)
         setInterventionsByCategory(new Map(DEFAULT_INTERVENTIONS));
+        // Initialize default coverage for default interventions
+        const defaultCoverage = new Map<number, number>();
+        Array.from(DEFAULT_INTERVENTIONS.keys()).forEach((categoryId) => {
+          defaultCoverage.set(categoryId, DEFAULT_COVERAGE);
+        });
+        setCoverageByCategory(defaultCoverage);
         setExcludedDistrictIds([]);
       }
     }
@@ -282,6 +297,17 @@ export function RuleEditModal({
       }
       return next;
     });
+    // Also manage coverageByCategory: add default coverage when selecting, remove when deselecting
+    setCoverageByCategory((prev) => {
+      const next = new Map(prev);
+      if (interventionId === null) {
+        next.delete(categoryId);
+      } else if (!next.has(categoryId)) {
+        // Only set default if not already present (preserves existing value when switching interventions within same category)
+        next.set(categoryId, DEFAULT_COVERAGE);
+      }
+      return next;
+    });
   }, []);
 
   const handleRemoveException = useCallback((districtId: string) => {
@@ -300,12 +326,13 @@ export function RuleEditModal({
       color,
       criteria: validCriteria,
       interventionsByCategory: new Map(interventionsByCategory),
+      coverageByCategory: new Map(coverageByCategory),
       excludedDistrictIds: excludedDistrictIds.length > 0 ? excludedDistrictIds : undefined,
     };
 
     onSave(savedRule);
     onOpenChange(false);
-  }, [rule, title, color, criteria, interventionsByCategory, excludedDistrictIds, rulesCount, onSave, onOpenChange]);
+  }, [rule, title, color, criteria, interventionsByCategory, coverageByCategory, excludedDistrictIds, rulesCount, onSave, onOpenChange]);
 
   const isEditing = rule !== null;
   const hasValidCriteria = criteria.some((c) => c.metricTypeId !== null && c.value !== "");
