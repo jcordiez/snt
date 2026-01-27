@@ -1,6 +1,6 @@
 "use client";
 
-import { Pencil, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { SavedRule, RuleCriterion } from "@/types/rule";
 import type { MetricType, InterventionCategory } from "@/types/intervention";
@@ -11,6 +11,8 @@ interface RuleCardProps {
   interventionCategories: InterventionCategory[];
   onEdit: (ruleId: string) => void;
   onDelete: (ruleId: string) => void;
+  /** Function to look up district name by ID */
+  getDistrictName: (districtId: string) => string;
 }
 
 function formatCriterion(
@@ -25,8 +27,12 @@ function formatCriterion(
   return `${metricName} ${criterion.operator} ${criterion.value}`;
 }
 
+// Default coverage percentage for display (matches rule-edit-modal.tsx)
+const DEFAULT_COVERAGE = 70;
+
 function formatInterventionMix(
   interventionsByCategory: Map<number, number>,
+  coverageByCategory: Map<number, number> | undefined,
   interventionCategories: InterventionCategory[]
 ): string {
   if (interventionsByCategory.size === 0) {
@@ -41,7 +47,9 @@ function formatInterventionMix(
         (i) => i.id === interventionId
       );
       if (intervention) {
-        names.push(intervention.short_name || intervention.name);
+        const name = intervention.short_name || intervention.name;
+        const coverage = coverageByCategory?.get(categoryId) ?? DEFAULT_COVERAGE;
+        names.push(`${name} (${coverage}%)`);
       }
     }
   });
@@ -49,12 +57,15 @@ function formatInterventionMix(
   return names.length > 0 ? names.join(" + ") : "No interventions";
 }
 
+const MAX_VISIBLE_EXCEPTIONS = 3;
+
 export function RuleCard({
   rule,
   metricTypes,
   interventionCategories,
   onEdit,
   onDelete,
+  getDistrictName,
 }: RuleCardProps) {
   const criteriaDescription = rule.isAllDistricts
     ? "All districts"
@@ -62,11 +73,35 @@ export function RuleCard({
 
   const interventionMix = formatInterventionMix(
     rule.interventionsByCategory,
+    rule.coverageByCategory,
     interventionCategories
   );
 
+  const exceptions = rule.excludedDistrictIds ?? [];
+  const visibleExceptions = exceptions.slice(0, MAX_VISIBLE_EXCEPTIONS);
+  const remainingCount = exceptions.length - MAX_VISIBLE_EXCEPTIONS;
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Don't trigger edit if clicking on the action buttons
+    if ((e.target as HTMLElement).closest("button")) {
+      return;
+    }
+    onEdit(rule.id);
+  };
+
   return (
-    <div className="group rounded-lg border bg-card text-card-foreground shadow-sm">
+    <div
+      className="group rounded-lg border bg-card text-card-foreground shadow-sm cursor-pointer hover:border-primary/50 transition-colors"
+      onClick={handleCardClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onEdit(rule.id);
+        }
+      }}
+    >
       {/* Header */}
       <div className="py-3 px-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -77,14 +112,7 @@ export function RuleCard({
           <h3 className="text-sm font-medium">{rule.title}</h3>
         </div>
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7"
-            onClick={() => onEdit(rule.id)}
-          >
-            <Pencil className="h-3.5 w-3.5" />
-          </Button>
+
           <Button
             variant="ghost"
             size="icon"
@@ -101,6 +129,19 @@ export function RuleCard({
           <p className="text-xs text-muted-foreground mb-1">Criteria</p>
           <p className="text-xs">{criteriaDescription || "No criteria"}</p>
         </div>
+        {exceptions.length > 0 && (
+          <div>
+            <p className="text-xs text-muted-foreground mb-1">Exceptions</p>
+            <p className="text-xs">
+              {visibleExceptions.map((id) => getDistrictName(id)).join(", ")}
+              {remainingCount > 0 && (
+                <span className="text-muted-foreground">
+                  {" "}and {remainingCount} more
+                </span>
+              )}
+            </p>
+          </div>
+        )}
         <div>
           <p className="text-xs text-muted-foreground mb-1">Interventions</p>
           <p className="text-xs font-medium">{interventionMix}</p>
