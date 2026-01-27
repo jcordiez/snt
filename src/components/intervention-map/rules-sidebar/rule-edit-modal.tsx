@@ -465,7 +465,7 @@ export function RuleEditModal({
                                   value={(coverageByCategory.get(category.id) ?? DEFAULT_COVERAGE).toString()}
                                   onValueChange={(value) => handleCoverageChange(category.id, parseInt(value, 10))}
                                 >
-                                  <SelectTrigger className="h-6 w-[75px] text-xs">
+                                  <SelectTrigger className="h-6 w-[75px] text-xs" aria-label="Coverage percentage">
                                     <SelectValue />
                                   </SelectTrigger>
                                   <SelectContent>
