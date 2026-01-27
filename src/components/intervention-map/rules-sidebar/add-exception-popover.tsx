@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useCallback } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +28,8 @@ interface AddExceptionPopoverProps {
  * Popover component for adding districts to the exceptions list.
  * Displays a searchable list of districts that match the current rule criteria,
  * excluding those already in the exceptions list.
+ * Supports keyboard navigation: Arrow keys in search input move to list,
+ * Enter/Space to select, Escape to close.
  */
 export function AddExceptionPopover({
   matchingDistricts,
@@ -36,6 +38,10 @@ export function AddExceptionPopover({
 }: AddExceptionPopoverProps) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const listRef = useRef<HTMLUListElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   // Filter out already excluded districts
   const availableDistricts = useMemo(() => {
@@ -55,23 +61,111 @@ export function AddExceptionPopover({
     );
   }, [availableDistricts, searchQuery]);
 
-  const handleSelect = (districtId: string) => {
+  const handleSelect = useCallback((districtId: string) => {
     onAddException(districtId);
     setOpen(false);
     setSearchQuery("");
-  };
+    setActiveIndex(-1);
+    // Return focus to trigger button after popover closes
+    requestAnimationFrame(() => {
+      triggerRef.current?.focus();
+    });
+  }, [onAddException]);
 
   const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen);
     if (!newOpen) {
       setSearchQuery("");
+      setActiveIndex(-1);
     }
+  };
+
+  const handleInputKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    const items = listRef.current?.querySelectorAll<HTMLButtonElement>('[role="option"]');
+
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        if (filteredDistricts.length > 0) {
+          setActiveIndex(0);
+          items?.[0]?.focus();
+        }
+        break;
+      case "Enter":
+        e.preventDefault();
+        if (filteredDistricts.length > 0) {
+          handleSelect(filteredDistricts[0].id);
+        }
+        break;
+      case "Escape":
+        e.preventDefault();
+        setOpen(false);
+        triggerRef.current?.focus();
+        break;
+    }
+  }, [filteredDistricts, handleSelect]);
+
+  const handleOptionKeyDown = useCallback((
+    e: React.KeyboardEvent<HTMLButtonElement>,
+    district: DistrictOption,
+    index: number
+  ) => {
+    const items = listRef.current?.querySelectorAll<HTMLButtonElement>('[role="option"]');
+    if (!items) return;
+
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        if (index < items.length - 1) {
+          setActiveIndex(index + 1);
+          items[index + 1]?.focus();
+        }
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        if (index > 0) {
+          setActiveIndex(index - 1);
+          items[index - 1]?.focus();
+        } else {
+          // Move back to search input
+          setActiveIndex(-1);
+          inputRef.current?.focus();
+        }
+        break;
+      case "Enter":
+      case " ": // Space
+        e.preventDefault();
+        handleSelect(district.id);
+        break;
+      case "Escape":
+        e.preventDefault();
+        setOpen(false);
+        triggerRef.current?.focus();
+        break;
+      case "Home":
+        e.preventDefault();
+        setActiveIndex(0);
+        items[0]?.focus();
+        break;
+      case "End":
+        e.preventDefault();
+        setActiveIndex(items.length - 1);
+        items[items.length - 1]?.focus();
+        break;
+    }
+  }, [handleSelect]);
+
+  // Reset activeIndex when search query changes
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setActiveIndex(-1);
   };
 
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <Button
+          ref={triggerRef}
           variant="outline"
           size="sm"
           className="mt-3"
@@ -84,14 +178,22 @@ export function AddExceptionPopover({
       <PopoverContent
         className="w-[280px] p-0"
         align="start"
+        onEscapeKeyDown={() => {
+          triggerRef.current?.focus();
+        }}
       >
         <div className="p-2 border-b">
           <Input
+            ref={inputRef}
             placeholder="Search districts..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
+            onKeyDown={handleInputKeyDown}
             className="h-8"
             autoFocus
+            aria-label="Search districts"
+            aria-controls="district-listbox"
+            aria-activedescendant={activeIndex >= 0 ? `district-option-${activeIndex}` : undefined}
           />
         </div>
         <div className="max-h-[300px] overflow-y-auto">
@@ -104,15 +206,23 @@ export function AddExceptionPopover({
                   : "All matching districts are already excluded"}
             </p>
           ) : (
-            <ul role="listbox" className="p-1">
-              {filteredDistricts.map((district) => (
+            <ul
+              ref={listRef}
+              id="district-listbox"
+              role="listbox"
+              aria-label="Available districts"
+              className="p-1"
+            >
+              {filteredDistricts.map((district, index) => (
                 <li key={district.id}>
                   <button
+                    id={`district-option-${index}`}
                     type="button"
                     role="option"
-                    aria-selected={false}
+                    aria-selected={activeIndex === index}
                     onClick={() => handleSelect(district.id)}
-                    className="w-full text-left px-3 py-2 text-sm rounded hover:bg-muted focus:bg-muted focus:outline-none"
+                    onKeyDown={(e) => handleOptionKeyDown(e, district, index)}
+                    className="w-full text-left px-3 py-2 text-sm rounded hover:bg-muted focus:bg-muted focus:outline-none focus:ring-2 focus:ring-ring"
                   >
                     {district.name}
                   </button>
