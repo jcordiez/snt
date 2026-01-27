@@ -15,7 +15,7 @@
 - [x] 8. Update rule loading logic to restore exceptions
 - [x] 9. Update rule application logic to exclude excepted districts
 - [x] 10. Update map view to reflect exceptions
-- [ ] 11. Update list view to reflect exceptions
+- [x] 11. Update list view to reflect exceptions
 
 ### Phase 3: Exceptions UI
 - [ ] 12. Add Exceptions section placeholder in modal (wrapped in CollapsibleSection)
@@ -35,7 +35,7 @@
 
 ## Status
 
-Current task: Task 10 completed
+Current task: Task 11 completed
 Last updated: 2026-01-27
 
 ## Completed Work
@@ -119,6 +119,17 @@ Last updated: 2026-01-27
   5. district-layer.tsx renders districts using ruleColor from GeoJSON properties
 - Excluded districts revert to their default rule color since they're not included in the rule's district list
 - No additional code changes required - Task 9's implementation already handles the map view correctly
+
+### Task 11: Update list view to reflect exceptions
+- Verified that the list view already correctly reflects exceptions through the implementation in Task 9
+- The list view uses two mechanisms, both of which handle exceptions:
+  1. **Row colors**: `getLastMatchingRuleColor()` in intervention-table.tsx (line 172-176) which already checks `excludedDistrictIds` (implemented in Task 9 at use-district-rules.ts:162-165)
+  2. **Intervention checkmarks**: Displayed from `district.interventionCategoryAssignments` property, which is set by page.tsx's rule application logic that filters out excluded districts (lines 181-184) before calling `updateDistricts()`
+- Excluded districts:
+  - Don't get the rule's color (skipped by getLastMatchingRuleColor)
+  - Don't get the rule's interventions (filtered out before updateDistricts)
+  - Keep the default rule's color and interventions instead
+- No additional code changes required - Task 9's implementation already handles the list view correctly
 
 ## Notes
 
