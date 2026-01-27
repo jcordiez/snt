@@ -120,6 +120,7 @@ export default function Home() {
         id: r.id,
         criteria: r.criteria,
         interventionsByCategory: Array.from(r.interventionsByCategory.entries()),
+        coverageByCategory: r.coverageByCategory ? Array.from(r.coverageByCategory.entries()) : [],
         isAllDistricts: r.isAllDistricts,
         color: r.color,
         excludedDistrictIds: r.excludedDistrictIds,
