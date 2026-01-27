@@ -19,7 +19,7 @@ import { useInterventionCategories } from "@/hooks/use-intervention-categories";
 import { useMetricTypes } from "@/hooks/use-metric-types";
 import { useMetricValues } from "@/hooks/use-metric-values";
 import { useMultipleMetricValues } from "@/hooks/use-multiple-metric-values";
-import { findMatchingDistrictIds } from "@/hooks/use-district-rules";
+import { findMatchingDistrictIds, findRulesMatchingDistrict } from "@/hooks/use-district-rules";
 import { LegendSelectionPayload } from "@/types/intervention";
 import type { SavedRule } from "@/types/rule";
 import type { Rule } from "@/types/intervention";
@@ -410,8 +410,62 @@ export default function Home() {
                 }}
                 hasRules={savedRules.length > 0}
                 onSetAsExceptions={(districtIds) => {
-                  // TODO: Phase 3 - Implement "Set as exceptions" logic
-                  console.log("Set as exceptions:", districtIds);
+                  // Transpose metricValuesByType to the format expected by findRulesMatchingDistrict:
+                  // from metricTypeId -> orgUnitId -> value to districtId -> metricTypeId -> value
+                  const metricValuesByDistrict: Record<string, Record<number, number>> = {};
+                  for (const [metricTypeId, valuesByOrgUnit] of Object.entries(metricValuesByType)) {
+                    const typeId = Number(metricTypeId);
+                    for (const [orgUnitId, value] of Object.entries(valuesByOrgUnit)) {
+                      const districtId = String(orgUnitId);
+                      if (!metricValuesByDistrict[districtId]) {
+                        metricValuesByDistrict[districtId] = {};
+                      }
+                      metricValuesByDistrict[districtId][typeId] = value;
+                    }
+                  }
+
+                  // Track how many districts were actually added as exceptions
+                  let addedCount = 0;
+
+                  // Update savedRules - for each selected district, add it to matching rules' exceptions
+                  setSavedRules((prevRules) => {
+                    return prevRules.map((rule) => {
+                      // Find which selected districts match this rule's criteria
+                      const districtsToExclude: string[] = [];
+                      for (const districtId of districtIds) {
+                        const matchingRuleIds = findRulesMatchingDistrict(
+                          districtId,
+                          [rule], // Check just this rule
+                          metricValuesByDistrict
+                        );
+                        if (matchingRuleIds.includes(rule.id)) {
+                          districtsToExclude.push(districtId);
+                        }
+                      }
+
+                      // If no districts to exclude for this rule, return unchanged
+                      if (districtsToExclude.length === 0) {
+                        return rule;
+                      }
+
+                      // Add new exceptions (avoiding duplicates)
+                      const existingExceptions = new Set(rule.excludedDistrictIds ?? []);
+                      const newExceptions = districtsToExclude.filter((id) => !existingExceptions.has(id));
+
+                      if (newExceptions.length === 0) {
+                        return rule;
+                      }
+
+                      addedCount += newExceptions.length;
+
+                      return {
+                        ...rule,
+                        excludedDistrictIds: [...(rule.excludedDistrictIds ?? []), ...newExceptions],
+                      };
+                    });
+                  });
+
+                  console.log("Set as exceptions:", districtIds, "Added:", addedCount);
                 }}
                 onRemoveFromExceptions={(districtIds) => {
                   // TODO: Phase 3 - Implement "Remove from exceptions" logic
