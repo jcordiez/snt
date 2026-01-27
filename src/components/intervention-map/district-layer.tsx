@@ -17,10 +17,14 @@ const INACTIVE_FILL_LAYER_ID = "district-fills-inactive";
 const INACTIVE_BORDER_LAYER_ID = "district-borders-inactive";
 // Highlight layer ID (for intervention wizard selection)
 const HIGHLIGHT_BORDER_LAYER_ID = "district-borders-highlight";
+// Selection layer ID (for district multi-select feature)
+const SELECTION_BORDER_LAYER_ID = "district-borders-selection";
 
 interface DistrictLayerProps {
   selectedProvinceId?: string | null;
   highlightedDistrictIds?: string[];
+  /** Set of district IDs currently selected (for multi-select feature) */
+  selectedDistrictIds?: Set<string>;
   districts?: GeoJSON.FeatureCollection<
     GeoJSON.MultiPolygon | GeoJSON.Polygon,
     DistrictProperties
@@ -74,7 +78,7 @@ function buildColorExpression(
   ] as unknown as MapLibreGL.ExpressionSpecification;
 }
 
-export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [], districts, metricValuesByOrgUnit, onDistrictClick }: DistrictLayerProps) {
+export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [], selectedDistrictIds, districts, metricValuesByOrgUnit, onDistrictClick }: DistrictLayerProps) {
   const { map, isLoaded } = useMap();
   const layersAdded = useRef(false);
   const popupRef = useRef<maplibregl.Popup | null>(null);
@@ -174,6 +178,18 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
       filter: ["in", ["get", "districtId"], ["literal", []]], // Initially empty
     });
 
+    // Add SELECTION border layer (for district multi-select feature)
+    map.addLayer({
+      id: SELECTION_BORDER_LAYER_ID,
+      type: "line",
+      source: SOURCE_ID,
+      paint: {
+        "line-color": "#3b82f6", // blue-500 (as per PRD)
+        "line-width": 3,
+      },
+      filter: ["in", ["get", "districtId"], ["literal", []]], // Initially empty
+    });
+
     // Set initial filters immediately after creating layers
     // Without this, the filter effect may not run (its deps don't include districts)
     if (selectedProvinceId) {
@@ -207,6 +223,7 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
     return () => {
       if (!map) return;
       try {
+        if (map.getLayer(SELECTION_BORDER_LAYER_ID)) map.removeLayer(SELECTION_BORDER_LAYER_ID);
         if (map.getLayer(HIGHLIGHT_BORDER_LAYER_ID)) map.removeLayer(HIGHLIGHT_BORDER_LAYER_ID);
         if (map.getLayer(ACTIVE_BORDER_LAYER_ID)) map.removeLayer(ACTIVE_BORDER_LAYER_ID);
         if (map.getLayer(ACTIVE_FILL_LAYER_ID)) map.removeLayer(ACTIVE_FILL_LAYER_ID);
@@ -271,6 +288,28 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
       ]);
     }
   }, [isLoaded, map, highlightedDistrictIds]);
+
+  // Update selection layer filter when selectedDistrictIds changes
+  useEffect(() => {
+    if (!isLoaded || !map || !layersAdded.current) return;
+
+    const selectedIds = selectedDistrictIds ? Array.from(selectedDistrictIds) : [];
+
+    if (selectedIds.length > 0) {
+      map.setFilter(SELECTION_BORDER_LAYER_ID, [
+        "in",
+        ["get", "districtId"],
+        ["literal", selectedIds],
+      ]);
+    } else {
+      // Hide selection layer when no districts selected
+      map.setFilter(SELECTION_BORDER_LAYER_ID, [
+        "in",
+        ["get", "districtId"],
+        ["literal", []],
+      ]);
+    }
+  }, [isLoaded, map, selectedDistrictIds]);
 
   // Update fill colors when intervention mixes change
   useEffect(() => {

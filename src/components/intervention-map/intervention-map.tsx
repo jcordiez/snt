@@ -79,6 +79,7 @@ export function InterventionMap({ selectedProvince, highlightedDistrictIds = [],
         <DistrictLayer
           selectedProvinceId={selectedProvince?.id ?? null}
           highlightedDistrictIds={highlightedDistrictIds}
+          selectedDistrictIds={selectedDistrictIds}
           districts={districts}
           metricValuesByOrgUnit={metricValuesByOrgUnit}
           onDistrictClick={selectDistrict}
