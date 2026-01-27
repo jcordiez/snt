@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Map, MapControls, useMap } from "@/components/ui/map";
 import { DistrictLayer } from "./district-layer";
 import { MapLegend } from "./map-legend";
@@ -66,8 +66,24 @@ function MapAutoZoom({ selectedProvince }: { selectedProvince?: Province | null 
 }
 
 export function InterventionMap({ selectedProvince, highlightedDistrictIds = [], districts, onSelectMix, metricValuesByOrgUnit }: InterventionMapProps) {
+  // Compute active district IDs based on selected province
+  // When a province is selected, only districts in that province are active/selectable
+  const activeDistrictIds = useMemo(() => {
+    if (!districts?.features) return undefined;
+    if (!selectedProvince) return undefined; // No filter when no province selected - all districts are active
+
+    const ids = new Set<string>();
+    for (const feature of districts.features) {
+      if (feature.properties.regionId === selectedProvince.id) {
+        ids.add(feature.properties.districtId);
+      }
+    }
+    return ids;
+  }, [districts, selectedProvince]);
+
   // Selection state for district multi-select feature
-  const { selectedDistrictIds, selectDistrict, clearSelection, selectionCount } = useDistrictSelection();
+  // Pass activeDistrictIds so selection is cleared when districts become inactive
+  const { selectedDistrictIds, selectDistrict, clearSelection, selectionCount } = useDistrictSelection({ activeDistrictIds });
 
   return (
     <div className="relative w-full h-full">

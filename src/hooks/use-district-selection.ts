@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 export interface UseDistrictSelectionReturn {
   /** Set of currently selected district IDs */
@@ -15,12 +15,38 @@ export interface UseDistrictSelectionReturn {
   selectionCount: number;
 }
 
+export interface UseDistrictSelectionOptions {
+  /** Set of district IDs that are currently active/selectable (e.g., districts in selected province) */
+  activeDistrictIds?: Set<string>;
+}
+
 /**
  * Hook for managing district selection state on the map.
  * Supports single-click (replace selection) and Shift+click (toggle in selection).
+ * When activeDistrictIds changes, any selected districts not in the active set are removed.
  */
-export function useDistrictSelection(): UseDistrictSelectionReturn {
+export function useDistrictSelection(options?: UseDistrictSelectionOptions): UseDistrictSelectionReturn {
   const [selectedDistrictIds, setSelectedDistrictIds] = useState<Set<string>>(new Set());
+  const { activeDistrictIds } = options ?? {};
+
+  // When active districts change, remove any selected districts that are no longer active
+  useEffect(() => {
+    if (!activeDistrictIds) return; // If no filter provided, allow all districts
+
+    setSelectedDistrictIds((prevSelection) => {
+      const filtered = new Set<string>();
+      prevSelection.forEach((id) => {
+        if (activeDistrictIds.has(id)) {
+          filtered.add(id);
+        }
+      });
+      // Only update if the set actually changed
+      if (filtered.size === prevSelection.size) {
+        return prevSelection;
+      }
+      return filtered;
+    });
+  }, [activeDistrictIds]);
 
   const selectDistrict = useCallback((districtId: string, shiftKey: boolean) => {
     setSelectedDistrictIds((prevSelection) => {
