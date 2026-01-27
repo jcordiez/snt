@@ -19,7 +19,7 @@ import { useInterventionCategories } from "@/hooks/use-intervention-categories";
 import { useMetricTypes } from "@/hooks/use-metric-types";
 import { useMetricValues } from "@/hooks/use-metric-values";
 import { useMultipleMetricValues } from "@/hooks/use-multiple-metric-values";
-import { findMatchingDistrictIds, findRulesMatchingDistrict } from "@/hooks/use-district-rules";
+import { findMatchingDistrictIds, findRulesMatchingDistrict, findRulesWithDistrictAsException } from "@/hooks/use-district-rules";
 import { LegendSelectionPayload } from "@/types/intervention";
 import type { SavedRule } from "@/types/rule";
 import type { Rule } from "@/types/intervention";
@@ -468,8 +468,38 @@ export default function Home() {
                   console.log("Set as exceptions:", districtIds, "Added:", addedCount);
                 }}
                 onRemoveFromExceptions={(districtIds) => {
-                  // TODO: Phase 3 - Implement "Remove from exceptions" logic
-                  console.log("Remove from exceptions:", districtIds);
+                  // Track how many districts were actually removed from exceptions
+                  let removedCount = 0;
+
+                  // Update savedRules - for each selected district, remove it from all rules' exception lists
+                  setSavedRules((prevRules) => {
+                    return prevRules.map((rule) => {
+                      // Find which selected districts are in this rule's exception list
+                      const districtsToRemove = districtIds.filter((districtId) =>
+                        findRulesWithDistrictAsException(districtId, [rule]).includes(rule.id)
+                      );
+
+                      // If no districts to remove for this rule, return unchanged
+                      if (districtsToRemove.length === 0) {
+                        return rule;
+                      }
+
+                      // Remove the districts from exceptions
+                      const districtsToRemoveSet = new Set(districtsToRemove);
+                      const newExcludedDistrictIds = (rule.excludedDistrictIds ?? []).filter(
+                        (id) => !districtsToRemoveSet.has(id)
+                      );
+
+                      removedCount += districtsToRemove.length;
+
+                      return {
+                        ...rule,
+                        excludedDistrictIds: newExcludedDistrictIds,
+                      };
+                    });
+                  });
+
+                  console.log("Remove from exceptions:", districtIds, "Removed:", removedCount);
                 }}
               />
             )}
