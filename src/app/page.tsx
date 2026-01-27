@@ -23,6 +23,7 @@ import { findMatchingDistrictIds } from "@/hooks/use-district-rules";
 import { LegendSelectionPayload } from "@/types/intervention";
 import type { SavedRule } from "@/types/rule";
 import type { Rule } from "@/types/intervention";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 // All metric IDs that have data files available - defined outside component
 // to maintain stable reference and prevent infinite re-fetch loops
@@ -120,6 +121,7 @@ export default function Home() {
         interventionsByCategory: Array.from(r.interventionsByCategory.entries()),
         isAllDistricts: r.isAllDistricts,
         color: r.color,
+        excludedDistrictIds: r.excludedDistrictIds,
       }))
     );
 
@@ -357,7 +359,10 @@ export default function Home() {
     <div className="flex flex-col h-full">
       {/* Header - Row 1: Country Name + Export */}
       <header className="px-6 py-4 border-b flex items-center justify-between">
+        <div className="flex items-center gap-2">
+        <SidebarTrigger />
         <CountryName name={displayName} />
+        </div>
         <Button onClick={handleExportPlan} variant="outline">
           Export Plan
         </Button>
@@ -379,7 +384,7 @@ export default function Home() {
           </div>
 
           {/* View Container */}
-          <div className="flex-1 relative">
+          <div className="flex-1 relative p-4 rounded-lg">
             {activeTab === "map" && (
               <InterventionMap
                 selectedProvince={selectedProvince}
