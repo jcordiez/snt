@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -34,11 +34,12 @@ export function CollapsibleSection({
         )}
         aria-expanded={isOpen}
       >
-        {isOpen ? (
-          <ChevronDown className="h-4 w-4 shrink-0" />
-        ) : (
-          <ChevronRight className="h-4 w-4 shrink-0" />
-        )}
+        <ChevronDown
+          className={cn(
+            "h-4 w-4 shrink-0 transition-transform duration-150 ease-out",
+            !isOpen && "-rotate-90"
+          )}
+        />
         {title}
       </CollapsibleTrigger>
       <CollapsibleContent
