@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { Map, MapControls, useMap } from "@/components/ui/map";
 import { DistrictLayer } from "./district-layer";
 import { MapLegend } from "./map-legend";
+import { SelectionWidget } from "./selection-widget";
 import { countryConfig, Province, DistrictProperties } from "@/data/districts";
 import { useDistrictSelection } from "@/hooks/use-district-selection";
 
@@ -25,6 +26,12 @@ interface InterventionMapProps {
   onSelectMix?: (mixLabel: string, districtIds: string[]) => void;
   /** Metric values by org unit ID for tooltip display */
   metricValuesByOrgUnit?: MetricValuesByOrgUnit;
+  /** Whether any rules are defined (for SelectionWidget button states) */
+  hasRules?: boolean;
+  /** Callback when "Set as exceptions" is clicked in SelectionWidget */
+  onSetAsExceptions?: (districtIds: string[]) => void;
+  /** Callback when "Remove from exceptions" is clicked in SelectionWidget */
+  onRemoveFromExceptions?: (districtIds: string[]) => void;
 }
 
 /**
@@ -65,7 +72,7 @@ function MapAutoZoom({ selectedProvince }: { selectedProvince?: Province | null 
   return null;
 }
 
-export function InterventionMap({ selectedProvince, highlightedDistrictIds = [], districts, onSelectMix, metricValuesByOrgUnit }: InterventionMapProps) {
+export function InterventionMap({ selectedProvince, highlightedDistrictIds = [], districts, onSelectMix, metricValuesByOrgUnit, hasRules = false, onSetAsExceptions, onRemoveFromExceptions }: InterventionMapProps) {
   // Compute active district IDs based on selected province
   // When a province is selected, only districts in that province are active/selectable
   const activeDistrictIds = useMemo(() => {
@@ -84,6 +91,19 @@ export function InterventionMap({ selectedProvince, highlightedDistrictIds = [],
   // Selection state for district multi-select feature
   // Pass activeDistrictIds so selection is cleared when districts become inactive
   const { selectedDistrictIds, selectDistrict, clearSelection, selectionCount } = useDistrictSelection({ activeDistrictIds });
+
+  // Handlers for SelectionWidget actions
+  const handleSetAsExceptions = useCallback(() => {
+    const districtIds = Array.from(selectedDistrictIds);
+    onSetAsExceptions?.(districtIds);
+    clearSelection();
+  }, [selectedDistrictIds, onSetAsExceptions, clearSelection]);
+
+  const handleRemoveFromExceptions = useCallback(() => {
+    const districtIds = Array.from(selectedDistrictIds);
+    onRemoveFromExceptions?.(districtIds);
+    clearSelection();
+  }, [selectedDistrictIds, onRemoveFromExceptions, clearSelection]);
 
   return (
     <div className="relative w-full h-full">
@@ -110,7 +130,15 @@ export function InterventionMap({ selectedProvince, highlightedDistrictIds = [],
         />
       </Map>
 
-      {/* Map Legend 
+      {/* Selection Widget - shows when districts are selected */}
+      <SelectionWidget
+        selectionCount={selectionCount}
+        onSetAsExceptions={handleSetAsExceptions}
+        onRemoveFromExceptions={handleRemoveFromExceptions}
+        hasRules={hasRules}
+      />
+
+      {/* Map Legend
       <MapLegend districts={districts} onSelectMix={onSelectMix} />
       */}
     </div>

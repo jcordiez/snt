@@ -408,6 +408,15 @@ export default function Home() {
                   resistance: resistanceByOrgUnit,
                   seasonality: seasonalityByOrgUnit,
                 }}
+                hasRules={savedRules.length > 0}
+                onSetAsExceptions={(districtIds) => {
+                  // TODO: Phase 3 - Implement "Set as exceptions" logic
+                  console.log("Set as exceptions:", districtIds);
+                }}
+                onRemoveFromExceptions={(districtIds) => {
+                  // TODO: Phase 3 - Implement "Remove from exceptions" logic
+                  console.log("Remove from exceptions:", districtIds);
+                }}
               />
             )}
             {activeTab === "list" && (
@@ -437,6 +446,7 @@ export default function Home() {
           onAddRule={handleAddRule}
           onEditRule={handleEditRule}
           onDeleteRule={handleDeleteRule}
+          getDistrictName={getDistrictName}
         />
       </main>
 
@@ -468,6 +478,7 @@ export default function Home() {
         onSave={handleSaveRule}
         getDistrictName={getDistrictName}
         districts={districts}
+        metricValuesByType={metricValuesByType}
       />
     </div>
   );
