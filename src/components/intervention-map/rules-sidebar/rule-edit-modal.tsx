@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Plus, Trash2 } from "lucide-react";
+import { ExceptionList } from "./exception-list";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -164,6 +165,8 @@ interface RuleEditModalProps {
   groupedMetricTypes: Record<string, MetricType[]>;
   interventionCategories: InterventionCategory[];
   onSave: (rule: SavedRule) => void;
+  /** Function to look up district name by ID */
+  getDistrictName: (districtId: string) => string;
 }
 
 export function RuleEditModal({
@@ -175,6 +178,7 @@ export function RuleEditModal({
   groupedMetricTypes,
   interventionCategories,
   onSave,
+  getDistrictName,
 }: RuleEditModalProps) {
   void _metricTypes;
 
@@ -230,6 +234,10 @@ export function RuleEditModal({
       }
       return next;
     });
+  }, []);
+
+  const handleRemoveException = useCallback((districtId: string) => {
+    setExcludedDistrictIds((prev) => prev.filter((id) => id !== districtId));
   }, []);
 
   const handleSave = useCallback(() => {
@@ -314,19 +322,11 @@ export function RuleEditModal({
 
           {/* Exceptions section */}
           <CollapsibleSection title="Exceptions">
-            {excludedDistrictIds.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                No exceptions. All matching districts will be included.
-              </p>
-            ) : (
-              <div className="space-y-1">
-                {excludedDistrictIds.map((districtId) => (
-                  <div key={districtId} className="text-sm">
-                    {districtId}
-                  </div>
-                ))}
-              </div>
-            )}
+            <ExceptionList
+              excludedDistrictIds={excludedDistrictIds}
+              getDistrictName={getDistrictName}
+              onRemove={handleRemoveException}
+            />
             <Button
               variant="outline"
               size="sm"

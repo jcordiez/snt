@@ -288,6 +288,12 @@ export default function Home() {
     }
   }, []);
 
+  const getDistrictName = useCallback((districtId: string): string => {
+    if (!districts) return districtId;
+    const feature = districts.features.find((f) => f.properties.districtId === districtId);
+    return feature?.properties.districtName ?? districtId;
+  }, [districts]);
+
   const editingRule = editingRuleId
     ? savedRules.find((r) => r.id === editingRuleId) ?? null
     : null;
@@ -460,6 +466,7 @@ export default function Home() {
         }, {})}
         interventionCategories={interventionCategories ?? []}
         onSave={handleSaveRule}
+        getDistrictName={getDistrictName}
       />
     </div>
   );
