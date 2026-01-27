@@ -309,9 +309,7 @@ export function RuleEditModal({
           </CollapsibleSection>
 
           {/* Interventions section */}
-          <div>
-            <h3 className="text-sm font-medium mb-3">Assign Interventions</h3>
-            
+          <CollapsibleSection title="Assign Interventions">
             <div className="space-y-4">
               {interventionCategories.map((category) => {
                 const selectedValue = interventionsByCategory.get(category.id);
@@ -374,7 +372,7 @@ export function RuleEditModal({
                 );
               })}
             </div>
-          </div>
+          </CollapsibleSection>
         </div>
 
         <DialogFooter>
