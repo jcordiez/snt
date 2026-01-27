@@ -1,10 +1,18 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Map, MapControls, useMap } from "@/components/ui/map";
 import { DistrictLayer } from "./district-layer";
 import { MapLegend } from "./map-legend";
 import { countryConfig, Province, DistrictProperties } from "@/data/districts";
+
+/** Metric values by org unit ID for tooltip display */
+export interface MetricValuesByOrgUnit {
+  mortality?: Record<number, number>;      // 407: Mortalité infanto-juvénile
+  incidence?: Record<number, number>;      // 410: Incidence
+  resistance?: Record<number, number>;     // 412: Résistance aux insecticides
+  seasonality?: Record<number, number>;    // 413: Saisonnalité
+}
 
 interface InterventionMapProps {
   selectedProvince?: Province | null;
@@ -14,6 +22,8 @@ interface InterventionMapProps {
     DistrictProperties
   > | null;
   onSelectMix?: (mixLabel: string, districtIds: string[]) => void;
+  /** Metric values by org unit ID for tooltip display */
+  metricValuesByOrgUnit?: MetricValuesByOrgUnit;
 }
 
 /**
@@ -54,7 +64,10 @@ function MapAutoZoom({ selectedProvince }: { selectedProvince?: Province | null 
   return null;
 }
 
-export function InterventionMap({ selectedProvince, highlightedDistrictIds = [], districts, onSelectMix }: InterventionMapProps) {
+export function InterventionMap({ selectedProvince, highlightedDistrictIds = [], districts, onSelectMix, metricValuesByOrgUnit }: InterventionMapProps) {
+  // Selection state for district multi-select feature
+  const [selectedDistrictIds, setSelectedDistrictIds] = useState<Set<string>>(new Set());
+
   return (
     <div className="relative w-full h-full">
       <Map
@@ -66,6 +79,7 @@ export function InterventionMap({ selectedProvince, highlightedDistrictIds = [],
           selectedProvinceId={selectedProvince?.id ?? null}
           highlightedDistrictIds={highlightedDistrictIds}
           districts={districts}
+          metricValuesByOrgUnit={metricValuesByOrgUnit}
         />
         <MapAutoZoom selectedProvince={selectedProvince} />
         <MapControls
@@ -76,7 +90,10 @@ export function InterventionMap({ selectedProvince, highlightedDistrictIds = [],
           showFullscreen={false}
         />
       </Map>
+
+      {/* Map Legend 
       <MapLegend districts={districts} onSelectMix={onSelectMix} />
+      */}
     </div>
   );
 }
