@@ -1,0 +1,151 @@
+# Rule Exceptions & Collapsible Sections Implementation Progress
+
+## Tasks
+
+### Phase 1: Collapsible Sections
+- [x] 1. Install shadcn/ui collapsible component
+- [x] 2. Create CollapsibleSection reusable component
+- [x] 3. Wrap Selection Criteria section in CollapsibleSection
+- [x] 4. Wrap Assign Interventions section in CollapsibleSection
+- [x] 5. Add expand/collapse animation (150-200ms)
+
+### Phase 2: Exceptions Data Model
+- [x] 6. Update SavedRule type with excludedDistrictIds field
+- [x] 7. Update rule saving logic to persist exceptions
+- [x] 8. Update rule loading logic to restore exceptions
+- [x] 9. Update rule application logic to exclude excepted districts
+- [x] 10. Update map view to reflect exceptions
+- [ ] 11. Update list view to reflect exceptions
+
+### Phase 3: Exceptions UI
+- [ ] 12. Add Exceptions section placeholder in modal (wrapped in CollapsibleSection)
+- [ ] 13. Create ExceptionList component with empty state
+- [ ] 14. Create AddExceptionPopover component
+- [ ] 15. Implement district search/filter in popover
+- [ ] 16. Wire up add exception functionality
+- [ ] 17. Implement remove exception on hover (X icon)
+- [ ] 18. Add exceptions state management in RuleEditModal
+
+### Phase 4: Polish & Accessibility
+- [ ] 19. Add ARIA attributes to collapsible sections
+- [ ] 20. Add ARIA attributes to exception list
+- [ ] 21. Implement keyboard navigation for exceptions
+- [ ] 22. Handle edge cases (empty states, large district lists)
+- [ ] 23. Testing & QA
+
+## Status
+
+Current task: Task 10 completed
+Last updated: 2026-01-27
+
+## Completed Work
+
+### Task 1: Install shadcn/ui collapsible component
+- Installed @radix-ui/react-collapsible dependency via npm
+- Created src/components/ui/collapsible.tsx following shadcn/ui patterns
+- Exports: Collapsible, CollapsibleTrigger, CollapsibleContent
+- Commit: ee6bb1e
+
+### Task 2: Create CollapsibleSection reusable component
+- Created src/components/ui/collapsible-section.tsx
+- Features:
+  - Wraps Radix collapsible primitives in a reusable component
+  - Clickable header with title and chevron icon
+  - ChevronDown when expanded, ChevronRight when collapsed
+  - Hover state styling on the header
+  - Props: title, children, defaultOpen (default: true), className
+  - ARIA attributes (aria-expanded) for accessibility
+- Added collapsible animation keyframes to tailwind.config.ts
+  - collapsible-down: 150ms ease-out height animation
+  - collapsible-up: 150ms ease-out height animation
+- Commit: 03381c5
+
+### Task 3: Wrap Selection Criteria section in CollapsibleSection
+- Imported CollapsibleSection component in rule-edit-modal.tsx
+- Replaced the Selection Criteria section's outer `<div>` and `<h3>` with `<CollapsibleSection title="Selection Criteria">`
+- Section now collapses/expands with animated chevron and smooth height transition
+- Commit: 29897ef
+
+### Task 4: Wrap Assign Interventions section in CollapsibleSection
+- Replaced the Assign Interventions section's outer `<div>` and `<h3>` with `<CollapsibleSection title="Assign Interventions">`
+- Section now collapses/expands with animated chevron and smooth height transition
+- Both Selection Criteria and Assign Interventions sections are now collapsible
+- Commit: cc2c55e
+
+### Task 5: Add expand/collapse animation (150-200ms)
+- Updated CollapsibleSection to use a single ChevronDown icon instead of swapping between ChevronDown and ChevronRight
+- Added smooth 150ms ease-out rotation transition to the chevron icon
+- Chevron rotates -90° when collapsed (points right) and 0° when expanded (points down)
+- This matches the PRD requirement: "Chevron icon rotates 90° when collapsed"
+- Content height animation was already in place (150ms ease-out from Task 2)
+- Phase 1 (Collapsible Sections) is now complete
+- Commit: 8c63b8c
+
+### Task 6: Update SavedRule type with excludedDistrictIds field
+- Added `excludedDistrictIds?: string[]` field to the SavedRule interface in src/types/rule.ts
+- Field is optional (uses `?:`) to maintain backward compatibility with existing rules
+- Added JSDoc comment: "Array of district IDs to exclude from this rule's selection criteria"
+- Commit: 442cdd5
+
+### Task 7: Update rule saving logic to persist exceptions
+- Added `excludedDistrictIds` state variable to RuleEditModal (useState<string[]>([]))
+- When modal opens with existing rule, loads excludedDistrictIds from rule (using ?? [] for backward compatibility)
+- When creating new rule, initializes excludedDistrictIds to empty array
+- handleSave function now includes excludedDistrictIds in the SavedRule object
+- Only includes excludedDistrictIds in saved rule when array is non-empty (to keep data clean)
+- Added excludedDistrictIds to useCallback dependency array
+- Commit: 5a6ea23
+
+### Task 8: Update rule loading logic to restore exceptions
+- Added `excludedDistrictIds` to the rule serialization key in page.tsx
+- The useEffect that re-applies rules when savedRules changes now includes excludedDistrictIds in its change detection
+- This ensures that when exceptions are added/removed, the rule re-application logic triggers
+- Note: The actual modal loading was already implemented in Task 7 (line 195 in rule-edit-modal.tsx)
+- Commit: 101fe63
+
+### Task 9: Update rule application logic to exclude excepted districts
+- Modified src/app/page.tsx (lines 181-184): After finding matching districts via `findMatchingDistrictIds()`, added filtering step to remove districts present in `rule.excludedDistrictIds`
+- Modified src/hooks/use-district-rules.ts: Added exclusion check in `getLastMatchingRuleColor()` function - if a district is in a rule's `excludedDistrictIds`, the rule is skipped when determining the district's color
+- Both the map view and list/table view now correctly skip excluded districts when applying rule colors and interventions
+- Commit: 787fd1e
+
+### Task 10: Update map view to reflect exceptions
+- Verified that the map view already correctly reflects exceptions through the implementation in Task 9
+- The flow works as follows:
+  1. When savedRules changes (including excludedDistrictIds), the useEffect in page.tsx re-applies all rules
+  2. Default rule first resets all districts to baseline color (lines 141-163 in page.tsx)
+  3. Non-default rules apply to matching districts MINUS excluded ones (lines 181-184 filter out excludedDistrictIds)
+  4. updateDistricts() sets ruleColor on each district's properties
+  5. district-layer.tsx renders districts using ruleColor from GeoJSON properties
+- Excluded districts revert to their default rule color since they're not included in the rule's district list
+- No additional code changes required - Task 9's implementation already handles the map view correctly
+
+## Notes
+
+Reference files:
+- src/components/intervention-map/rules-sidebar/rule-edit-modal.tsx
+- src/types/rule.ts
+- src/hooks/use-district-rules.ts
+
+## Acceptance Criteria Checklist
+
+1. [ ] Edit Rule dialog displays three collapsible sections: Selection Criteria, Exceptions, Assign Interventions
+2. [ ] Clicking a section header toggles its collapsed/expanded state
+3. [ ] Collapsed sections show only the header with a right-pointing chevron
+4. [ ] Expanded sections show a down-pointing chevron and full content
+5. [ ] Exceptions section displays below Selection Criteria
+6. [ ] Empty exceptions state shows appropriate message
+7. [ ] "Add Exception" button opens a popover with matching districts
+8. [ ] Popover includes a search input to filter districts
+9. [ ] Clicking a district in the popover adds it to exceptions
+10. [ ] Popover closes after selecting a district
+11. [ ] Exceptions list shows all excluded districts
+12. [ ] Hovering an exception reveals a remove (X) icon
+13. [ ] Clicking the remove icon removes the district from exceptions
+14. [ ] Exceptions are saved with the rule
+15. [ ] Editing a rule restores previously saved exceptions
+16. [ ] Rules correctly exclude excepted districts when applied
+17. [ ] The map view is correctly updated upon exceptions definition
+18. [ ] The list view is correctly updated upon exceptions definition
+19. [ ] All interactions are keyboard accessible
+20. [ ] Proper ARIA attributes are used for accessibility
