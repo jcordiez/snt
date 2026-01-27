@@ -24,6 +24,7 @@ import { LegendSelectionPayload } from "@/types/intervention";
 import type { SavedRule } from "@/types/rule";
 import type { Rule } from "@/types/intervention";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { toast } from "sonner";
 
 // All metric IDs that have data files available - defined outside component
 // to maintain stable reference and prevent infinite re-fetch loops
@@ -424,12 +425,11 @@ export default function Home() {
                     }
                   }
 
-                  // Track how many districts were actually added as exceptions
-                  let addedCount = 0;
-
                   // Update savedRules - for each selected district, add it to matching rules' exceptions
+                  // We use the functional form to get the latest state and compute the count
                   setSavedRules((prevRules) => {
-                    return prevRules.map((rule) => {
+                    let addedCount = 0;
+                    const updatedRules = prevRules.map((rule) => {
                       // Find which selected districts match this rule's criteria
                       const districtsToExclude: string[] = [];
                       for (const districtId of districtIds) {
@@ -463,17 +463,26 @@ export default function Home() {
                         excludedDistrictIds: [...(rule.excludedDistrictIds ?? []), ...newExceptions],
                       };
                     });
-                  });
 
-                  console.log("Set as exceptions:", districtIds, "Added:", addedCount);
+                    // Show toast notification after computing the count
+                    // Use setTimeout to avoid calling toast during state update
+                    setTimeout(() => {
+                      if (addedCount > 0) {
+                        toast.success(`${addedCount} district${addedCount === 1 ? "" : "s"} added to exceptions`);
+                      } else {
+                        toast.info("0 districts added to exceptions (no matching rules)");
+                      }
+                    }, 0);
+
+                    console.log("Set as exceptions:", districtIds, "Added:", addedCount);
+                    return updatedRules;
+                  });
                 }}
                 onRemoveFromExceptions={(districtIds) => {
-                  // Track how many districts were actually removed from exceptions
-                  let removedCount = 0;
-
                   // Update savedRules - for each selected district, remove it from all rules' exception lists
                   setSavedRules((prevRules) => {
-                    return prevRules.map((rule) => {
+                    let removedCount = 0;
+                    const updatedRules = prevRules.map((rule) => {
                       // Find which selected districts are in this rule's exception list
                       const districtsToRemove = districtIds.filter((districtId) =>
                         findRulesWithDistrictAsException(districtId, [rule]).includes(rule.id)
@@ -497,9 +506,20 @@ export default function Home() {
                         excludedDistrictIds: newExcludedDistrictIds,
                       };
                     });
-                  });
 
-                  console.log("Remove from exceptions:", districtIds, "Removed:", removedCount);
+                    // Show toast notification after computing the count
+                    // Use setTimeout to avoid calling toast during state update
+                    setTimeout(() => {
+                      if (removedCount > 0) {
+                        toast.success(`${removedCount} district${removedCount === 1 ? "" : "s"} removed from exceptions`);
+                      } else {
+                        toast.info("0 districts removed from exceptions");
+                      }
+                    }, 0);
+
+                    console.log("Remove from exceptions:", districtIds, "Removed:", removedCount);
+                    return updatedRules;
+                  });
                 }}
               />
             )}
