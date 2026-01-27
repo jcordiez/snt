@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import type { Rule, RuleOperator } from "@/types/intervention";
 import type { DistrictProperties } from "@/data/districts";
+import type { SavedRule } from "@/types/rule";
 
 interface DistrictMetricValues {
   [districtId: string]: {
@@ -90,6 +91,9 @@ export function isRuleComplete(rule: Rule): boolean {
 /**
  * Finds all district IDs that match the given rules criteria.
  * This is a standalone utility function for use outside of React hooks.
+ *
+ * @param metricValuesByType - Optional map of metric type ID -> org unit ID -> value
+ *                             If provided, uses real values; otherwise falls back to mock data
  */
 export function findMatchingDistrictIds(
   districts: GeoJSON.FeatureCollection<
@@ -97,7 +101,8 @@ export function findMatchingDistrictIds(
     DistrictProperties
   > | null,
   rules: Rule[],
-  selectedProvinceId?: string | null
+  selectedProvinceId?: string | null,
+  metricValuesByType?: Record<number, Record<number, number>>
 ): string[] {
   if (!districts) return [];
 
@@ -116,7 +121,14 @@ export function findMatchingDistrictIds(
 
     // Check if all rules match (AND logic)
     const allRulesMatch = completeRules.every((rule) => {
-      const metricValue = generateMockMetricValue(districtId, rule.metricTypeId!);
+      // Use real metric values if provided, otherwise fall back to mock data
+      const metricValue = metricValuesByType
+        ? metricValuesByType[rule.metricTypeId!]?.[Number(districtId)]
+        : generateMockMetricValue(districtId, rule.metricTypeId!);
+
+      // Skip this rule if no data available for this district/metric combination
+      if (metricValue === undefined) return false;
+
       const threshold = Number(rule.value);
       return evaluateRule(metricValue, rule.operator, threshold);
     });
@@ -127,6 +139,67 @@ export function findMatchingDistrictIds(
   }
 
   return matchingIds;
+}
+
+/**
+ * Gets the color of the last matching rule for a given district.
+ * Rules are evaluated in order, and the last matching rule's color is returned.
+ *
+ * @param districtId - The district ID to check
+ * @param rules - Array of SavedRules to evaluate (in order)
+ * @param metricValues - Map of districtId -> metricTypeId -> value
+ * @returns The color of the last matching rule, or null if no rule matches
+ */
+export function getLastMatchingRuleColor(
+  districtId: string,
+  rules: SavedRule[],
+  metricValues: Record<string, Record<number, number>>
+): string | null {
+  let lastMatchingColor: string | null = null;
+  const districtMetrics = metricValues[districtId];
+
+  for (const rule of rules) {
+    // Check if this district is excluded from this rule
+    if (rule.excludedDistrictIds?.includes(districtId)) {
+      continue;
+    }
+
+    // isAllDistricts rules always match
+    if (rule.isAllDistricts) {
+      lastMatchingColor = rule.color;
+      continue;
+    }
+
+    // Skip rules with no criteria
+    if (rule.criteria.length === 0) {
+      continue;
+    }
+
+    // Check if all criteria match (AND logic)
+    const allCriteriaMatch = rule.criteria.every((criterion) => {
+      if (criterion.metricTypeId === null || criterion.value === "") {
+        return false;
+      }
+
+      const metricValue = districtMetrics?.[criterion.metricTypeId];
+      if (metricValue === undefined) {
+        return false;
+      }
+
+      const threshold = Number(criterion.value);
+      if (isNaN(threshold)) {
+        return false;
+      }
+
+      return evaluateRule(metricValue, criterion.operator, threshold);
+    });
+
+    if (allCriteriaMatch) {
+      lastMatchingColor = rule.color;
+    }
+  }
+
+  return lastMatchingColor;
 }
 
 export interface DistrictWithProperties {

@@ -178,20 +178,25 @@ export default function Home() {
         metricValuesByType
       );
 
-      if (matchingDistrictIds.length > 0 && rule.interventionsByCategory.size > 0) {
+      // Filter out excluded districts (exceptions)
+      const finalDistrictIds = rule.excludedDistrictIds?.length
+        ? matchingDistrictIds.filter((id) => !rule.excludedDistrictIds!.includes(id))
+        : matchingDistrictIds;
+
+      if (finalDistrictIds.length > 0 && rule.interventionsByCategory.size > 0) {
         const interventionMix = createInterventionMix(
           rule.interventionsByCategory,
           interventionCategories
         );
 
         updateDistricts(
-          matchingDistrictIds,
+          finalDistrictIds,
           interventionMix,
           interventionCategories,
           { replace: false, ruleColor: rule.color }
         );
 
-        console.log("Re-applied rule:", rule.title, "to", matchingDistrictIds.length, "districts");
+        console.log("Re-applied rule:", rule.title, "to", finalDistrictIds.length, "districts");
       }
     }
   }, [savedRules, districts, selectedProvince, interventionCategories, updateDistricts, metricValuesByType]);
