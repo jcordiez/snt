@@ -21,7 +21,7 @@
 - [x] 12. Add Exceptions section placeholder in modal (wrapped in CollapsibleSection)
 - [x] 13. Create ExceptionList component with empty state
 - [x] 14. Create AddExceptionPopover component
-- [ ] 15. Implement district search/filter in popover
+- [x] 15. Implement district search/filter in popover
 - [ ] 16. Wire up add exception functionality
 - [ ] 17. Implement remove exception on hover (X icon)
 - [ ] 18. Add exceptions state management in RuleEditModal
@@ -35,7 +35,7 @@
 
 ## Status
 
-Current task: Task 14 completed
+Current task: Task 15 completed
 Last updated: 2026-01-27
 
 ## Completed Work
@@ -171,6 +171,15 @@ Last updated: 2026-01-27
 - Props: matchingDistricts, excludedDistrictIds, onAddException
 - Component is ready to be wired up in RuleEditModal (Task 16)
 - Commit: 818efa0
+
+### Task 15: Implement district search/filter in popover
+- Search/filter functionality was already implemented as part of Task 14
+- Features already in place:
+  - Search input at top of popover with placeholder "Search districts..."
+  - Case-insensitive filtering via `filteredDistricts` useMemo
+  - Search query cleared when popover closes or when district is selected
+  - Proper empty state: "No districts match your search" when search yields no results
+- No additional code changes required
 
 ## Notes
 
