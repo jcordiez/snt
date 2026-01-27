@@ -474,7 +474,6 @@ export default function Home() {
                       }
                     }, 0);
 
-                    console.log("Set as exceptions:", districtIds, "Added:", addedCount);
                     return updatedRules;
                   });
                 }}
@@ -517,7 +516,6 @@ export default function Home() {
                       }
                     }, 0);
 
-                    console.log("Remove from exceptions:", districtIds, "Removed:", removedCount);
                     return updatedRules;
                   });
                 }}
