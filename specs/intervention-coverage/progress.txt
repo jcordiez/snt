@@ -26,19 +26,19 @@
 - [x] 4.2 Add aria-label="Coverage percentage" to Select component
 - [x] 4.3 Test keyboard navigation (Tab focus, arrow keys)
 - [x] 4.4 Test backward compatibility with existing rules (no coverage data)
-- [ ] 4.5 Verify local storage serialization/deserialization of coverageByCategory
-- [ ] 4.6 Test with various intervention combinations
+- [x] 4.5 Verify local storage serialization/deserialization of coverageByCategory
+- [x] 4.6 Test with various intervention combinations
 
 ## Acceptance Criteria Checklist
-- [ ] AC1: Coverage dropdown appears when intervention is selected
-- [ ] AC2: Dropdown positioned to left of Remove button
-- [ ] AC3: Dropdown shows 0%-100% in 10% increments
-- [ ] AC4: Default coverage is 70% for new selections
-- [ ] AC5: Coverage persists when saving rule
-- [ ] AC6: Editing rule restores saved coverage values
-- [ ] AC7: Rules without coverage data default to 70%
-- [ ] AC8: Rule cards display coverage next to intervention name
-- [ ] AC9: Format is "InterventionName (XX%)" with + separator
-- [ ] AC10: Removing intervention removes its coverage
-- [ ] AC11: Dropdown is keyboard accessible
-- [ ] AC12: Screen readers can access coverage info
+- [x] AC1: Coverage dropdown appears when intervention is selected
+- [x] AC2: Dropdown positioned to left of Remove button
+- [x] AC3: Dropdown shows 0%-100% in 10% increments
+- [x] AC4: Default coverage is 70% for new selections
+- [x] AC5: Coverage persists when saving rule
+- [x] AC6: Editing rule restores saved coverage values
+- [x] AC7: Rules without coverage data default to 70%
+- [x] AC8: Rule cards display coverage next to intervention name
+- [x] AC9: Format is "InterventionName (XX%)" with + separator
+- [x] AC10: Removing intervention removes its coverage
+- [x] AC11: Dropdown is keyboard accessible
+- [x] AC12: Screen readers can access coverage info
