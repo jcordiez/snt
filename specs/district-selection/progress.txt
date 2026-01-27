@@ -1,0 +1,259 @@
+# District Selection Feature - Implementation Progress
+
+## Status: IN PROGRESS
+
+Last updated: 2026-01-27
+
+---
+
+## Phase 1: Selection State & Click Handling
+
+### Tasks
+- [x] 1.1 Add selection state (selectedDistrictIds) to InterventionMap component
+- [x] 1.2 Create useDistrictSelection hook for state management
+- [x] 1.3 Add click event handler to DistrictLayer component
+- [x] 1.4 Implement Shift key detection for multi-select behavior
+- [x] 1.5 Create dedicated selection highlight layer (avoid conflict with existing highlight layer)
+- [x] 1.6 Update selection highlight layer when selectedDistrictIds changes
+- [x] 1.7 Prevent selection of inactive districts (outside selected province)
+
+### Acceptance Criteria Covered
+- [AC-1] Clicking a district on the map selects it (highlighted with blue border)
+- [AC-2] Clicking another district without Shift clears previous selection
+- [AC-3] Shift+clicking a district adds it to existing selection
+- [AC-4] Shift+clicking an already-selected district removes it from selection
+- [AC-14] Inactive districts cannot be selected
+
+---
+
+## Phase 2: Selection Widget UI
+
+### Tasks
+- [x] 2.1 Create SelectionWidget component
+- [x] 2.2 Add conditional rendering (only when selection non-empty)
+- [x] 2.3 Display selection count with proper pluralization
+- [x] 2.4 Position widget in top-left corner with proper z-index
+- [x] 2.5 Style widget (card appearance, shadow, border-radius)
+- [x] 2.6 Add "Set as exceptions" button (placeholder)
+- [x] 2.7 Add "Remove from exceptions" button (placeholder)
+- [x] 2.8 Integrate SelectionWidget into InterventionMap
+
+### Acceptance Criteria Covered
+- [AC-5] Selection widget appears when 1+ districts are selected
+- [AC-6] Selection widget is hidden when no districts are selected
+- [AC-7] Selection widget displays correct count
+- [AC-8] Selection widget uses singular form for single selection
+- [AC-16] Widget is positioned in top-left corner with proper spacing
+
+---
+
+## Phase 3: Exception Actions
+
+### Tasks
+- [x] 3.1 Implement logic to find rules matching selected districts
+- [x] 3.2 Implement "Set as exceptions" action
+- [x] 3.3 Implement "Remove from exceptions" action
+- [x] 3.4 Integrate with useDistrictRules hook for rule updates
+- [x] 3.5 Clear selection after action completes
+- [x] 3.6 Add toast notification system (if not existing)
+- [x] 3.7 Show toast confirmations with affected district count
+- [x] 3.8 Trigger map re-render after exception changes
+
+### Acceptance Criteria Covered
+- [AC-9] "Set as exceptions" button adds districts to matching rules' exception lists
+- [AC-10] "Remove from exceptions" button removes districts from all exception lists
+- [AC-11] Both buttons clear the selection after action completes
+- [AC-12] Toast notification confirms the action with count
+- [AC-13] Map visualization updates correctly after exception changes
+
+---
+
+## Phase 4: Polish & Edge Cases
+
+### Tasks
+- [x] 4.1 Disable buttons when no rules are defined
+- [x] 4.2 Add tooltips explaining disabled state
+- [x] 4.3 Handle "district not matched by any rule" edge case
+- [x] 4.4 Handle "district already an exception" edge case
+- [x] 4.5 Handle "district not in any exception list" edge case
+- [x] 4.6 Add aria-live region for selection changes
+- [x] 4.7 Add proper ARIA attributes to widget and buttons
+- [x] 4.8 Ensure keyboard navigation works (Tab, Enter/Space)
+- [ ] 4.9 Test all edge cases manually
+- [x] 4.10 Review and clean up console.log statements
+
+### Acceptance Criteria Covered
+- [AC-15] Buttons are disabled when no rules are defined
+- [AC-17] All interactions are accessible
+
+---
+
+## Files to Create/Modify
+
+### New Files
+- [x] src/components/intervention-map/selection-widget.tsx
+- [x] src/hooks/use-district-selection.ts
+
+### Files to Modify
+- [x] src/components/intervention-map/district-layer.tsx (add click handler, selection layer)
+- [x] src/components/intervention-map/intervention-map.tsx (integrate selection state & widget)
+
+---
+
+## Dependencies to Check
+
+- [x] Verify toast/notification system exists (sonner, react-hot-toast, or custom)
+- [ ] Review useDistrictRules hook for exception update capabilities
+- [x] Check if highlight layer conflicts with selection needs (resolved: created separate SELECTION_BORDER_LAYER_ID)
+
+---
+
+## Notes
+
+- The existing HIGHLIGHT_BORDER_LAYER_ID is used for "intervention wizard selection"
+  Consider creating a separate SELECTION_BORDER_LAYER_ID to avoid conflicts
+
+- Selection state should use string IDs (districtId from feature properties)
+
+- Need to ensure click events don't interfere with map pan/zoom
+
+---
+
+## Blockers
+
+(None identified yet)
+
+---
+
+## Completed Items Log
+
+### 2026-01-27
+- [x] 1.1 Add selection state (selectedDistrictIds) to InterventionMap component
+  - Added `useState<Set<string>>` for `selectedDistrictIds` in InterventionMap
+  - Imported `useState` from React
+  - Commit: 8775480
+
+- [x] 1.2 Create useDistrictSelection hook for state management
+  - Created `src/hooks/use-district-selection.ts` with:
+    - `selectDistrict(districtId, shiftKey)`: handles single-click (replace) and Shift+click (toggle)
+    - `clearSelection()`: clears all selections
+    - `isSelected(districtId)`: checks if a district is selected
+    - `selectionCount`: returns the number of selected districts
+  - Refactored InterventionMap to use the new hook instead of inline useState
+  - Commit: 1d6b3b0
+
+- [x] 1.3 Add click event handler to DistrictLayer component
+  - Added `onDistrictClick` prop to DistrictLayer interface
+  - Added useEffect with click handler on ACTIVE_FILL_LAYER_ID
+  - Handler extracts districtId from clicked feature and passes shift key state
+  - Only active (non-grayed-out) districts are clickable
+  - Commit: e21c700
+
+- [x] 1.4 Implement Shift key detection for multi-select behavior
+  - Implemented as part of 1.3 - click handler uses `e.originalEvent.shiftKey`
+  - The useDistrictSelection hook already handles shift key logic (toggle vs replace)
+  - Commit: e21c700
+
+- [x] 1.5 Create dedicated selection highlight layer (avoid conflict with existing highlight layer)
+  - Added `SELECTION_BORDER_LAYER_ID` constant for the new layer
+  - Created separate MapLibre line layer for selection visualization
+  - Blue border (3px, #3b82f6) as specified in PRD
+  - Keeps existing `HIGHLIGHT_BORDER_LAYER_ID` for intervention wizard selection
+  - Added cleanup in unmount effect
+  - Commit: 745a368
+
+- [x] 1.6 Update selection highlight layer when selectedDistrictIds changes
+  - Added `selectedDistrictIds` prop to DistrictLayer interface (Set<string>)
+  - Added useEffect to update SELECTION_BORDER_LAYER_ID filter when selection changes
+  - Passed selectedDistrictIds from InterventionMap to DistrictLayer
+  - Commit: 745a368
+
+- [x] 1.7 Prevent selection of inactive districts (outside selected province)
+  - Click handler was already attached only to ACTIVE_FILL_LAYER_ID (inactive districts not clickable)
+  - Added `activeDistrictIds` option to useDistrictSelection hook
+  - Hook now filters out selected districts when they become inactive (province change)
+  - InterventionMap computes activeDistrictIds based on selectedProvince and passes to hook
+  - Commit: 9513504
+
+- [x] 2.1-2.7 Create SelectionWidget component (all sub-tasks bundled)
+  - Created `src/components/intervention-map/selection-widget.tsx`
+  - Component displays selection count with singular/plural form
+  - Positioned in top-left corner with z-10, shadow-md, rounded-lg
+  - Two buttons: "Set as exceptions" and "Remove from exceptions"
+  - Buttons accept onClick callbacks and disabled state (for when no rules exist)
+  - Conditional rendering: returns null when selectionCount is 0
+  - Includes aria-live="polite" and role="region" for accessibility
+  - Commit: 525ac0f
+
+- [x] 2.8 Integrate SelectionWidget into InterventionMap
+  - Imported and rendered SelectionWidget in InterventionMap component
+  - Added hasRules, onSetAsExceptions, and onRemoveFromExceptions props to InterventionMapProps
+  - Created callback handlers (handleSetAsExceptions, handleRemoveFromExceptions) that:
+    - Convert selectedDistrictIds Set to array
+    - Call the parent callback with district IDs
+    - Clear selection after action
+  - Updated page.tsx to pass hasRules (savedRules.length > 0) and placeholder callbacks
+  - Phase 2 complete - SelectionWidget now appears when districts are selected
+  - Commit: 5a5681f
+
+- [x] 3.1 Implement logic to find rules matching selected districts
+  - Added `findRulesMatchingDistrict(districtId, rules, metricValues)` function
+    - Evaluates all SavedRule criteria against a district's metric values
+    - Skips isAllDistricts rules (they don't have meaningful criteria)
+    - Skips rules where district is already excluded
+    - Returns array of matching rule IDs
+  - Added `findRulesWithDistrictAsException(districtId, rules)` function
+    - Finds rules where district is already in excludedDistrictIds
+    - Used for "Remove from exceptions" action
+  - Both functions exported from `src/hooks/use-district-rules.ts`
+  - Commit: 12228c2
+
+- [x] 3.2 Implement "Set as exceptions" action
+  - Implemented onSetAsExceptions handler in page.tsx
+  - Transposes metricValuesByType to the format expected by findRulesMatchingDistrict
+    (from metricTypeId -> orgUnitId -> value to districtId -> metricTypeId -> value)
+  - For each selected district, checks all rules to find matches using findRulesMatchingDistrict
+  - Adds matching districts to rules' excludedDistrictIds arrays (avoiding duplicates)
+  - Updates savedRules state via setSavedRules, which triggers map re-render via existing useEffect
+  - Selection is cleared after action (handled by InterventionMap's handleSetAsExceptions)
+  - Commit: e05ca9e
+
+- [x] 3.3 Implement "Remove from exceptions" action
+  - Implemented onRemoveFromExceptions handler in page.tsx
+  - Uses findRulesWithDistrictAsException to identify which rules have each selected district
+    in their excludedDistrictIds array
+  - Removes the selected districts from those rules' exception lists
+  - Updates savedRules state via setSavedRules, which triggers map re-render via existing useEffect
+  - Selection is cleared after action (handled by InterventionMap's handleRemoveFromExceptions)
+  - Tasks 3.4, 3.5, 3.8 are also complete as they share the same mechanism as "Set as exceptions"
+  - Commit: 6f4106a
+
+- [x] 3.6 Add toast notification system (if not existing)
+  - Installed `sonner` package for toast notifications
+  - Added `<Toaster position="bottom-right" />` component to root layout (src/app/layout.tsx)
+  - Toast system is now globally available via `import { toast } from "sonner"`
+  - Commit: 0ca2f26
+
+- [x] 3.7 Show toast confirmations with affected district count
+  - Added toast notifications to onSetAsExceptions and onRemoveFromExceptions handlers in page.tsx
+  - "Set as exceptions" shows: "X district(s) added to exceptions" or "0 districts added to exceptions (no matching rules)"
+  - "Remove from exceptions" shows: "X district(s) removed from exceptions" or "0 districts removed from exceptions"
+  - Proper singular/plural form based on count
+  - Uses setTimeout(0) to avoid calling toast during React state update
+  - Commit: ccdbada
+
+- [x] 4.1-4.8 Phase 4 tasks (already implemented in earlier work)
+  - 4.1: Buttons have `disabled={!hasRules}` in SelectionWidget
+  - 4.2: Buttons have `title={!hasRules ? "No rules defined" : undefined}` for tooltip
+  - 4.3: Toast shows "0 districts added to exceptions (no matching rules)" when no rules match
+  - 4.4: `newExceptions` filters out already-excluded districts before adding
+  - 4.5: Toast shows "0 districts removed from exceptions" when district not in any exception list
+  - 4.6: SelectionWidget has `aria-live="polite"` on the container
+  - 4.7: SelectionWidget has `role="region"` and `aria-label="District selection"`
+  - 4.8: Uses native Button component which has built-in keyboard support (Tab, Enter/Space)
+  - All implemented in commits: 525ac0f (SelectionWidget), e05ca9e, 6f4106a, ccdbada
+
+- [x] 4.10 Review and clean up console.log statements
+  - Removed debug console.log in onSetAsExceptions handler
+  - Removed debug console.log in onRemoveFromExceptions handler
+  - Commit: 531673a
