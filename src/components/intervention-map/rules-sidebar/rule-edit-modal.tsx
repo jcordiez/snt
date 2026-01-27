@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { ExceptionList } from "./exception-list";
+import { AddExceptionPopover } from "./add-exception-popover";
 import { CollapsibleSection } from "@/components/ui/collapsible-section";
+import { useDistrictRules } from "@/hooks/use-district-rules";
+import type { DistrictProperties } from "@/data/districts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -167,6 +170,11 @@ interface RuleEditModalProps {
   onSave: (rule: SavedRule) => void;
   /** Function to look up district name by ID */
   getDistrictName: (districtId: string) => string;
+  /** Districts GeoJSON data for computing matching districts */
+  districts: GeoJSON.FeatureCollection<
+    GeoJSON.MultiPolygon | GeoJSON.Polygon,
+    DistrictProperties
+  > | null;
 }
 
 export function RuleEditModal({
@@ -179,6 +187,7 @@ export function RuleEditModal({
   interventionCategories,
   onSave,
   getDistrictName,
+  districts,
 }: RuleEditModalProps) {
   void _metricTypes;
 
@@ -187,6 +196,35 @@ export function RuleEditModal({
   const [criteria, setCriteria] = useState<RuleCriterion[]>([createEmptyCriterion()]);
   const [interventionsByCategory, setInterventionsByCategory] = useState<Map<number, number>>(new Map());
   const [excludedDistrictIds, setExcludedDistrictIds] = useState<string[]>([]);
+
+  // Convert criteria state to Rule format for the hook
+  const rulesForHook = useMemo(() => {
+    return criteria.map((c) => ({
+      id: c.id,
+      metricTypeId: c.metricTypeId,
+      operator: c.operator,
+      value: c.value,
+    }));
+  }, [criteria]);
+
+  // Get matching districts based on current criteria
+  const { matchingDistricts } = useDistrictRules({
+    districts,
+    rules: rulesForHook,
+    selectedProvinceId: null, // Don't filter by province in rule editor
+  });
+
+  // Convert matching districts to format expected by AddExceptionPopover
+  const matchingDistrictOptions = useMemo(() => {
+    return matchingDistricts.map((d) => ({
+      id: d.districtId,
+      name: d.districtName,
+    }));
+  }, [matchingDistricts]);
+
+  const handleAddException = useCallback((districtId: string) => {
+    setExcludedDistrictIds((prev) => [...prev, districtId]);
+  }, []);
 
   // Reset form when modal opens or rule changes
   useEffect(() => {
@@ -327,15 +365,11 @@ export function RuleEditModal({
               getDistrictName={getDistrictName}
               onRemove={handleRemoveException}
             />
-            <Button
-              variant="outline"
-              size="sm"
-              className="mt-3"
-              disabled
-            >
-              <Plus className="h-4 w-4 mr-1" />
-              Add Exception
-            </Button>
+            <AddExceptionPopover
+              matchingDistricts={matchingDistrictOptions}
+              excludedDistrictIds={excludedDistrictIds}
+              onAddException={handleAddException}
+            />
           </CollapsibleSection>
 
           {/* Interventions section */}

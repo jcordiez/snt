@@ -467,6 +467,7 @@ export default function Home() {
         interventionCategories={interventionCategories ?? []}
         onSave={handleSaveRule}
         getDistrictName={getDistrictName}
+        districts={districts}
       />
     </div>
   );
