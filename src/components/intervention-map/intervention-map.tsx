@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Map, MapControls, useMap } from "@/components/ui/map";
 import { DistrictLayer } from "./district-layer";
 import { MapLegend } from "./map-legend";
 import { countryConfig, Province, DistrictProperties } from "@/data/districts";
+import { useDistrictSelection } from "@/hooks/use-district-selection";
 
 /** Metric values by org unit ID for tooltip display */
 export interface MetricValuesByOrgUnit {
@@ -66,7 +67,7 @@ function MapAutoZoom({ selectedProvince }: { selectedProvince?: Province | null 
 
 export function InterventionMap({ selectedProvince, highlightedDistrictIds = [], districts, onSelectMix, metricValuesByOrgUnit }: InterventionMapProps) {
   // Selection state for district multi-select feature
-  const [selectedDistrictIds, setSelectedDistrictIds] = useState<Set<string>>(new Set());
+  const { selectedDistrictIds, selectDistrict, clearSelection, selectionCount } = useDistrictSelection();
 
   return (
     <div className="relative w-full h-full">
