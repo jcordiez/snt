@@ -18,9 +18,9 @@
 - [x] 11. Update list view to reflect exceptions
 
 ### Phase 3: Exceptions UI
-- [ ] 12. Add Exceptions section placeholder in modal (wrapped in CollapsibleSection)
-- [ ] 13. Create ExceptionList component with empty state
-- [ ] 14. Create AddExceptionPopover component
+- [x] 12. Add Exceptions section placeholder in modal (wrapped in CollapsibleSection)
+- [x] 13. Create ExceptionList component with empty state
+- [x] 14. Create AddExceptionPopover component
 - [ ] 15. Implement district search/filter in popover
 - [ ] 16. Wire up add exception functionality
 - [ ] 17. Implement remove exception on hover (X icon)
@@ -35,7 +35,7 @@
 
 ## Status
 
-Current task: Task 11 completed
+Current task: Task 14 completed
 Last updated: 2026-01-27
 
 ## Completed Work
@@ -130,6 +130,47 @@ Last updated: 2026-01-27
   - Don't get the rule's interventions (filtered out before updateDistricts)
   - Keep the default rule's color and interventions instead
 - No additional code changes required - Task 9's implementation already handles the list view correctly
+
+### Task 12: Add Exceptions section placeholder in modal (wrapped in CollapsibleSection)
+- Added a new CollapsibleSection titled "Exceptions" in rule-edit-modal.tsx
+- Positioned between Selection Criteria and Assign Interventions sections (per PRD)
+- Displays empty state message: "No exceptions. All matching districts will be included."
+- Shows list of excluded district IDs when exceptions exist (using existing excludedDistrictIds state)
+- Added disabled "Add Exception" button with Plus icon (will be enabled in Task 16)
+- Commit: 90a5435
+
+### Task 13: Create ExceptionList component with empty state
+- Created src/components/intervention-map/rules-sidebar/exception-list.tsx
+- Features:
+  - Displays empty state message: "No exceptions. All matching districts will be included."
+  - Shows list of excluded districts with district names (not just IDs)
+  - Remove icon (X) appears on hover with smooth opacity transition
+  - Keyboard support: Delete/Backspace to remove focused exception
+  - Proper ARIA attributes: role="list", role="listitem", aria-label on remove button
+  - Focus ring for accessibility
+- Updated RuleEditModal to accept getDistrictName prop
+- Added handleRemoveException callback to remove districts from exceptions
+- Updated page.tsx with getDistrictName helper function using useCallback
+- Passed getDistrictName to RuleEditModal
+- Commit: d5d9a64
+
+### Task 14: Create AddExceptionPopover component
+- Installed @radix-ui/react-popover dependency via npm
+- Created src/components/ui/popover.tsx following shadcn/ui patterns
+  - Exports: Popover, PopoverTrigger, PopoverContent, PopoverAnchor
+- Created src/components/intervention-map/rules-sidebar/add-exception-popover.tsx
+- Features:
+  - Popover anchored to "Add Exception" button
+  - Search input at top to filter district list
+  - Scrollable list of matching districts (max-height: 300px)
+  - Width: 280px (per PRD spec)
+  - Filters out districts already in exceptions list
+  - Empty states for: no matching districts, no search results, all excluded
+  - Clicking a district calls onAddException callback and closes popover
+  - Proper ARIA attributes: role="listbox", role="option", aria-selected
+- Props: matchingDistricts, excludedDistrictIds, onAddException
+- Component is ready to be wired up in RuleEditModal (Task 16)
+- Commit: 818efa0
 
 ## Notes
 
