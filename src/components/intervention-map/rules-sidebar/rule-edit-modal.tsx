@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Plus, Trash2 } from "lucide-react";
+import { CollapsibleSection } from "@/components/ui/collapsible-section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -9,8 +10,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
-  DialogDescription,
+  DialogFooter
 } from "@/components/ui/dialog";
 import {
   Select,
@@ -145,6 +145,16 @@ const DEFAULT_COLORS = [
   "#ec4899", "#06b6d4", "#84cc16", "#f97316", "#6366f1",
 ];
 
+// Default interventions for new rules (PRD Phase 7.1)
+// CM (Case Management) - Category 37, Intervention 78
+// Standard Pyrethroid Campaign - Category 40, Intervention 85
+// Standard Pyrethroid Routine - Category 41, Intervention 88
+const DEFAULT_INTERVENTIONS = new Map<number, number>([
+  [37, 78], // CM
+  [40, 85], // Standard Pyrethroid Campaign
+  [41, 88], // Standard Pyrethroid Routine
+]);
+
 interface RuleEditModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -187,7 +197,8 @@ export function RuleEditModal({
         setTitle(defaultTitle);
         setColor(defaultColor);
         setCriteria([createEmptyCriterion()]);
-        setInterventionsByCategory(new Map());
+        // Pre-select default interventions for new rules (PRD Phase 7.1)
+        setInterventionsByCategory(new Map(DEFAULT_INTERVENTIONS));
       }
     }
   }, [isOpen, rule, rulesCount]);
@@ -246,9 +257,7 @@ export function RuleEditModal({
       <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>{isEditing ? "Edit Rule" : "Create Rule"}</DialogTitle>
-          <DialogDescription>
-            Define criteria to select districts and assign interventions.
-          </DialogDescription>
+
         </DialogHeader>
 
         <div className="flex-1 overflow-y-auto space-y-6 py-4">
@@ -275,11 +284,7 @@ export function RuleEditModal({
           </div>
 
           {/* Criteria section */}
-          <div>
-            <h3 className="text-sm font-medium mb-3">Selection Criteria</h3>
-            <p className="text-xs text-muted-foreground mb-4">
-              Districts matching ALL criteria will be selected.
-            </p>
+          <CollapsibleSection title="Selection Criteria">
             <div className="space-y-3">
               {criteria.map((criterion) => (
                 <CriterionRow
@@ -301,14 +306,12 @@ export function RuleEditModal({
               <Plus className="h-4 w-4 mr-1" />
               Add Criterion
             </Button>
-          </div>
+          </CollapsibleSection>
 
           {/* Interventions section */}
           <div>
             <h3 className="text-sm font-medium mb-3">Assign Interventions</h3>
-            <p className="text-xs text-muted-foreground mb-4">
-              Select one intervention per category. Categories without a selection will not be included.
-            </p>
+            
             <div className="space-y-4">
               {interventionCategories.map((category) => {
                 const selectedValue = interventionsByCategory.get(category.id);
