@@ -22,7 +22,7 @@
 - [x] 3.4 Update RuleCard component to pass coverageByCategory to formatInterventionMix
 
 ## Phase 4: Polish
-- [ ] 4.1 Ensure proper tab order for coverage dropdown
+- [x] 4.1 Ensure proper tab order for coverage dropdown
 - [ ] 4.2 Add aria-label="Coverage percentage" to Select component
 - [ ] 4.3 Test keyboard navigation (Tab focus, arrow keys)
 - [ ] 4.4 Test backward compatibility with existing rules (no coverage data)
