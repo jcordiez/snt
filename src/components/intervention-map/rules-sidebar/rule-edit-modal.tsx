@@ -182,6 +182,7 @@ export function RuleEditModal({
   const [color, setColor] = useState(DEFAULT_COLORS[0]);
   const [criteria, setCriteria] = useState<RuleCriterion[]>([createEmptyCriterion()]);
   const [interventionsByCategory, setInterventionsByCategory] = useState<Map<number, number>>(new Map());
+  const [excludedDistrictIds, setExcludedDistrictIds] = useState<string[]>([]);
 
   // Reset form when modal opens or rule changes
   useEffect(() => {
@@ -191,6 +192,7 @@ export function RuleEditModal({
         setColor(rule.color);
         setCriteria(rule.criteria.length > 0 ? [...rule.criteria] : [createEmptyCriterion()]);
         setInterventionsByCategory(new Map(rule.interventionsByCategory));
+        setExcludedDistrictIds(rule.excludedDistrictIds ?? []);
       } else {
         const defaultTitle = `Category ${rulesCount + 1}`;
         const defaultColor = DEFAULT_COLORS[rulesCount % DEFAULT_COLORS.length];
@@ -199,6 +201,7 @@ export function RuleEditModal({
         setCriteria([createEmptyCriterion()]);
         // Pre-select default interventions for new rules (PRD Phase 7.1)
         setInterventionsByCategory(new Map(DEFAULT_INTERVENTIONS));
+        setExcludedDistrictIds([]);
       }
     }
   }, [isOpen, rule, rulesCount]);
@@ -241,11 +244,12 @@ export function RuleEditModal({
       color,
       criteria: validCriteria,
       interventionsByCategory: new Map(interventionsByCategory),
+      excludedDistrictIds: excludedDistrictIds.length > 0 ? excludedDistrictIds : undefined,
     };
 
     onSave(savedRule);
     onOpenChange(false);
-  }, [rule, title, color, criteria, interventionsByCategory, rulesCount, onSave, onOpenChange]);
+  }, [rule, title, color, criteria, interventionsByCategory, excludedDistrictIds, rulesCount, onSave, onOpenChange]);
 
   const isEditing = rule !== null;
   const hasValidCriteria = criteria.some((c) => c.metricTypeId !== null && c.value !== "");
