@@ -162,6 +162,9 @@ const DEFAULT_INTERVENTIONS = new Map<number, number>([
 // Default coverage percentage for interventions (PRD intervention-coverage)
 const DEFAULT_COVERAGE = 70;
 
+// Coverage percentage options (0-100 in increments of 10)
+const COVERAGE_OPTIONS = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+
 interface RuleEditModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
