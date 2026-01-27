@@ -6,6 +6,7 @@ import type MapLibreGL from "maplibre-gl";
 import { useMap } from "@/components/ui/map";
 import { getColorForInterventionMix, PREDEFINED_INTERVENTION_COLORS } from "@/lib/intervention-colors";
 import type { DistrictProperties } from "@/data/districts";
+import type { MetricValuesByOrgUnit } from "./intervention-map";
 
 const SOURCE_ID = "districts";
 // Active layer IDs (districts within selected province)
@@ -24,6 +25,10 @@ interface DistrictLayerProps {
     GeoJSON.MultiPolygon | GeoJSON.Polygon,
     DistrictProperties
   > | null;
+  /** Metric values by org unit ID for tooltip display */
+  metricValuesByOrgUnit?: MetricValuesByOrgUnit;
+  /** Callback when a district is clicked. Receives the district ID and whether shift key was held. */
+  onDistrictClick?: (districtId: string, shiftKey: boolean) => void;
 }
 
 // Helper function to build color expression from districts data
@@ -69,7 +74,7 @@ function buildColorExpression(
   ] as unknown as MapLibreGL.ExpressionSpecification;
 }
 
-export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [], districts }: DistrictLayerProps) {
+export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [], districts, metricValuesByOrgUnit, onDistrictClick }: DistrictLayerProps) {
   const { map, isLoaded } = useMap();
   const layersAdded = useRef(false);
   const popupRef = useRef<maplibregl.Popup | null>(null);
@@ -356,6 +361,30 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
     map.triggerRepaint();
   }, [isLoaded, map, mixColorMap, districts]);
 
+  // Click handler for district selection
+  useEffect(() => {
+    if (!isLoaded || !map || !onDistrictClick) return;
+
+    const handleClick = (e: MapLibreGL.MapMouseEvent & { features?: MapLibreGL.MapGeoJSONFeature[] }) => {
+      if (!e.features?.length) return;
+
+      const props = e.features[0].properties;
+      const districtId = props.districtId;
+
+      if (districtId) {
+        // Pass the district ID and whether shift was held
+        onDistrictClick(String(districtId), e.originalEvent.shiftKey);
+      }
+    };
+
+    // Only attach click handler to ACTIVE fill layer (inactive districts are not clickable)
+    map.on("click", ACTIVE_FILL_LAYER_ID, handleClick);
+
+    return () => {
+      map.off("click", ACTIVE_FILL_LAYER_ID, handleClick);
+    };
+  }, [isLoaded, map, onDistrictClick]);
+
   // Tooltip on hover (only for active layer - inactive districts have no interaction)
   useEffect(() => {
     if (!isLoaded || !map) return;
@@ -375,12 +404,24 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
 
       const props = e.features[0].properties;
       const mixLabel = props.interventionMixLabel || "CM";
-     
+
       // Split the intervention mix label (e.g., "CM + IPTp + Dual AI") into individual interventions
       const interventions = mixLabel.split(" + ");
       const interventionList = interventions
         .map((intervention: string) => `• ${intervention}`)
         .join("<br>");
+
+      // Get metric values for this district
+      const districtId = Number(props.districtId);
+
+      const formatMetric = (value: number | undefined, decimals: number = 2): string => {
+        return value !== undefined ? value.toFixed(decimals) : "N/A";
+      };
+
+      const mortalityValue = formatMetric(metricValuesByOrgUnit?.mortality?.[districtId], 1);
+      const incidenceValue = formatMetric(metricValuesByOrgUnit?.incidence?.[districtId], 1);
+      const resistanceValue = formatMetric(metricValuesByOrgUnit?.resistance?.[districtId], 2);
+      const seasonalityValue = formatMetric(metricValuesByOrgUnit?.seasonality?.[districtId], 2);
 
       map.getCanvas().style.cursor = "pointer";
 
@@ -388,7 +429,25 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
         .setLngLat(e.lngLat)
         .setHTML(`
           <strong>${props.districtName}</strong>
-          <div style="margin-top: 4px; font-size: 12px; color: #666;">Interventions:</div>
+          <table style="margin-top: 6px; font-size: 12px; border-collapse: collapse;">
+            <tr>
+              <td style="color: #666; padding-right: 8px;">Mortality:</td>
+              <td style="text-align: right;">${mortalityValue}</td>
+            </tr>
+            <tr>
+              <td style="color: #666; padding-right: 8px;">Incidence:</td>
+              <td style="text-align: right;">${incidenceValue}</td>
+            </tr>
+            <tr>
+              <td style="color: #666; padding-right: 8px;">Insecticide Resistance:</td>
+              <td style="text-align: right;">${resistanceValue}</td>
+            </tr>
+            <tr>
+              <td style="color: #666; padding-right: 8px;">Seasonality:</td>
+              <td style="text-align: right;">${seasonalityValue}</td>
+            </tr>
+          </table>
+          <div style="margin-top: 6px; font-size: 12px; color: #666;">Interventions:</div>
           <div style="margin-top: 2px; font-size: 12px;">${interventionList}</div>
         `)
         .addTo(map);
@@ -408,7 +467,7 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
       map.off("mouseleave", ACTIVE_FILL_LAYER_ID, handleMouseLeave);
       popup.remove();
     };
-  }, [isLoaded, map]);
+  }, [isLoaded, map, metricValuesByOrgUnit]);
 
   return null;
 }

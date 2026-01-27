@@ -81,6 +81,7 @@ export function InterventionMap({ selectedProvince, highlightedDistrictIds = [],
           highlightedDistrictIds={highlightedDistrictIds}
           districts={districts}
           metricValuesByOrgUnit={metricValuesByOrgUnit}
+          onDistrictClick={selectDistrict}
         />
         <MapAutoZoom selectedProvince={selectedProvince} />
         <MapControls
