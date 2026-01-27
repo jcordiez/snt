@@ -25,7 +25,7 @@
 - [x] 4.1 Ensure proper tab order for coverage dropdown
 - [x] 4.2 Add aria-label="Coverage percentage" to Select component
 - [x] 4.3 Test keyboard navigation (Tab focus, arrow keys)
-- [ ] 4.4 Test backward compatibility with existing rules (no coverage data)
+- [x] 4.4 Test backward compatibility with existing rules (no coverage data)
 - [ ] 4.5 Verify local storage serialization/deserialization of coverageByCategory
 - [ ] 4.6 Test with various intervention combinations
 
