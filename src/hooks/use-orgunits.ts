@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import type { DistrictProperties, InterventionStatus, Province, OrgUnitWithGeoJSON } from "@/data/districts";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "@/lib/query-keys";
+import type { DistrictProperties, InterventionStatus, OrgUnitWithGeoJSON } from "@/data/districts";
 import { extractProvinces } from "@/data/districts";
 import type { InterventionMix, InterventionCategory, Intervention } from "@/types/intervention";
 
@@ -158,45 +160,48 @@ function transformOrgUnitsToGeoJSON(
   };
 }
 
+async function fetchOrgUnits(): Promise<OrgUnit[]> {
+  const response = await fetch("/api/orgunits");
+  if (!response.ok) {
+    throw new Error("Failed to fetch org units data");
+  }
+  return response.json();
+}
+
 export function useOrgUnits() {
+  // Fetch raw org units data with React Query
+  const query = useQuery({
+    queryKey: queryKeys.orgUnits,
+    queryFn: fetchOrgUnits,
+    staleTime: Infinity, // Geographic data rarely changes
+  });
+
+  // Local state for GeoJSON data that can be modified by updateDistricts
   const [data, setData] = useState<GeoJSON.FeatureCollection<
     GeoJSON.MultiPolygon | GeoJSON.Polygon,
     DistrictProperties
   > | null>(null);
-  const [provinces, setProvinces] = useState<Province[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
 
+  // Compute provinces from raw data (memoized)
+  const provinces = useMemo(() => {
+    if (!query.data) return [];
+    const orgUnitsWithGeoJSON: OrgUnitWithGeoJSON[] = query.data.map((unit) => ({
+      id: unit.id,
+      name: unit.name,
+      parent_id: unit.parent_id,
+      parent_name: unit.parent_name,
+      geo_json: unit.geo_json,
+    }));
+    return extractProvinces(orgUnitsWithGeoJSON);
+  }, [query.data]);
+
+  // Initialize GeoJSON data when query data is available
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch("/api/orgunits");
-        if (!response.ok) {
-          throw new Error("Failed to fetch org units data");
-        }
-        const orgUnits: OrgUnit[] = await response.json();
-        const geoJSON = transformOrgUnitsToGeoJSON(orgUnits);
-        setData(geoJSON);
-
-        // Extract provinces from org units
-        const orgUnitsWithGeoJSON: OrgUnitWithGeoJSON[] = orgUnits.map((unit) => ({
-          id: unit.id,
-          name: unit.name,
-          parent_id: unit.parent_id,
-          parent_name: unit.parent_name,
-          geo_json: unit.geo_json,
-        }));
-        const extractedProvinces = extractProvinces(orgUnitsWithGeoJSON);
-        setProvinces(extractedProvinces);
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error("Unknown error"));
-      } finally {
-        setIsLoading(false);
-      }
+    if (query.data && !data) {
+      const geoJSON = transformOrgUnitsToGeoJSON(query.data);
+      setData(geoJSON);
     }
-
-    fetchData();
-  }, []);
+  }, [query.data, data]);
 
   /**
    * Updates district properties with intervention mix data.
@@ -286,5 +291,8 @@ export function useOrgUnits() {
     });
   }, []);
 
-  return { data, provinces, isLoading, error, updateDistricts };
+  // Loading state: true while fetching OR before GeoJSON is initialized
+  const isLoading = query.isLoading || (query.data !== undefined && data === null);
+
+  return { data, provinces, isLoading, error: query.error, updateDistricts };
 }

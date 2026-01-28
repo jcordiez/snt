@@ -9,11 +9,11 @@
 - [x] Update /src/app/layout.tsx to use Providers
 
 ## Phase 2: Migrate Static Data Hooks
-- [ ] Migrate useOrgUnits hook
-  - [ ] Replace useEffect/useState with useQuery
-  - [ ] Preserve geoJson and provinces computed values
-  - [ ] Preserve updateDistricts callback functionality
-  - [ ] Test in plan page
+- [x] Migrate useOrgUnits hook
+  - [x] Replace useEffect/useState with useQuery
+  - [x] Preserve geoJson and provinces computed values
+  - [x] Preserve updateDistricts callback functionality
+  - [x] Test in plan page (build passed)
 - [ ] Migrate useInterventionCategories hook
   - [ ] Replace useEffect/useState with useQuery
   - [ ] Verify return type compatibility
@@ -60,7 +60,7 @@
   - [ ] Verify no memory leaks
 
 ## Notes
--
+- useOrgUnits migration uses hybrid approach: useQuery for fetching + useState for mutable GeoJSON data (required for updateDistricts callback)
 
 ## Issues Encountered
 -
