@@ -26,7 +26,7 @@ export function ComparisonSidebar({
     <div
       className={`w-80 border-l flex flex-col h-full bg-background transition-[margin] duration-300 ease-in-out shrink-0 ${
         isOpen ? "mr-0" : "-mr-80"
-      }`}
+      } max-lg:absolute max-lg:right-0 max-lg:top-0 max-lg:z-10 max-lg:shadow-lg`}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b">

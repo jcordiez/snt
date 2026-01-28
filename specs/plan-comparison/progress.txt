@@ -31,7 +31,7 @@
 
 ## Phase 5: Polish & Integration
 - [x] Add slide animation for sidebar open/close
-- [ ] Ensure responsive behavior
+- [x] Ensure responsive behavior
 - [ ] Performance optimization
 - [ ] Test with all plan combinations
 
@@ -111,3 +111,11 @@
 - Added `overflow-hidden` to the `<main>` container to prevent horizontal scroll when sidebar slides out
 - Sidebar now smoothly slides in from the right when opened and slides out when closed
 - All TypeScript and ESLint checks pass, build succeeds
+
+### 2026-01-28: Ensure responsive behavior for comparison sidebar
+
+- On screens below `lg` breakpoint (< 1024px), the comparison sidebar now overlays the map content using absolute positioning instead of pushing content aside
+- Added `max-lg:absolute max-lg:right-0 max-lg:top-0 max-lg:z-10 max-lg:shadow-lg` to the sidebar container so it floats above content on smaller screens
+- Added `relative` to the `<main>` container so the absolute sidebar positions correctly
+- On larger screens (>= 1024px), the sidebar continues to push content as before
+- All TypeScript checks pass

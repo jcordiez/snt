@@ -461,7 +461,7 @@ export default function PlanPage() {
       </header>
 
       {/* Main Content: Two columns below header */}
-      <main className="flex-1 flex min-h-0 overflow-hidden">
+      <main className="flex-1 flex min-h-0 overflow-hidden relative">
 
          {/* Rules Sidebar - extends full height below header */}
          <RulesSidebar
