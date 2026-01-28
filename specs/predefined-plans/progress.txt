@@ -2,7 +2,7 @@
 
 ## Phase 1: Routing Structure
 - [x] Create `/plan/[planId]/page.tsx` route
-- [ ] Create `/plan/page.tsx` for new plans
+- [x] Create `/plan/page.tsx` for new plans
 - [ ] Modify `/page.tsx` to show welcome screen
 - [ ] Update sidebar navigation links
 
@@ -65,3 +65,8 @@
   - Rules are initialized from plan definition on component mount
   - Existing map/list/budget views work unchanged
   - Invalid plan IDs show error message
+- [2026-01-28] Phase 1.2: Create `/plan/page.tsx` for new plans
+  - Created new plan page at `/plan` route
+  - Initializes with default rule (CM + Standard Pyrethroid Campaign/Routine)
+  - Uses `getDefaultRulesForNewPlan()` from predefined-plans.ts
+  - Full map/list/budget views work, rules can be added/edited

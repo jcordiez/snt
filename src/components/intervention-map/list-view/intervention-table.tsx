@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check } from "lucide-react";
+import { CircleCheck } from "lucide-react";
 import type { DistrictProperties } from "@/data/districts";
 import type { InterventionCategory, Intervention } from "@/types/intervention";
 import type { SavedRule } from "@/types/rule";
@@ -177,7 +177,7 @@ export function InterventionTable({
             const isHovered = hoveredDistrictId === district.districtId;
             const isSelected = selectedDistrictId === district.districtId;
             // Selected: 50%, Hovered (not selected): 45%, Default: 30%
-            const opacity = isSelected ? 0.5 : (isHovered ? 0.45 : 0.3);
+            const opacity = isSelected ? 0.3 : (isHovered ? 0.2 : 0.1);
             // Always set background-color (even transparent) so transitions work
             // when rule colors change or rules are deleted
             const rowStyle = {
@@ -211,8 +211,8 @@ export function InterventionTable({
                     item.categoryId,
                     item.intervention.id
                   ) && (
-                    <Check
-                      className="inline-block h-4 w-4 text-green-600"
+                    <CircleCheck
+                      className="inline-block h-4 w-4 text-white fill-black"
                       aria-label="Assigned"
                     />
                   )}

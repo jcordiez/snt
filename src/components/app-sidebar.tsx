@@ -5,22 +5,44 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useSidebarKeyboardNav } from "@/hooks/use-sidebar-keyboard-nav"
 import {
+  Calculator,
   CircleDollarSign,
   CircleHelp,
   CircleUser,
-  FileText,
   GitCompareArrows,
   Layers,
-  Map,
   MessageSquareMore,
   Plus,
+  Search,
 } from "lucide-react"
+
+function RDCFlag({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 4 3"
+      className={className}
+      role="img"
+      aria-label="Democratic Republic of Congo flag"
+    >
+      {/* Sky blue background */}
+      <rect width="4" height="3" fill="#007FFF" />
+      {/* Yellow border of diagonal stripe */}
+      <polygon points="0,2.35 0,3 0.5,3 4,0.65 4,0 3.5,0" fill="#F7D618" />
+      {/* Red diagonal stripe */}
+      <polygon points="0,2.5 0,3 0.35,3 4,0.5 4,0 3.65,0" fill="#CE1021" />
+      {/* Yellow star */}
+      <polygon
+        points="0.5,0.15 0.56,0.35 0.77,0.35 0.61,0.48 0.67,0.68 0.5,0.55 0.33,0.68 0.39,0.48 0.23,0.35 0.44,0.35"
+        fill="#F7D618"
+      />
+    </svg>
+  )
+}
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupAction,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
@@ -73,6 +95,8 @@ export function AppSidebar() {
     setIsDialogOpen(false)
   }
 
+  const colors = ["#FFC107","#673AB7","#3D74FF","#FF9800","#F44336","#9C27B0","#2196F3","#00BCD4","#8BC34A","#FF5722","#607D8B"]
+
   return (
     <Sidebar ref={sidebarRef} variant="inset" collapsible="icon">
       <SidebarHeader>
@@ -80,13 +104,13 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  <Map className="size-4" />
+                <div className="flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg">
+                  <RDCFlag className="size-8" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">SNT</span>
+                  <span className="truncate font-semibold">Democratic Republic of Congo</span>
                   <span className="truncate text-xs text-muted-foreground">
-                    Subnational Tailoring
+                    Subnational Malaria Tailoring
                   </span>
                 </div>
               </Link>
@@ -96,72 +120,61 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
-        {/* Plans Group */}
-        <SidebarGroup>
-          <SidebarGroupLabel>Plans</SidebarGroupLabel>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <SidebarGroupAction title="Create new plan">
-                <Plus className="size-4" />
-                <span className="sr-only">Create new plan</span>
-              </SidebarGroupAction>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Create new plan</DialogTitle>
-                <DialogDescription>
-                  Enter a name for your new plan. You can change this later.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="py-4">
-                <Input
-                  placeholder="Plan name"
-                  value={newPlanName}
-                  onChange={(e) => setNewPlanName(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      handleCreatePlan()
-                    }
-                  }}
-                />
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={handleCreatePlan} disabled={!newPlanName.trim()}>
-                  Create
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {plans.map((plan) => (
-                <SidebarMenuItem key={plan.id}>
-                  <SidebarMenuButton
-                    isActive={activePlanId === plan.id}
-                    onClick={() => setActivePlanId(plan.id)}
-                    tooltip={plan.name}
-                  >
-                    <FileText className="size-4" />
-                    <span>{plan.name}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {/* Scenario Comparisons */}
+        {/* Actions Group */}
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Scenario comparisons" isActive={pathname === "/scenario-comparisons"}>
-                  <Link href="/scenario-comparisons">
+                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                  <DialogTrigger asChild>
+                    <SidebarMenuButton tooltip="New plan">
+                      <Plus className="size-4" />
+                      <span>New plan</span>
+                    </SidebarMenuButton>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Create new plan</DialogTitle>
+                      <DialogDescription>
+                        Enter a name for your new plan. You can change this later.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="py-4">
+                      <Input
+                        placeholder="Plan name"
+                        value={newPlanName}
+                        onChange={(e) => setNewPlanName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            handleCreatePlan()
+                          }
+                        }}
+                      />
+                    </div>
+                    <DialogFooter>
+                      <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                        Cancel
+                      </Button>
+                      <Button onClick={handleCreatePlan} disabled={!newPlanName.trim()}>
+                        Create
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Search plans">
+                  <Link href="/search">
+                    <Search className="size-4" />
+                    <span>Search plans</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Compare plans">
+                  <Link href="/compare">
                     <GitCompareArrows className="size-4" />
-                    <span>Scenario comparisons</span>
+                    <span>Compare plans</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -169,26 +182,19 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Layers */}
+        {/* Settings Group */}
         <SidebarGroup>
+          <SidebarGroupLabel>Settings</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Layers" isActive={pathname === "/layers"}>
+                <SidebarMenuButton asChild tooltip="Metric layers" isActive={pathname === "/layers"}>
                   <Link href="/layers">
                     <Layers className="size-4" />
-                    <span>Layers</span>
+                    <span>Metric layers</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {/* Cost Settings */}
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Cost settings" isActive={pathname === "/cost-settings"}>
                   <Link href="/cost-settings">
@@ -197,9 +203,40 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Composite scores" isActive={pathname === "/composite-scores"}>
+                  <Link href="/composite-scores">
+                    <Calculator className="size-4" />
+                    <span>Composite scores</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {/* Plans Group */}
+        
+       <SidebarGroup>
+          <SidebarGroupLabel>Plans</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {plans.map((plan, index) => (
+                <SidebarMenuItem key={plan.id}>
+                  <SidebarMenuButton
+                    isActive={activePlanId === plan.id}
+                    onClick={() => setActivePlanId(plan.id)}
+                    tooltip={plan.name}
+                  >
+                    <div className={`size-4 rounded-full`} style={{ backgroundColor: colors[index] }} />
+                    <span>{plan.name}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
       </SidebarContent>
 
       <SidebarFooter>
