@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useSidebarKeyboardNav } from "@/hooks/use-sidebar-keyboard-nav"
@@ -51,51 +50,17 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { PREDEFINED_PLANS } from "@/data/predefined-plans"
 
-interface Plan {
-  id: string
-  name: string
-}
-
-const initialPlans: Plan[] = [
-  { id: "bau", name: "BAU" },
-  { id: "nsp-2026-30", name: "NSP 2026-30" },
-]
+const PLAN_COLORS = ["#FFC107", "#673AB7", "#3D74FF", "#FF9800", "#F44336", "#9C27B0", "#2196F3", "#00BCD4", "#8BC34A", "#FF5722", "#607D8B"]
 
 export function AppSidebar() {
   const pathname = usePathname()
   const sidebarRef = useSidebarKeyboardNav()
-  const [activePlanId, setActivePlanId] = useState<string>("nsp-2026-30")
-  const [plans, setPlans] = useState<Plan[]>(initialPlans)
-  const [newPlanName, setNewPlanName] = useState("")
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-  const handleCreatePlan = () => {
-    if (!newPlanName.trim()) return
-
-    const newPlan: Plan = {
-      id: newPlanName.toLowerCase().replace(/\s+/g, "-"),
-      name: newPlanName.trim(),
-    }
-
-    setPlans([...plans, newPlan])
-    setActivePlanId(newPlan.id)
-    setNewPlanName("")
-    setIsDialogOpen(false)
-  }
-
-  const colors = ["#FFC107","#673AB7","#3D74FF","#FF9800","#F44336","#9C27B0","#2196F3","#00BCD4","#8BC34A","#FF5722","#607D8B"]
+  // Determine active plan from URL
+  const isNewPlanActive = pathname === "/plan"
+  const activePlanId = pathname.startsWith("/plan/") ? pathname.split("/")[2] : null
 
   return (
     <Sidebar ref={sidebarRef} variant="inset" collapsible="icon">
@@ -125,42 +90,12 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                  <DialogTrigger asChild>
-                    <SidebarMenuButton tooltip="New plan">
-                      <Plus className="size-4" />
-                      <span>New plan</span>
-                    </SidebarMenuButton>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Create new plan</DialogTitle>
-                      <DialogDescription>
-                        Enter a name for your new plan. You can change this later.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="py-4">
-                      <Input
-                        placeholder="Plan name"
-                        value={newPlanName}
-                        onChange={(e) => setNewPlanName(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            handleCreatePlan()
-                          }
-                        }}
-                      />
-                    </div>
-                    <DialogFooter>
-                      <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                        Cancel
-                      </Button>
-                      <Button onClick={handleCreatePlan} disabled={!newPlanName.trim()}>
-                        Create
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
+                <SidebarMenuButton asChild tooltip="New plan" isActive={isNewPlanActive}>
+                  <Link href="/plan">
+                    <Plus className="size-4" />
+                    <span>New plan</span>
+                  </Link>
+                </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Search plans">
@@ -217,19 +152,21 @@ export function AppSidebar() {
 
         {/* Plans Group */}
         
-       <SidebarGroup>
+        <SidebarGroup>
           <SidebarGroupLabel>Plans</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {plans.map((plan, index) => (
+              {PREDEFINED_PLANS.map((plan, index) => (
                 <SidebarMenuItem key={plan.id}>
                   <SidebarMenuButton
+                    asChild
                     isActive={activePlanId === plan.id}
-                    onClick={() => setActivePlanId(plan.id)}
                     tooltip={plan.name}
                   >
-                    <div className={`size-4 rounded-full`} style={{ backgroundColor: colors[index] }} />
-                    <span>{plan.name}</span>
+                    <Link href={`/plan/${plan.id}`}>
+                      <div className="size-4 rounded-full" style={{ backgroundColor: PLAN_COLORS[index % PLAN_COLORS.length] }} />
+                      <span>{plan.name}</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

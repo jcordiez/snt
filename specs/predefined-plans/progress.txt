@@ -4,7 +4,7 @@
 - [x] Create `/plan/[planId]/page.tsx` route
 - [x] Create `/plan/page.tsx` for new plans
 - [x] Modify `/page.tsx` to show welcome screen
-- [ ] Update sidebar navigation links
+- [x] Update sidebar navigation links
 
 ## Phase 2: Predefined Plans Data
 - [x] Create `src/data/predefined-plans.ts`
@@ -77,3 +77,11 @@
   - Guidance directs users to select a plan from sidebar or create new
   - Responsive centered layout with appropriate typography
   - Sidebar remains accessible via SidebarTrigger
+- [2026-01-28] Phase 1.4: Update sidebar navigation links
+  - Clicking "BAU" now navigates to `/plan/bau`
+  - Clicking "NSP 2026-30" now navigates to `/plan/nsp-2026-30`
+  - Clicking "New plan" now navigates to `/plan` (removed dialog)
+  - Active plan is now determined from URL pathname instead of local state
+  - "New plan" shows active state when at `/plan` route
+  - Plans list is now dynamically loaded from PREDEFINED_PLANS constant
+  - Removed unused Dialog, Button, Input component imports and useState hooks
