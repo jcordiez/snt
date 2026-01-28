@@ -2,11 +2,11 @@
 
 ## Phase 1: Sidebar Infrastructure
 - [x] Create comparison-sidebar component structure
-- [ ] Implement toggle button ("Compare...") in plan editor toolbar
-- [ ] Position toggle button right of "Export plan" button
-- [ ] Set up sidebar open/close state management
-- [ ] Integrate sidebar as sibling to intervention map in page layout
-- [ ] Style sidebar container (width, border, background)
+- [x] Implement toggle button ("Compare...") in plan editor toolbar
+- [x] Position toggle button right of "Export plan" button
+- [x] Set up sidebar open/close state management
+- [x] Integrate sidebar as sibling to intervention map in page layout
+- [x] Style sidebar container (width, border, background)
 
 ## Phase 2: Plan Cards
 - [x] Create plan-comparison-card component
@@ -58,4 +58,13 @@
   - Ring highlight for current plan card
   - Amber badge styling for "Edited" state
 - Created `index.ts` for exports
+- All TypeScript and ESLint checks pass
+
+### 2026-01-28: Implemented toggle button and sidebar integration
+
+- Added "Compare..." button to plan page header, positioned to the right of "Export Plan" button
+- Button toggles between `outline` (inactive) and `secondary` (active) variants
+- Added `isComparisonOpen` state to manage sidebar visibility
+- Integrated `ComparisonSidebar` component as sibling to main content in the `<main>` element
+- Sidebar slides in from the right when toggled open
 - All TypeScript and ESLint checks pass
