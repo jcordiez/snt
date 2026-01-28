@@ -18,10 +18,11 @@
   - [x] Replace useEffect/useState with useQuery
   - [x] Verify return type compatibility
   - [x] Test in plan page (build passed)
-- [ ] Migrate useMetricTypes hook
-  - [ ] Replace useEffect/useState with useQuery
-  - [ ] Preserve groupedByCategory computed value
-  - [ ] Test in plan page and layers page
+- [x] Migrate useMetricTypes hook
+  - [x] Replace useEffect/useState with useQuery
+  - [x] Preserve groupedByCategory computed value (using useMemo)
+  - [x] Preserve addMetric callback with local state for client-side metrics
+  - [x] Test in plan page and layers page (build passed)
 
 ## Phase 3: Migrate Parameterized Hooks
 - [ ] Migrate useMetricValues hook
@@ -61,13 +62,14 @@
 
 ## Notes
 - useOrgUnits migration uses hybrid approach: useQuery for fetching + useState for mutable GeoJSON data (required for updateDistricts callback)
+- useMetricTypes migration uses hybrid approach: useQuery for fetching + useState for locally added metrics (required for addMetric callback)
 
 ## Issues Encountered
 -
 
 ## Completion Date
 - Phase 1: 2026-01-28
-- Phase 2:
+- Phase 2: 2026-01-28
 - Phase 3:
 - Phase 4:
 - Phase 5:

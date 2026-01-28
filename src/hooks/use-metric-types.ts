@@ -1,44 +1,64 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "@/lib/query-keys";
 import type { MetricType } from "@/types/intervention";
 
+async function fetchMetricTypes(): Promise<MetricType[]> {
+  const response = await fetch("/api/metric-types");
+  if (!response.ok) {
+    throw new Error("Failed to fetch metric types data");
+  }
+  return response.json();
+}
+
 export function useMetricTypes() {
-  const [data, setData] = useState<MetricType[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const query = useQuery({
+    queryKey: queryKeys.metricTypes,
+    queryFn: fetchMetricTypes,
+    staleTime: Infinity,
+  });
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch("/api/metric-types");
-        if (!response.ok) {
-          throw new Error("Failed to fetch metric types data");
-        }
-        const metricTypes: MetricType[] = await response.json();
-        setData(metricTypes);
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error("Unknown error"));
-      } finally {
-        setIsLoading(false);
-      }
-    }
+  // Local state for client-side added metrics
+  const [localMetrics, setLocalMetrics] = useState<MetricType[]>([]);
 
-    fetchData();
-  }, []);
+  // Combine fetched data with locally added metrics
+  const data = useMemo(() => {
+    return [...(query.data ?? []), ...localMetrics];
+  }, [query.data, localMetrics]);
 
   // Group metric types by category for dropdown display
-  const groupedByCategory = data.reduce<Record<string, MetricType[]>>(
-    (acc, metric) => {
-      const category = metric.category || "Other";
-      if (!acc[category]) {
-        acc[category] = [];
-      }
-      acc[category].push(metric);
-      return acc;
-    },
-    {}
-  );
+  const groupedByCategory = useMemo(() => {
+    return data.reduce<Record<string, MetricType[]>>(
+      (acc, metric) => {
+        const category = metric.category || "Other";
+        if (!acc[category]) {
+          acc[category] = [];
+        }
+        acc[category].push(metric);
+        return acc;
+      },
+      {}
+    );
+  }, [data]);
 
-  return { data, groupedByCategory, isLoading, error };
+  const addMetric = useCallback((newMetric: Omit<MetricType, 'id' | 'created_at' | 'updated_at'>) => {
+    const metric: MetricType = {
+      ...newMetric,
+      id: Date.now(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    setLocalMetrics(prev => [...prev, metric]);
+    return metric;
+  }, []);
+
+  return {
+    data,
+    groupedByCategory,
+    isLoading: query.isLoading,
+    error: query.error,
+    addMetric,
+  };
 }
