@@ -26,7 +26,7 @@
 ## Phase 5: Integration Testing
 - [x] Verify all plans load correctly
 - [x] Test intervention assignments match specifications
-- [ ] Validate criteria matching logic
+- [x] Validate criteria matching logic
 - [ ] Test navigation flows
 
 ---
@@ -102,4 +102,19 @@
     - Default: Standard Pyrethroid Campaign, Standard Pyrethroid Routine, CM
   - Verified all criteria values match PRD specifications
   - R21 (Vaccine) correctly omitted as not available in intervention categories
+  - Build passes with no TypeScript or ESLint errors
+- [2026-01-28] Phase 5.3: Validate criteria matching logic
+  - Created validation script at `scripts/validate-criteria-matching.ts`
+  - Tested `evaluateRule()` function with all 5 operators (<, <=, =, >=, >)
+  - Verified decimal value comparisons work correctly (important for seasonality thresholds)
+  - Validated predefined plan structure matches PRD specifications:
+    - BAU plan: 2 rules (1 criteria-based + 1 default), correct criteria values
+    - NSP 2026-30 plan: 4 rules (3 criteria-based + 1 default), correct criteria values
+  - Tested district matching scenarios with simulated metric values:
+    - NSP Rule 1 matches districts with seasonality >= 0.6 AND mortality >= 5
+    - NSP Rule 2 matches districts with seasonality < 0.6, incidence >= 300, mortality >= 5, resistance >= 0.75
+    - NSP Rule 3 matches districts with seasonality < 0.6, incidence >= 300, mortality < 5, resistance >= 0.75
+    - BAU Rule 1 matches districts with seasonality < 0.7, incidence >= 500, mortality < 10, resistance >= 0.75
+  - Verified boundary value handling (e.g., seasonality=0.6 matches >= 0.6 but not < 0.6)
+  - All 77 validation tests passed
   - Build passes with no TypeScript or ESLint errors
