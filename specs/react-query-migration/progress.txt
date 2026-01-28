@@ -55,7 +55,7 @@
   - [x] Added gcTime: Infinity to useMetricTypes (static metadata)
   - [x] useMetricValues uses default gcTime (30 minutes) - appropriate for semi-static data
 
-## Phase 5: Testing and Validation
+## Phase 5: Testing and Validation (Manual - Requires Human Testing)
 - [ ] Verify request deduplication (Network tab)
   - [ ] Same metric requested by multiple components = 1 request
   - [ ] Navigate away and back = no refetch (within staleTime)
@@ -69,6 +69,8 @@
   - [ ] Compare initial load time before/after
   - [ ] Verify no memory leaks
 
+Note: Phase 5 tasks require manual testing with a running application and browser dev tools.
+
 ## Notes
 - useOrgUnits migration uses hybrid approach: useQuery for fetching + useState for mutable GeoJSON data (required for updateDistricts callback)
 - useMetricTypes migration uses hybrid approach: useQuery for fetching + useState for locally added metrics (required for addMetric callback)
@@ -81,5 +83,16 @@
 - Phase 2: 2026-01-28
 - Phase 3: 2026-01-28
 - Phase 4: 2026-01-28
-- Phase 5:
-- Full Migration:
+- Phase 5: Pending manual testing
+- Full Migration (Implementation): 2026-01-28
+
+## Summary
+All React Query migration implementation work is complete. The codebase has been fully migrated:
+- All 5 data fetching hooks converted from useEffect/useState to React Query
+- QueryClientProvider configured with appropriate defaults
+- Query keys factory created for consistent cache management
+- Error boundary component added for React Query error handling
+- staleTime and gcTime optimized per data type
+- Build passes successfully
+
+Remaining Phase 5 items are manual validation tasks requiring human interaction with the running application.
