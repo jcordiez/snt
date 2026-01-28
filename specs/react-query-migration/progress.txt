@@ -14,10 +14,10 @@
   - [x] Preserve geoJson and provinces computed values
   - [x] Preserve updateDistricts callback functionality
   - [x] Test in plan page (build passed)
-- [ ] Migrate useInterventionCategories hook
-  - [ ] Replace useEffect/useState with useQuery
-  - [ ] Verify return type compatibility
-  - [ ] Test in plan page
+- [x] Migrate useInterventionCategories hook
+  - [x] Replace useEffect/useState with useQuery
+  - [x] Verify return type compatibility
+  - [x] Test in plan page (build passed)
 - [ ] Migrate useMetricTypes hook
   - [ ] Replace useEffect/useState with useQuery
   - [ ] Preserve groupedByCategory computed value
