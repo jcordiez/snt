@@ -5,8 +5,8 @@
 - [x] Install @tanstack/react-query-devtools (dev dependency, v5.91.2)
 - [x] Create /src/lib/query-client.ts with QueryClient configuration
 - [x] Create /src/lib/query-keys.ts with query key factory
-- [ ] Create /src/app/providers.tsx with QueryClientProvider
-- [ ] Update /src/app/layout.tsx to use Providers
+- [x] Create /src/app/providers.tsx with QueryClientProvider
+- [x] Update /src/app/layout.tsx to use Providers
 
 ## Phase 2: Migrate Static Data Hooks
 - [ ] Migrate useOrgUnits hook
@@ -66,7 +66,7 @@
 -
 
 ## Completion Date
-- Phase 1:
+- Phase 1: 2026-01-28
 - Phase 2:
 - Phase 3:
 - Phase 4:
