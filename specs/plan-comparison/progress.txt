@@ -1,0 +1,61 @@
+# Plan Comparison Feature - Implementation Progress
+
+## Phase 1: Sidebar Infrastructure
+- [x] Create comparison-sidebar component structure
+- [ ] Implement toggle button ("Compare...") in plan editor toolbar
+- [ ] Position toggle button right of "Export plan" button
+- [ ] Set up sidebar open/close state management
+- [ ] Integrate sidebar as sibling to intervention map in page layout
+- [ ] Style sidebar container (width, border, background)
+
+## Phase 2: Plan Cards
+- [x] Create plan-comparison-card component
+- [x] Display all predefined plans (BAU, NSP 2026-30)
+- [x] Style card layout (title area, map placeholder)
+- [x] Add scrollable container for plan list
+
+## Phase 3: Edit Detection
+- [ ] Implement original plan storage when loading a plan
+- [ ] Create comparison logic (original vs current plan)
+- [x] Add "Edited" badge component
+- [ ] Connect badge visibility to edit state
+- [ ] Verify badge updates in real-time on changes
+
+## Phase 4: Miniature Maps
+- [ ] Create miniature-map component
+- [ ] Reuse intervention calculation logic from main map
+- [ ] Render district boundaries correctly
+- [ ] Apply correct intervention colors
+- [ ] Ensure maps are non-interactive (no hover, no click)
+- [ ] Optimize rendering for multiple map instances
+
+## Phase 5: Polish & Integration
+- [ ] Add slide animation for sidebar open/close
+- [ ] Ensure responsive behavior
+- [ ] Performance optimization
+- [ ] Test with all plan combinations
+
+---
+
+## Notes
+
+- Sidebar component location: src/components/comparison-sidebar/
+- Sidebar is a sibling to intervention-map, not nested within it
+- Miniature maps always show original plan state, not edited version
+
+---
+
+## Progress Log
+
+### 2026-01-28: Created comparison-sidebar component structure
+
+- Created `src/components/comparison-sidebar/` directory
+- Created `comparison-sidebar.tsx` with:
+  - `ComparisonSidebar` component with header ("Compare with") and close button
+  - `PlanComparisonCard` component with plan title, "Edited" badge, and map placeholder
+  - Props for `isOpen`, `onClose`, `currentPlanId`, and `isEdited`
+  - Scrollable container for plan list
+  - Ring highlight for current plan card
+  - Amber badge styling for "Edited" state
+- Created `index.ts` for exports
+- All TypeScript and ESLint checks pass
