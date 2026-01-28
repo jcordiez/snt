@@ -4,7 +4,7 @@
 - [x] Install @tanstack/react-query package (v5.90.20)
 - [x] Install @tanstack/react-query-devtools (dev dependency, v5.91.2)
 - [x] Create /src/lib/query-client.ts with QueryClient configuration
-- [ ] Create /src/lib/query-keys.ts with query key factory
+- [x] Create /src/lib/query-keys.ts with query key factory
 - [ ] Create /src/app/providers.tsx with QueryClientProvider
 - [ ] Update /src/app/layout.tsx to use Providers
 
