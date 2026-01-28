@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PREDEFINED_PLANS, type PlanDefinition } from "@/data/predefined-plans";
@@ -41,7 +42,7 @@ export function ComparisonSidebar({
         </Button>
       </div>
 
-      {/* Scrollable list of plans */}
+      {/* Scrollable list of plans — only render maps when sidebar is visible */}
       <div className="flex-1 overflow-y-auto">
         <div className="p-4 space-y-3">
           {PREDEFINED_PLANS.map((plan) => (
@@ -50,6 +51,7 @@ export function ComparisonSidebar({
               plan={plan}
               isCurrentPlan={plan.id === currentPlanId}
               isEdited={plan.id === currentPlanId && isEdited}
+              renderMap={isOpen}
             />
           ))}
         </div>
@@ -62,12 +64,14 @@ interface PlanComparisonCardProps {
   plan: PlanDefinition;
   isCurrentPlan: boolean;
   isEdited: boolean;
+  renderMap: boolean;
 }
 
-function PlanComparisonCard({
+const PlanComparisonCard = memo(function PlanComparisonCard({
   plan,
   isCurrentPlan,
   isEdited,
+  renderMap,
 }: PlanComparisonCardProps) {
   return (
     <div
@@ -85,8 +89,12 @@ function PlanComparisonCard({
         )}
       </div>
 
-      {/* Miniature map showing the original plan's intervention coverage */}
-      <MiniatureMap plan={plan} />
+      {/* Only mount MapLibre instances when sidebar is visible */}
+      {renderMap ? (
+        <MiniatureMap plan={plan} />
+      ) : (
+        <div className="aspect-[4/3] bg-muted" />
+      )}
     </div>
   );
-}
+});

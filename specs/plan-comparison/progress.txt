@@ -32,7 +32,7 @@
 ## Phase 5: Polish & Integration
 - [x] Add slide animation for sidebar open/close
 - [x] Ensure responsive behavior
-- [ ] Performance optimization
+- [x] Performance optimization
 - [ ] Test with all plan combinations
 
 ---
@@ -119,3 +119,11 @@
 - Added `relative` to the `<main>` container so the absolute sidebar positions correctly
 - On larger screens (>= 1024px), the sidebar continues to push content as before
 - All TypeScript checks pass
+
+### 2026-01-28: Performance optimization for comparison sidebar
+
+- Wrapped `PlanComparisonCard` in `React.memo` to prevent unnecessary re-renders when parent sidebar re-renders but individual card props haven't changed
+- Added conditional map rendering: MapLibre instances are only mounted when the sidebar is open (`renderMap` prop). When the sidebar is closed, a lightweight placeholder div is rendered instead, freeing GPU/WebGL resources
+- Verified that `metricValuesByType` from `useMultipleMetricValues` hook is already memoized via `useMemo`, so no additional stabilization needed
+- Existing optimizations confirmed: `MiniatureMap` already wrapped in `React.memo`, `planDistricts` already memoized with `useMemo`, React Query caching shared across instances
+- All TypeScript checks pass, build succeeds
