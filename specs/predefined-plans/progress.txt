@@ -1,0 +1,67 @@
+# Predefined Plans Implementation Progress
+
+## Phase 1: Routing Structure
+- [x] Create `/plan/[planId]/page.tsx` route
+- [ ] Create `/plan/page.tsx` for new plans
+- [ ] Modify `/page.tsx` to show welcome screen
+- [ ] Update sidebar navigation links
+
+## Phase 2: Predefined Plans Data
+- [x] Create `src/data/predefined-plans.ts`
+- [x] Define BAU plan with rules and criteria
+- [x] Define NSP 2026-30 plan with rules and criteria
+- [x] Map interventions to correct IDs
+
+## Phase 3: Plan Loading
+- [x] Load plan definition based on route parameter
+- [x] Initialize rules state from plan definition
+- [x] Connect to existing map/list/budget views
+- [x] Handle invalid plan IDs
+
+## Phase 4: Welcome Screen
+- [ ] Design and implement welcome screen UI
+- [ ] Add appropriate messaging and guidance
+- [ ] Ensure responsive layout
+
+## Phase 5: Integration Testing
+- [ ] Verify all plans load correctly
+- [ ] Test intervention assignments match specifications
+- [ ] Validate criteria matching logic
+- [ ] Test navigation flows
+
+---
+
+## Notes
+
+- Intervention IDs mapped from cost-data.ts and page.tsx comments:
+  - CM (Case Management) - Category 37, Intervention 78
+  - SMC - Category 38, Intervention 80
+  - PMC - Category 38, Intervention 81
+  - Standard Pyrethroid Campaign - Category 40, Intervention 85
+  - Dual AI Campaign - Category 40, Intervention 87
+  - Standard Pyrethroid Routine - Category 41, Intervention 88
+  - Dual AI Routine - Category 41, Intervention 90
+- Metric Type IDs:
+  - Seasonality: 413
+  - Mortality rate: 407
+  - Incidence rate: 410
+  - Insecticide resistance: 412
+- R21 (Vaccine) is mentioned in PRD but not available in current intervention categories - omitted
+
+---
+
+## Completed Tasks
+
+- [2026-01-28] Phase 1.1: Create `/plan/[planId]/page.tsx` route
+  - Created dynamic route that loads predefined plans by ID
+  - Supports plan viewing with full map/list/budget views
+  - Shows "Plan Not Found" error for invalid plan IDs
+- [2026-01-28] Phase 2: Predefined Plans Data
+  - Created `src/data/predefined-plans.ts` with BAU and NSP 2026-30 plans
+  - Mapped all criteria to metric type IDs
+  - Mapped all interventions to category/intervention IDs
+- [2026-01-28] Phase 3: Plan Loading
+  - Implemented plan loading from route parameter
+  - Rules are initialized from plan definition on component mount
+  - Existing map/list/budget views work unchanged
+  - Invalid plan IDs show error message
