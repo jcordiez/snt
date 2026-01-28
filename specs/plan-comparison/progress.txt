@@ -19,7 +19,7 @@
 - [x] Create comparison logic (original vs current plan)
 - [x] Add "Edited" badge component
 - [x] Connect badge visibility to edit state
-- [ ] Verify badge updates in real-time on changes
+- [x] Verify badge updates in real-time on changes
 
 ## Phase 4: Miniature Maps
 - [x] Create miniature-map component
@@ -27,7 +27,7 @@
 - [x] Render district boundaries correctly
 - [x] Apply correct intervention colors
 - [x] Ensure maps are non-interactive (no hover, no click)
-- [ ] Optimize rendering for multiple map instances
+- [x] Optimize rendering for multiple map instances
 
 ## Phase 5: Polish & Integration
 - [ ] Add slide animation for sidebar open/close
@@ -94,3 +94,11 @@
 - Updated `comparison-sidebar.tsx` to replace map placeholder with `<MiniatureMap>` component
 - Each plan card now shows the actual intervention coverage map for that plan's original rules
 - All TypeScript and ESLint checks pass
+
+### 2026-01-28: Verified edit detection and optimized miniature map rendering
+
+- Verified badge updates in real-time: `isEdited` uses `useMemo` over `savedRules` and `originalRules`, so it recomputes immediately on any rule change
+- Wrapped `MiniatureMap` component with `React.memo` to prevent unnecessary re-renders when the sidebar re-renders but the plan prop hasn't changed
+- Data hooks (`useOrgUnits`, `useInterventionCategories`, `useMultipleMetricValues`) use React Query caching, so multiple miniature map instances share the same data without redundant fetches
+- `planDistricts` computation is already memoized with `useMemo`
+- All TypeScript checks pass

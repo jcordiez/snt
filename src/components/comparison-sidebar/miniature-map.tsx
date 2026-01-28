@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useMemo } from "react";
+import { memo, useEffect, useRef, useMemo } from "react";
 import type MapLibreGL from "maplibre-gl";
 import { Map as MapComponent, useMap } from "@/components/ui/map";
 import { useOrgUnits, createInterventionMix } from "@/hooks/use-orgunits";
@@ -251,7 +251,7 @@ interface MiniatureMapProps {
   plan: PlanDefinition;
 }
 
-export function MiniatureMap({ plan }: MiniatureMapProps) {
+export const MiniatureMap = memo(function MiniatureMap({ plan }: MiniatureMapProps) {
   const { data: baseDistricts } = useOrgUnits();
   const { data: interventionCategories } = useInterventionCategories();
   const { metricValuesByType } = useMultipleMetricValues(ALL_METRIC_IDS_WITH_DATA);
@@ -303,4 +303,4 @@ export function MiniatureMap({ plan }: MiniatureMapProps) {
       </MapComponent>
     </div>
   );
-}
+});
