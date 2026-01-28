@@ -1,0 +1,74 @@
+# React Query Migration - Implementation Progress
+
+## Phase 1: Setup Infrastructure
+- [x] Install @tanstack/react-query package (v5.90.20)
+- [x] Install @tanstack/react-query-devtools (dev dependency, v5.91.2)
+- [x] Create /src/lib/query-client.ts with QueryClient configuration
+- [ ] Create /src/lib/query-keys.ts with query key factory
+- [ ] Create /src/app/providers.tsx with QueryClientProvider
+- [ ] Update /src/app/layout.tsx to use Providers
+
+## Phase 2: Migrate Static Data Hooks
+- [ ] Migrate useOrgUnits hook
+  - [ ] Replace useEffect/useState with useQuery
+  - [ ] Preserve geoJson and provinces computed values
+  - [ ] Preserve updateDistricts callback functionality
+  - [ ] Test in plan page
+- [ ] Migrate useInterventionCategories hook
+  - [ ] Replace useEffect/useState with useQuery
+  - [ ] Verify return type compatibility
+  - [ ] Test in plan page
+- [ ] Migrate useMetricTypes hook
+  - [ ] Replace useEffect/useState with useQuery
+  - [ ] Preserve groupedByCategory computed value
+  - [ ] Test in plan page and layers page
+
+## Phase 3: Migrate Parameterized Hooks
+- [ ] Migrate useMetricValues hook
+  - [ ] Replace useEffect/useState with useQuery
+  - [ ] Use enabled option for null metricTypeId
+  - [ ] Preserve valuesByOrgUnit, min, max computed values
+  - [ ] Test with different metric IDs
+- [ ] Migrate useMultipleMetricValues hook
+  - [ ] Replace Promise.all with useQueries
+  - [ ] Preserve metricValuesByType Map structure
+  - [ ] Test parallel fetching behavior
+  - [ ] Verify individual error handling works
+
+## Phase 4: Cleanup and Optimization
+- [ ] Remove unused imports from migrated hooks
+- [ ] Configure staleTime per query type:
+  - [ ] orgUnits: Infinity
+  - [ ] intervention-categories: Infinity
+  - [ ] metric-types: Infinity
+  - [ ] metric-values: 5 minutes
+- [ ] Add error boundary component for query errors
+- [ ] Review and optimize gcTime settings
+
+## Phase 5: Testing and Validation
+- [ ] Verify request deduplication (Network tab)
+  - [ ] Same metric requested by multiple components = 1 request
+  - [ ] Navigate away and back = no refetch (within staleTime)
+- [ ] Verify cache population (React Query DevTools)
+  - [ ] All query keys visible
+  - [ ] Data correctly cached
+- [ ] Test error scenarios
+  - [ ] Individual metric fetch failure
+  - [ ] Network offline behavior
+- [ ] Performance validation
+  - [ ] Compare initial load time before/after
+  - [ ] Verify no memory leaks
+
+## Notes
+-
+
+## Issues Encountered
+-
+
+## Completion Date
+- Phase 1:
+- Phase 2:
+- Phase 3:
+- Phase 4:
+- Phase 5:
+- Full Migration:
