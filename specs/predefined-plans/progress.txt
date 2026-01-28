@@ -3,7 +3,7 @@
 ## Phase 1: Routing Structure
 - [x] Create `/plan/[planId]/page.tsx` route
 - [x] Create `/plan/page.tsx` for new plans
-- [ ] Modify `/page.tsx` to show welcome screen
+- [x] Modify `/page.tsx` to show welcome screen
 - [ ] Update sidebar navigation links
 
 ## Phase 2: Predefined Plans Data
@@ -19,9 +19,9 @@
 - [x] Handle invalid plan IDs
 
 ## Phase 4: Welcome Screen
-- [ ] Design and implement welcome screen UI
-- [ ] Add appropriate messaging and guidance
-- [ ] Ensure responsive layout
+- [x] Design and implement welcome screen UI
+- [x] Add appropriate messaging and guidance
+- [x] Ensure responsive layout
 
 ## Phase 5: Integration Testing
 - [ ] Verify all plans load correctly
@@ -70,3 +70,10 @@
   - Initializes with default rule (CM + Standard Pyrethroid Campaign/Routine)
   - Uses `getDefaultRulesForNewPlan()` from predefined-plans.ts
   - Full map/list/budget views work, rules can be added/edited
+- [2026-01-28] Phase 1.3 & Phase 4: Implement welcome screen at root route
+  - Replaced full intervention map UI at `/page.tsx` with welcome screen
+  - Title: "SNT Intervention Planning Tool"
+  - Description explains the tool's purpose (plan malaria interventions, define rules, view coverage, analyze budget)
+  - Guidance directs users to select a plan from sidebar or create new
+  - Responsive centered layout with appropriate typography
+  - Sidebar remains accessible via SidebarTrigger
