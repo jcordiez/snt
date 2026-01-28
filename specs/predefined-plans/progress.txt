@@ -25,7 +25,7 @@
 
 ## Phase 5: Integration Testing
 - [x] Verify all plans load correctly
-- [ ] Test intervention assignments match specifications
+- [x] Test intervention assignments match specifications
 - [ ] Validate criteria matching logic
 - [ ] Test navigation flows
 
@@ -91,3 +91,15 @@
   - `getPlanById()` function correctly retrieves BAU and NSP 2026-30 plans
   - Invalid plan IDs display "Plan Not Found" error message
   - No TypeScript or ESLint errors
+- [2026-01-28] Phase 5.2: Test intervention assignments match specifications
+  - Verified NSP 2026-30 plan interventions match PRD:
+    - Rule 1 (High Seasonality, High Mortality): Dual AI Campaign, Dual AI Routine, SMC, CM
+    - Rule 2 (Low Season, High Inc, High Mort, High Res): Dual AI Campaign, Dual AI Routine, PMC, CM
+    - Rule 3 (Low Season, High Inc, Low Mort, High Res): Dual AI Campaign, Dual AI Routine, PMC, CM
+    - Default: Standard Pyrethroid Campaign, Standard Pyrethroid Routine, CM
+  - Verified BAU plan interventions match PRD:
+    - Rule 1 (Low Season, High Inc, Low Mort, High Res): Dual AI Campaign, Dual AI Routine, PMC, CM
+    - Default: Standard Pyrethroid Campaign, Standard Pyrethroid Routine, CM
+  - Verified all criteria values match PRD specifications
+  - R21 (Vaccine) correctly omitted as not available in intervention categories
+  - Build passes with no TypeScript or ESLint errors
