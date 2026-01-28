@@ -16,7 +16,8 @@ export function useInterventionCategories() {
   const query = useQuery({
     queryKey: queryKeys.interventionCategories,
     queryFn: fetchInterventionCategories,
-    staleTime: Infinity,
+    staleTime: Infinity, // Static reference data
+    gcTime: Infinity,    // Never garbage collect static reference data
   });
 
   return {

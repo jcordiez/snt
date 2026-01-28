@@ -49,7 +49,11 @@
   - [x] Created /src/components/query-error-boundary.tsx
   - [x] Uses QueryErrorResetBoundary from React Query
   - [x] Provides "Try again" button to reset and retry failed queries
-- [ ] Review and optimize gcTime settings
+- [x] Review and optimize gcTime settings
+  - [x] Added gcTime: Infinity to useOrgUnits (static geographic data)
+  - [x] Added gcTime: Infinity to useInterventionCategories (static reference data)
+  - [x] Added gcTime: Infinity to useMetricTypes (static metadata)
+  - [x] useMetricValues uses default gcTime (30 minutes) - appropriate for semi-static data
 
 ## Phase 5: Testing and Validation
 - [ ] Verify request deduplication (Network tab)
@@ -76,6 +80,6 @@
 - Phase 1: 2026-01-28
 - Phase 2: 2026-01-28
 - Phase 3: 2026-01-28
-- Phase 4:
+- Phase 4: 2026-01-28
 - Phase 5:
 - Full Migration:

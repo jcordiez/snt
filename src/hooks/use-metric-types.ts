@@ -17,7 +17,8 @@ export function useMetricTypes() {
   const query = useQuery({
     queryKey: queryKeys.metricTypes,
     queryFn: fetchMetricTypes,
-    staleTime: Infinity,
+    staleTime: Infinity, // Static metadata
+    gcTime: Infinity,    // Never garbage collect static metadata
   });
 
   // Local state for client-side added metrics

@@ -174,6 +174,7 @@ export function useOrgUnits() {
     queryKey: queryKeys.orgUnits,
     queryFn: fetchOrgUnits,
     staleTime: Infinity, // Geographic data rarely changes
+    gcTime: Infinity,    // Never garbage collect static geographic data
   });
 
   // Local state for GeoJSON data that can be modified by updateDistricts
