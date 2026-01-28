@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { useParams } from "next/navigation";
 import {
   InterventionMap,
@@ -33,6 +33,39 @@ import { ComparisonSidebar } from "@/components/comparison-sidebar";
 // to maintain stable reference and prevent infinite re-fetch loops
 const ALL_METRIC_IDS_WITH_DATA = [404, 406, 407, 410, 412, 413];
 
+/**
+ * Serializes a SavedRule to a comparable string representation.
+ * Handles Map objects that aren't serialized by JSON.stringify.
+ */
+function serializeRule(rule: SavedRule): string {
+  return JSON.stringify({
+    id: rule.id,
+    title: rule.title,
+    color: rule.color,
+    criteria: rule.criteria,
+    interventionsByCategory: Array.from(rule.interventionsByCategory.entries()).sort((a, b) => a[0] - b[0]),
+    coverageByCategory: rule.coverageByCategory
+      ? Array.from(rule.coverageByCategory.entries()).sort((a, b) => a[0] - b[0])
+      : [],
+    isAllDistricts: rule.isAllDistricts ?? false,
+    excludedDistrictIds: [...(rule.excludedDistrictIds ?? [])].sort(),
+  });
+}
+
+/**
+ * Compares two arrays of SavedRules for equality.
+ * Returns true if the rules are identical in content and order.
+ */
+function areRulesEqual(rulesA: SavedRule[], rulesB: SavedRule[]): boolean {
+  if (rulesA.length !== rulesB.length) return false;
+  for (let i = 0; i < rulesA.length; i++) {
+    if (serializeRule(rulesA[i]) !== serializeRule(rulesB[i])) {
+      return false;
+    }
+  }
+  return true;
+}
+
 export default function PlanPage() {
   const params = useParams();
   // [[...planId]] is an optional catch-all, so params.planId is string[] | undefined
@@ -51,6 +84,7 @@ export default function PlanPage() {
   const [selectedProvince, setSelectedProvince] = useState<Province | null>(null);
   const [activeTab, setActiveTab] = useState<ViewTab>("map");
   const [savedRules, setSavedRules] = useState<SavedRule[]>([]);
+  const [originalRules, setOriginalRules] = useState<SavedRule[]>([]);
 
   // Pre-load all metric values that have data files (eliminates race condition)
   const { metricValuesByType } = useMultipleMetricValues(ALL_METRIC_IDS_WITH_DATA);
@@ -87,13 +121,23 @@ export default function PlanPage() {
       // Load default rules for new plan
       const defaultRules = getDefaultRulesForNewPlan();
       setSavedRules(defaultRules);
+      setOriginalRules(defaultRules);
       console.log("Initialized new plan with default rules");
     } else {
       // Load rules from predefined plan
+      // Store both the working copy and the original for edit detection
       setSavedRules(plan!.rules);
+      setOriginalRules(plan!.rules);
       console.log("Initialized plan:", plan!.name, "with", plan!.rules.length, "rules");
     }
   }, [districts, interventionCategories, plan, isNewPlan]);
+
+  // Compute whether the current plan has been edited from its original state
+  const isEdited = useMemo(() => {
+    // If no original rules yet, not edited
+    if (originalRules.length === 0) return false;
+    return !areRulesEqual(savedRules, originalRules);
+  }, [savedRules, originalRules]);
 
   // Track whether rules have been applied for the current configuration
   const rulesAppliedKeyRef = useRef<string>("");
@@ -594,7 +638,7 @@ export default function PlanPage() {
           isOpen={isComparisonOpen}
           onClose={() => setIsComparisonOpen(false)}
           currentPlanId={planId}
-          isEdited={false}
+          isEdited={isEdited}
         />
       </main>
 

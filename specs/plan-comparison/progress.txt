@@ -15,10 +15,10 @@
 - [x] Add scrollable container for plan list
 
 ## Phase 3: Edit Detection
-- [ ] Implement original plan storage when loading a plan
-- [ ] Create comparison logic (original vs current plan)
+- [x] Implement original plan storage when loading a plan
+- [x] Create comparison logic (original vs current plan)
 - [x] Add "Edited" badge component
-- [ ] Connect badge visibility to edit state
+- [x] Connect badge visibility to edit state
 - [ ] Verify badge updates in real-time on changes
 
 ## Phase 4: Miniature Maps
@@ -68,3 +68,14 @@
 - Integrated `ComparisonSidebar` component as sibling to main content in the `<main>` element
 - Sidebar slides in from the right when toggled open
 - All TypeScript and ESLint checks pass
+
+### 2026-01-28: Implemented edit detection for plan comparison
+
+- Added `originalRules` state to store the original plan rules when loading
+- Created `serializeRule()` helper function to serialize SavedRule objects (handles Map objects properly)
+- Created `areRulesEqual()` function to deep-compare two arrays of SavedRules
+- Added `isEdited` computed value using useMemo to compare current rules vs original
+- Updated initialization effect to store both `savedRules` and `originalRules` on plan load
+- Connected `isEdited` prop to ComparisonSidebar (previously hardcoded to `false`)
+- "Edited" badge now displays dynamically when the current plan differs from its original state
+- All TypeScript and ESLint checks pass, build succeeds
