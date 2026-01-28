@@ -39,13 +39,16 @@
   - [x] Test with build (passed)
 
 ## Phase 4: Cleanup and Optimization
-- [ ] Remove unused imports from migrated hooks
-- [ ] Configure staleTime per query type:
-  - [ ] orgUnits: Infinity
-  - [ ] intervention-categories: Infinity
-  - [ ] metric-types: Infinity
-  - [ ] metric-values: 5 minutes
-- [ ] Add error boundary component for query errors
+- [x] Remove unused imports from migrated hooks (verified: all imports are in use)
+- [x] Configure staleTime per query type:
+  - [x] orgUnits: Infinity
+  - [x] intervention-categories: Infinity
+  - [x] metric-types: Infinity
+  - [x] metric-values: 5 minutes
+- [x] Add error boundary component for query errors
+  - [x] Created /src/components/query-error-boundary.tsx
+  - [x] Uses QueryErrorResetBoundary from React Query
+  - [x] Provides "Try again" button to reset and retry failed queries
 - [ ] Review and optimize gcTime settings
 
 ## Phase 5: Testing and Validation
