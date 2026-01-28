@@ -22,11 +22,11 @@
 - [ ] Verify badge updates in real-time on changes
 
 ## Phase 4: Miniature Maps
-- [ ] Create miniature-map component
-- [ ] Reuse intervention calculation logic from main map
-- [ ] Render district boundaries correctly
-- [ ] Apply correct intervention colors
-- [ ] Ensure maps are non-interactive (no hover, no click)
+- [x] Create miniature-map component
+- [x] Reuse intervention calculation logic from main map
+- [x] Render district boundaries correctly
+- [x] Apply correct intervention colors
+- [x] Ensure maps are non-interactive (no hover, no click)
 - [ ] Optimize rendering for multiple map instances
 
 ## Phase 5: Polish & Integration
@@ -79,3 +79,18 @@
 - Connected `isEdited` prop to ComparisonSidebar (previously hardcoded to `false`)
 - "Edited" badge now displays dynamically when the current plan differs from its original state
 - All TypeScript and ESLint checks pass, build succeeds
+
+### 2026-01-28: Created miniature map component for plan comparison
+
+- Created `src/components/comparison-sidebar/miniature-map.tsx` with:
+  - `MiniatureMap` component that renders a static MapLibre map for a given plan
+  - `MiniatureDistrictLayer` inner component for rendering fill + border layers
+  - `applyPlanRules()` function that computes colored GeoJSON by applying plan rules to districts
+  - `buildColorExpression()` for MapLibre color expressions (ruleColor priority over interventionMixLabel)
+  - Reuses existing hooks: `useOrgUnits`, `useInterventionCategories`, `useMultipleMetricValues`
+  - Reuses `findMatchingDistrictIds` and `createInterventionMix` from existing codebase
+  - Maps are non-interactive (`interactive={false}`) with no attribution
+  - Renders at 4:3 aspect ratio centered on DRC (23.6, -2.9) at zoom 4
+- Updated `comparison-sidebar.tsx` to replace map placeholder with `<MiniatureMap>` component
+- Each plan card now shows the actual intervention coverage map for that plan's original rules
+- All TypeScript and ESLint checks pass

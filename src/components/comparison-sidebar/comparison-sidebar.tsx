@@ -3,6 +3,7 @@
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PREDEFINED_PLANS, type PlanDefinition } from "@/data/predefined-plans";
+import { MiniatureMap } from "./miniature-map";
 
 interface ComparisonSidebarProps {
   /** Whether the sidebar is visible */
@@ -84,10 +85,8 @@ function PlanComparisonCard({
         )}
       </div>
 
-      {/* Map Placeholder - will be replaced with miniature map in Phase 4 */}
-      <div className="aspect-[4/3] bg-muted flex items-center justify-center">
-        <span className="text-xs text-muted-foreground">Map preview</span>
-      </div>
+      {/* Miniature map showing the original plan's intervention coverage */}
+      <MiniatureMap plan={plan} />
     </div>
   );
 }
