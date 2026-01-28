@@ -31,11 +31,12 @@
   - [x] Preserve valuesByOrgUnit, min, max computed values
   - [x] Configure staleTime: 5 minutes
   - [x] Test with build (passed)
-- [ ] Migrate useMultipleMetricValues hook
-  - [ ] Replace Promise.all with useQueries
-  - [ ] Preserve metricValuesByType Map structure
-  - [ ] Test parallel fetching behavior
-  - [ ] Verify individual error handling works
+- [x] Migrate useMultipleMetricValues hook
+  - [x] Replace Promise.all with useQueries
+  - [x] Preserve metricValuesByType Map structure (Record<number, Record<number, number>>)
+  - [x] Uses same queryKeys.metricValues(id) as useMetricValues for cache sharing
+  - [x] Individual error handling: first error returned, others continue
+  - [x] Test with build (passed)
 
 ## Phase 4: Cleanup and Optimization
 - [ ] Remove unused imports from migrated hooks
@@ -71,7 +72,7 @@
 ## Completion Date
 - Phase 1: 2026-01-28
 - Phase 2: 2026-01-28
-- Phase 3:
+- Phase 3: 2026-01-28
 - Phase 4:
 - Phase 5:
 - Full Migration:
