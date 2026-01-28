@@ -27,7 +27,7 @@
 - [x] Verify all plans load correctly
 - [x] Test intervention assignments match specifications
 - [x] Validate criteria matching logic
-- [ ] Test navigation flows
+- [x] Test navigation flows
 
 ---
 
@@ -117,4 +117,26 @@
     - BAU Rule 1 matches districts with seasonality < 0.7, incidence >= 500, mortality < 10, resistance >= 0.75
   - Verified boundary value handling (e.g., seasonality=0.6 matches >= 0.6 but not < 0.6)
   - All 77 validation tests passed
+  - Build passes with no TypeScript or ESLint errors
+- [2026-01-28] Phase 5.4: Test navigation flows
+  - Created validation script at `scripts/validate-navigation-flows.ts`
+  - Tested route structure:
+    - Root route `/` displays welcome screen
+    - `/plan` route shows new plan as active
+    - `/plan/[planId]` routes extract correct plan ID
+  - Tested sidebar link generation for all predefined plans
+  - Tested active state detection:
+    - Each plan route correctly activates only its own plan in sidebar
+    - Settings routes (/layers, /cost-settings, /composite-scores) have no active plan
+    - Footer routes (/help, /feedback, /account) properly detected
+    - Action routes (/search, /compare) properly detected
+  - Tested invalid plan ID handling (getPlanById returns undefined)
+  - Tested pathname parsing edge cases (nested routes, trailing slashes)
+  - Tested navigation flow scenarios:
+    - Welcome screen → BAU plan
+    - BAU plan → New plan
+    - New plan → NSP 2026-30
+    - NSP plan → Welcome screen (via header logo)
+  - Verified all expected sidebar links are parseable
+  - All 56 navigation tests passed
   - Build passes with no TypeScript or ESLint errors
