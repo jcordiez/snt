@@ -30,7 +30,7 @@
 - [x] Optimize rendering for multiple map instances
 
 ## Phase 5: Polish & Integration
-- [ ] Add slide animation for sidebar open/close
+- [x] Add slide animation for sidebar open/close
 - [ ] Ensure responsive behavior
 - [ ] Performance optimization
 - [ ] Test with all plan combinations
@@ -102,3 +102,12 @@
 - Data hooks (`useOrgUnits`, `useInterventionCategories`, `useMultipleMetricValues`) use React Query caching, so multiple miniature map instances share the same data without redundant fetches
 - `planDistricts` computation is already memoized with `useMemo`
 - All TypeScript checks pass
+
+### 2026-01-28: Added slide animation for sidebar open/close
+
+- Changed sidebar from conditional rendering (`if (!isOpen) return null`) to always-rendered with CSS transition
+- Used `transition-[margin] duration-300 ease-in-out` with negative right margin (`-mr-80`) to slide the sidebar off-screen when closed
+- Added `shrink-0` to prevent the sidebar from being compressed by flex layout
+- Added `overflow-hidden` to the `<main>` container to prevent horizontal scroll when sidebar slides out
+- Sidebar now smoothly slides in from the right when opened and slides out when closed
+- All TypeScript and ESLint checks pass, build succeeds

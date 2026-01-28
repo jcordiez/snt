@@ -22,12 +22,12 @@ export function ComparisonSidebar({
   currentPlanId,
   isEdited,
 }: ComparisonSidebarProps) {
-  if (!isOpen) {
-    return null;
-  }
-
   return (
-    <div className="w-80 border-l flex flex-col h-full bg-background">
+    <div
+      className={`w-80 border-l flex flex-col h-full bg-background transition-[margin] duration-300 ease-in-out shrink-0 ${
+        isOpen ? "mr-0" : "-mr-80"
+      }`}
+    >
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b">
         <h2 className="text-sm font-semibold">Compare with</h2>
