@@ -25,11 +25,12 @@
   - [x] Test in plan page and layers page (build passed)
 
 ## Phase 3: Migrate Parameterized Hooks
-- [ ] Migrate useMetricValues hook
-  - [ ] Replace useEffect/useState with useQuery
-  - [ ] Use enabled option for null metricTypeId
-  - [ ] Preserve valuesByOrgUnit, min, max computed values
-  - [ ] Test with different metric IDs
+- [x] Migrate useMetricValues hook
+  - [x] Replace useEffect/useState with useQuery
+  - [x] Use enabled option for null metricTypeId
+  - [x] Preserve valuesByOrgUnit, min, max computed values
+  - [x] Configure staleTime: 5 minutes
+  - [x] Test with build (passed)
 - [ ] Migrate useMultipleMetricValues hook
   - [ ] Replace Promise.all with useQueries
   - [ ] Preserve metricValuesByType Map structure

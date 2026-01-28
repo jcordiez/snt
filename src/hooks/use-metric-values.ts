@@ -1,40 +1,27 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "@/lib/query-keys";
 import type { MetricValue } from "@/types/intervention";
 
+async function fetchMetricValues(metricTypeId: number): Promise<MetricValue[]> {
+  const response = await fetch(`/api/metricvalues?id=${metricTypeId}`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch metric values data");
+  }
+  return response.json();
+}
+
 export function useMetricValues(metricTypeId: number | null) {
-  const [data, setData] = useState<MetricValue[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const query = useQuery({
+    queryKey: queryKeys.metricValues(metricTypeId!),
+    queryFn: () => fetchMetricValues(metricTypeId!),
+    enabled: metricTypeId !== null,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
-  useEffect(() => {
-    if (metricTypeId === null) {
-      setData([]);
-      setIsLoading(false);
-      setError(null);
-      return;
-    }
-
-    async function fetchData() {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await fetch(`/api/metricvalues?id=${metricTypeId}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch metric values data");
-        }
-        const metricValues: MetricValue[] = await response.json();
-        setData(metricValues);
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error("Unknown error"));
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchData();
-  }, [metricTypeId]);
+  const data = useMemo(() => query.data ?? [], [query.data]);
 
   // Compute min and max values
   const { min, max } = useMemo(() => {
@@ -56,5 +43,12 @@ export function useMetricValues(metricTypeId: number | null) {
     }, {});
   }, [data]);
 
-  return { data, valuesByOrgUnit, min, max, isLoading, error };
+  return {
+    data,
+    valuesByOrgUnit,
+    min,
+    max,
+    isLoading: query.isLoading,
+    error: query.error,
+  };
 }
