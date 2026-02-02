@@ -12,6 +12,7 @@ import {
   type ViewTab,
 } from "@/components/intervention-map";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { AddInterventionSheet } from "@/components/intervention-map/add-intervention";
 import { RulesSidebar, RuleEditModal } from "@/components/intervention-map/rules-sidebar";
 import { Province } from "@/data/districts";
@@ -27,11 +28,13 @@ import type { Rule } from "@/types/intervention";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { toast } from "sonner";
 import { getPlanById, getDefaultRulesForNewPlan } from "@/data/predefined-plans";
-import { ComparisonSidebar } from "@/components/comparison-sidebar";
+import { ComparisonSidebar, useComparisonSidebar } from "@/components/comparison-sidebar";
+import { generateRulesFromGuidelines } from "@/utils/generate-rules-from-guidelines";
+import { GUIDELINE_VARIATIONS } from "@/data/intervention-guidelines-variations";
 
 // All metric IDs that have data files available - defined outside component
 // to maintain stable reference and prevent infinite re-fetch loops
-const ALL_METRIC_IDS_WITH_DATA = [404, 406, 407, 410, 412, 413];
+const ALL_METRIC_IDS_WITH_DATA = [404, 406, 407, 410, 411, 412, 413, 417, 418, 419, 420];
 
 /**
  * Serializes a SavedRule to a comparable string representation.
@@ -49,6 +52,7 @@ function serializeRule(rule: SavedRule): string {
       : [],
     isAllDistricts: rule.isAllDistricts ?? false,
     excludedDistrictIds: [...(rule.excludedDistrictIds ?? [])].sort(),
+    isVisible: rule.isVisible ?? true,
   });
 }
 
@@ -85,6 +89,7 @@ export default function PlanPage() {
   const [activeTab, setActiveTab] = useState<ViewTab>("map");
   const [savedRules, setSavedRules] = useState<SavedRule[]>([]);
   const [originalRules, setOriginalRules] = useState<SavedRule[]>([]);
+  const [isCumulativeMode, setIsCumulativeMode] = useState(false);
 
   // Pre-load all metric values that have data files (eliminates race condition)
   const { metricValuesByType } = useMultipleMetricValues(ALL_METRIC_IDS_WITH_DATA);
@@ -93,7 +98,7 @@ export default function PlanPage() {
   const [legendSelectionPayload, setLegendSelectionPayload] = useState<LegendSelectionPayload | null>(null);
   const [editingRuleId, setEditingRuleId] = useState<string | null>(null);
   const [isRuleModalOpen, setIsRuleModalOpen] = useState(false);
-  const [isComparisonOpen, setIsComparisonOpen] = useState(false);
+  const { isOpen: isComparisonOpen, toggle: toggleComparison } = useComparisonSidebar();
   const rulesInitialized = useRef(false);
 
   // Get the plan definition (null for new plans)
@@ -161,6 +166,7 @@ export default function PlanPage() {
           isAllDistricts: r.isAllDistricts,
           color: r.color,
           excludedDistrictIds: r.excludedDistrictIds,
+          isVisible: r.isVisible,
         })),
         selectedProvinceId: selectedProvince?.id ?? null,
       })
@@ -178,9 +184,12 @@ export default function PlanPage() {
 
     console.log("Applying rules:", savedRules.length, "rules");
 
+    // Filter out hidden rules (isVisible === false)
+    const visibleRules = savedRules.filter((r) => r.isVisible !== false);
+
     // Find the default rule (isAllDistricts=true, usually first) to reset all districts first
-    const defaultRule = savedRules.find((r) => r.isAllDistricts);
-    const nonDefaultRules = savedRules.filter((r) => !r.isAllDistricts);
+    const defaultRule = visibleRules.find((r) => r.isAllDistricts);
+    const nonDefaultRules = visibleRules.filter((r) => !r.isAllDistricts);
 
     // Build all updates first, then apply them in a single batch to avoid race conditions
     const updates: Array<{
@@ -318,6 +327,15 @@ export default function PlanPage() {
     setIsRuleModalOpen(true);
   }, []);
 
+  const handleGenerateFromGuidelines = useCallback((variationId: string) => {
+    const generatedRules = generateRulesFromGuidelines(variationId);
+    const variation = GUIDELINE_VARIATIONS.find(v => v.id === variationId);
+    const variationName = variation?.name ?? "Guidelines";
+    setSavedRules(generatedRules);
+    toast.success(`Generated rules from ${variationName}`);
+    console.log("Generated", generatedRules.length, "rules from", variationName);
+  }, []);
+
   const handleEditRule = useCallback((ruleId: string) => {
     setEditingRuleId(ruleId);
     setIsRuleModalOpen(true);
@@ -325,6 +343,20 @@ export default function PlanPage() {
 
   const handleDeleteRule = useCallback((ruleId: string) => {
     setSavedRules((prev) => prev.filter((r) => r.id !== ruleId));
+  }, []);
+
+  const handleToggleRuleVisibility = useCallback((ruleId: string) => {
+    setSavedRules((prev) =>
+      prev.map((rule) =>
+        rule.id === ruleId
+          ? { ...rule, isVisible: rule.isVisible === false ? true : false }
+          : rule
+      )
+    );
+  }, []);
+
+  const handleReorderRules = useCallback((newOrder: SavedRule[]) => {
+    setSavedRules(newOrder);
   }, []);
 
   const handleSaveRule = useCallback((rule: SavedRule) => {
@@ -446,18 +478,15 @@ export default function PlanPage() {
         <div className="flex items-center gap-2">
         <SidebarTrigger />
         <CountryName name={displayName} />
+        {isEdited && (
+          <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
+            Edited
+          </span>
+        )}
         </div>
-        <div className="flex items-center gap-2">
-          <Button onClick={handleExportPlan} variant="outline">
-            Export Plan
-          </Button>
-          <Button
-            onClick={() => setIsComparisonOpen(!isComparisonOpen)}
-            variant={isComparisonOpen ? "secondary" : "outline"}
-          >
-            Compare...
-          </Button>
-        </div>
+        <Button onClick={handleExportPlan} variant="outline">
+          Export Plan
+        </Button>
       </header>
 
       {/* Main Content: Two columns below header */}
@@ -471,7 +500,12 @@ export default function PlanPage() {
           onAddRule={handleAddRule}
           onEditRule={handleEditRule}
           onDeleteRule={handleDeleteRule}
+          onToggleVisibility={handleToggleRuleVisibility}
+          onReorderRules={handleReorderRules}
           getDistrictName={getDistrictName}
+          onGenerateFromGuidelines={handleGenerateFromGuidelines}
+          isCumulativeMode={isCumulativeMode}
+          onToggleCumulativeMode={setIsCumulativeMode}
         />
 
         {/* Left Column: Filter bar + Map */}
@@ -480,166 +514,177 @@ export default function PlanPage() {
           <div className="px-6 py-3 border-b flex items-center justify-between">
 
           <NavigationTabs activeTab={activeTab} onTabChange={setActiveTab} />
-           <GeographicFilter
+          <div className="flex items-center gap-2">
+            <GeographicFilter
               provinces={provinces}
               selectedProvinceId={selectedProvince?.id ?? null}
               onProvinceChange={setSelectedProvince}
               isLoading={isLoading}
             />
+            <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
+              Compare
+              <Switch
+                checked={isComparisonOpen}
+                onCheckedChange={toggleComparison}
+              />
+            </label>
+          </div>
           </div>
 
           {/* View Container */}
-          <div className="flex-1 relative p-4 rounded-lg overflow-hidden min-h-0">
-            {activeTab === "map" && (
-              <InterventionMap
-                selectedProvince={selectedProvince}
-                highlightedDistrictIds={highlightedDistrictIds}
-                districts={districts}
-                onSelectMix={handleSelectMix}
-                metricValuesByOrgUnit={{
-                  mortality: mortalityByOrgUnit,
-                  incidence: incidenceByOrgUnit,
-                  resistance: resistanceByOrgUnit,
-                  seasonality: seasonalityByOrgUnit,
-                }}
-                hasRules={savedRules.length > 0}
-                onSetAsExceptions={(districtIds) => {
-                  // Transpose metricValuesByType to the format expected by findRulesMatchingDistrict:
-                  // from metricTypeId -> orgUnitId -> value to districtId -> metricTypeId -> value
-                  const metricValuesByDistrict: Record<string, Record<number, number>> = {};
-                  for (const [metricTypeId, valuesByOrgUnit] of Object.entries(metricValuesByType)) {
-                    const typeId = Number(metricTypeId);
-                    for (const [orgUnitId, value] of Object.entries(valuesByOrgUnit)) {
-                      const districtId = String(orgUnitId);
-                      if (!metricValuesByDistrict[districtId]) {
-                        metricValuesByDistrict[districtId] = {};
-                      }
-                      metricValuesByDistrict[districtId][typeId] = value;
-                    }
-                  }
-
-                  // Update savedRules - for each selected district, add it to matching rules' exceptions
-                  // We use the functional form to get the latest state and compute the count
-                  setSavedRules((prevRules) => {
-                    let addedCount = 0;
-                    const updatedRules = prevRules.map((rule) => {
-                      // Find which selected districts match this rule's criteria
-                      const districtsToExclude: string[] = [];
-                      for (const districtId of districtIds) {
-                        const matchingRuleIds = findRulesMatchingDistrict(
-                          districtId,
-                          [rule], // Check just this rule
-                          metricValuesByDistrict
-                        );
-                        if (matchingRuleIds.includes(rule.id)) {
-                          districtsToExclude.push(districtId);
+          <div className="flex-1 flex min-h-0 overflow-hidden">
+            <div className="flex-1 relative p-4 rounded-lg overflow-hidden min-h-0">
+              {activeTab === "map" && (
+                <InterventionMap
+                  selectedProvince={selectedProvince}
+                  highlightedDistrictIds={highlightedDistrictIds}
+                  districts={districts}
+                  onSelectMix={handleSelectMix}
+                  metricValuesByOrgUnit={{
+                    mortality: mortalityByOrgUnit,
+                    incidence: incidenceByOrgUnit,
+                    resistance: resistanceByOrgUnit,
+                    seasonality: seasonalityByOrgUnit,
+                  }}
+                  hasRules={savedRules.length > 0}
+                  onSetAsExceptions={(districtIds) => {
+                    // Transpose metricValuesByType to the format expected by findRulesMatchingDistrict:
+                    // from metricTypeId -> orgUnitId -> value to districtId -> metricTypeId -> value
+                    const metricValuesByDistrict: Record<string, Record<number, number>> = {};
+                    for (const [metricTypeId, valuesByOrgUnit] of Object.entries(metricValuesByType)) {
+                      const typeId = Number(metricTypeId);
+                      for (const [orgUnitId, value] of Object.entries(valuesByOrgUnit)) {
+                        const districtId = String(orgUnitId);
+                        if (!metricValuesByDistrict[districtId]) {
+                          metricValuesByDistrict[districtId] = {};
                         }
+                        metricValuesByDistrict[districtId][typeId] = value;
                       }
+                    }
 
-                      // If no districts to exclude for this rule, return unchanged
-                      if (districtsToExclude.length === 0) {
-                        return rule;
-                      }
+                    // Update savedRules - for each selected district, add it to matching rules' exceptions
+                    // We use the functional form to get the latest state and compute the count
+                    setSavedRules((prevRules) => {
+                      let addedCount = 0;
+                      const updatedRules = prevRules.map((rule) => {
+                        // Find which selected districts match this rule's criteria
+                        const districtsToExclude: string[] = [];
+                        for (const districtId of districtIds) {
+                          const matchingRuleIds = findRulesMatchingDistrict(
+                            districtId,
+                            [rule], // Check just this rule
+                            metricValuesByDistrict
+                          );
+                          if (matchingRuleIds.includes(rule.id)) {
+                            districtsToExclude.push(districtId);
+                          }
+                        }
 
-                      // Add new exceptions (avoiding duplicates)
-                      const existingExceptions = new Set(rule.excludedDistrictIds ?? []);
-                      const newExceptions = districtsToExclude.filter((id) => !existingExceptions.has(id));
+                        // If no districts to exclude for this rule, return unchanged
+                        if (districtsToExclude.length === 0) {
+                          return rule;
+                        }
 
-                      if (newExceptions.length === 0) {
-                        return rule;
-                      }
+                        // Add new exceptions (avoiding duplicates)
+                        const existingExceptions = new Set(rule.excludedDistrictIds ?? []);
+                        const newExceptions = districtsToExclude.filter((id) => !existingExceptions.has(id));
 
-                      addedCount += newExceptions.length;
+                        if (newExceptions.length === 0) {
+                          return rule;
+                        }
 
-                      return {
-                        ...rule,
-                        excludedDistrictIds: [...(rule.excludedDistrictIds ?? []), ...newExceptions],
-                      };
+                        addedCount += newExceptions.length;
+
+                        return {
+                          ...rule,
+                          excludedDistrictIds: [...(rule.excludedDistrictIds ?? []), ...newExceptions],
+                        };
+                      });
+
+                      // Show toast notification after computing the count
+                      // Use setTimeout to avoid calling toast during state update
+                      setTimeout(() => {
+                        if (addedCount > 0) {
+                          toast.success(`${addedCount} district${addedCount === 1 ? "" : "s"} added to exceptions`);
+                        } else {
+                          toast.info("0 districts added to exceptions (no matching rules)");
+                        }
+                      }, 0);
+
+                      return updatedRules;
                     });
+                  }}
+                  onRemoveFromExceptions={(districtIds) => {
+                    // Update savedRules - for each selected district, remove it from all rules' exception lists
+                    setSavedRules((prevRules) => {
+                      let removedCount = 0;
+                      const updatedRules = prevRules.map((rule) => {
+                        // Find which selected districts are in this rule's exception list
+                        const districtsToRemove = districtIds.filter((districtId) =>
+                          findRulesWithDistrictAsException(districtId, [rule]).includes(rule.id)
+                        );
 
-                    // Show toast notification after computing the count
-                    // Use setTimeout to avoid calling toast during state update
-                    setTimeout(() => {
-                      if (addedCount > 0) {
-                        toast.success(`${addedCount} district${addedCount === 1 ? "" : "s"} added to exceptions`);
-                      } else {
-                        toast.info("0 districts added to exceptions (no matching rules)");
-                      }
-                    }, 0);
+                        // If no districts to remove for this rule, return unchanged
+                        if (districtsToRemove.length === 0) {
+                          return rule;
+                        }
 
-                    return updatedRules;
-                  });
-                }}
-                onRemoveFromExceptions={(districtIds) => {
-                  // Update savedRules - for each selected district, remove it from all rules' exception lists
-                  setSavedRules((prevRules) => {
-                    let removedCount = 0;
-                    const updatedRules = prevRules.map((rule) => {
-                      // Find which selected districts are in this rule's exception list
-                      const districtsToRemove = districtIds.filter((districtId) =>
-                        findRulesWithDistrictAsException(districtId, [rule]).includes(rule.id)
-                      );
+                        // Remove the districts from exceptions
+                        const districtsToRemoveSet = new Set(districtsToRemove);
+                        const newExcludedDistrictIds = (rule.excludedDistrictIds ?? []).filter(
+                          (id) => !districtsToRemoveSet.has(id)
+                        );
 
-                      // If no districts to remove for this rule, return unchanged
-                      if (districtsToRemove.length === 0) {
-                        return rule;
-                      }
+                        removedCount += districtsToRemove.length;
 
-                      // Remove the districts from exceptions
-                      const districtsToRemoveSet = new Set(districtsToRemove);
-                      const newExcludedDistrictIds = (rule.excludedDistrictIds ?? []).filter(
-                        (id) => !districtsToRemoveSet.has(id)
-                      );
+                        return {
+                          ...rule,
+                          excludedDistrictIds: newExcludedDistrictIds,
+                        };
+                      });
 
-                      removedCount += districtsToRemove.length;
+                      // Show toast notification after computing the count
+                      // Use setTimeout to avoid calling toast during state update
+                      setTimeout(() => {
+                        if (removedCount > 0) {
+                          toast.success(`${removedCount} district${removedCount === 1 ? "" : "s"} removed from exceptions`);
+                        } else {
+                          toast.info("0 districts removed from exceptions");
+                        }
+                      }, 0);
 
-                      return {
-                        ...rule,
-                        excludedDistrictIds: newExcludedDistrictIds,
-                      };
+                      return updatedRules;
                     });
+                  }}
+                />
+              )}
+              {activeTab === "list" && (
+                <ListView
+                  districts={districts}
+                  selectedProvince={selectedProvince}
+                  interventionCategories={interventionCategories ?? []}
+                  rules={savedRules}
+                  metricValuesByType={metricValuesByType}
+                />
+              )}
+              {activeTab === "budget" && (
+                <BudgetView
+                  districts={districts}
+                  selectedProvince={selectedProvince}
+                  interventionCategories={interventionCategories ?? []}
+                />
+              )}
+            </div>
 
-                    // Show toast notification after computing the count
-                    // Use setTimeout to avoid calling toast during state update
-                    setTimeout(() => {
-                      if (removedCount > 0) {
-                        toast.success(`${removedCount} district${removedCount === 1 ? "" : "s"} removed from exceptions`);
-                      } else {
-                        toast.info("0 districts removed from exceptions");
-                      }
-                    }, 0);
-
-                    return updatedRules;
-                  });
-                }}
-              />
-            )}
-            {activeTab === "list" && (
-              <ListView
-                districts={districts}
-                selectedProvince={selectedProvince}
-                interventionCategories={interventionCategories ?? []}
-                rules={savedRules}
-                metricValuesByType={metricValuesByType}
-              />
-            )}
-            {activeTab === "budget" && (
-              <BudgetView
-                districts={districts}
-                selectedProvince={selectedProvince}
-                interventionCategories={interventionCategories ?? []}
-              />
-            )}
+            {/* Comparison Sidebar - inside view container */}
+            <ComparisonSidebar
+              isOpen={isComparisonOpen}
+              activeTab={activeTab}
+              selectedProvince={selectedProvince}
+            />
           </div>
         </div>
 
-        {/* Comparison Sidebar - sibling to intervention map content */}
-        <ComparisonSidebar
-          isOpen={isComparisonOpen}
-          onClose={() => setIsComparisonOpen(false)}
-          currentPlanId={planId}
-          isEdited={isEdited}
-        />
       </main>
 
       {/* Add Intervention Sheet */}
