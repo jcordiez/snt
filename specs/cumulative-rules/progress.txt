@@ -5,10 +5,14 @@ Cumulative Rules Mode - Implementation Progress
 [x] Add Switch toggle to rules-sidebar.tsx (left of magic wand)
 [x] Implement cumulative merge logic in use-district-rules.ts
 [x] Update plan page to use cumulative merge when applying rules
-[ ] Update getLastMatchingRuleColor to support cumulative mode
-[ ] Update intervention-map.tsx to pass cumulative mode down
-[ ] Update list-view / intervention-table to display merged interventions
-[ ] Update budget-view to compute costs from merged intervention sets
+[x] Update getLastMatchingRuleColor to support cumulative mode
+    (No changes needed — already returns last matching rule's color, correct for both modes per PRD)
+[x] Update intervention-map.tsx to pass cumulative mode down
+    (No changes needed — intervention-map reads from district properties already set by plan page effect)
+[x] Update list-view / intervention-table to display merged interventions
+    (No changes needed — reads from district.interventionCategoryAssignments already computed correctly)
+[x] Update budget-view to compute costs from merged intervention sets
+    (No changes needed — reads from district properties already set by plan page effect)
 [ ] Test: district matching one rule → same behavior in both modes
 [ ] Test: district matching multiple rules → union of interventions in cumulative mode
 [ ] Test: category conflict resolution (last-write-wins per category)
