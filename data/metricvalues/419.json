@@ -1,0 +1,4154 @@
+[
+    {
+        "id": 320000,
+        "metric_type": 419,
+        "org_unit": 180,
+        "year": null,
+        "value": 0.7149,
+        "string_value": ""
+    },
+    {
+        "id": 320001,
+        "metric_type": 419,
+        "org_unit": 181,
+        "year": null,
+        "value": 0.7608,
+        "string_value": ""
+    },
+    {
+        "id": 320002,
+        "metric_type": 419,
+        "org_unit": 182,
+        "year": null,
+        "value": 0.6215,
+        "string_value": ""
+    },
+    {
+        "id": 320003,
+        "metric_type": 419,
+        "org_unit": 183,
+        "year": null,
+        "value": 0.6736,
+        "string_value": ""
+    },
+    {
+        "id": 320004,
+        "metric_type": 419,
+        "org_unit": 184,
+        "year": null,
+        "value": 0.6973,
+        "string_value": ""
+    },
+    {
+        "id": 320005,
+        "metric_type": 419,
+        "org_unit": 185,
+        "year": null,
+        "value": 0.595,
+        "string_value": ""
+    },
+    {
+        "id": 320006,
+        "metric_type": 419,
+        "org_unit": 186,
+        "year": null,
+        "value": 0.694,
+        "string_value": ""
+    },
+    {
+        "id": 320007,
+        "metric_type": 419,
+        "org_unit": 187,
+        "year": null,
+        "value": 0.7467,
+        "string_value": ""
+    },
+    {
+        "id": 320008,
+        "metric_type": 419,
+        "org_unit": 188,
+        "year": null,
+        "value": 0.5783,
+        "string_value": ""
+    },
+    {
+        "id": 320009,
+        "metric_type": 419,
+        "org_unit": 189,
+        "year": null,
+        "value": 0.7963,
+        "string_value": ""
+    },
+    {
+        "id": 320010,
+        "metric_type": 419,
+        "org_unit": 190,
+        "year": null,
+        "value": 0.7569,
+        "string_value": ""
+    },
+    {
+        "id": 320011,
+        "metric_type": 419,
+        "org_unit": 191,
+        "year": null,
+        "value": 0.6066,
+        "string_value": ""
+    },
+    {
+        "id": 320012,
+        "metric_type": 419,
+        "org_unit": 192,
+        "year": null,
+        "value": 0.7728,
+        "string_value": ""
+    },
+    {
+        "id": 320013,
+        "metric_type": 419,
+        "org_unit": 193,
+        "year": null,
+        "value": 0.6732,
+        "string_value": ""
+    },
+    {
+        "id": 320014,
+        "metric_type": 419,
+        "org_unit": 194,
+        "year": null,
+        "value": 0.7472,
+        "string_value": ""
+    },
+    {
+        "id": 320015,
+        "metric_type": 419,
+        "org_unit": 195,
+        "year": null,
+        "value": 0.6044,
+        "string_value": ""
+    },
+    {
+        "id": 320016,
+        "metric_type": 419,
+        "org_unit": 196,
+        "year": null,
+        "value": 0.7084,
+        "string_value": ""
+    },
+    {
+        "id": 320017,
+        "metric_type": 419,
+        "org_unit": 197,
+        "year": null,
+        "value": 0.6427,
+        "string_value": ""
+    },
+    {
+        "id": 320018,
+        "metric_type": 419,
+        "org_unit": 198,
+        "year": null,
+        "value": 0.7235,
+        "string_value": ""
+    },
+    {
+        "id": 320019,
+        "metric_type": 419,
+        "org_unit": 199,
+        "year": null,
+        "value": 0.5917,
+        "string_value": ""
+    },
+    {
+        "id": 320020,
+        "metric_type": 419,
+        "org_unit": 200,
+        "year": null,
+        "value": 0.5994,
+        "string_value": ""
+    },
+    {
+        "id": 320021,
+        "metric_type": 419,
+        "org_unit": 201,
+        "year": null,
+        "value": 0.7134,
+        "string_value": ""
+    },
+    {
+        "id": 320022,
+        "metric_type": 419,
+        "org_unit": 202,
+        "year": null,
+        "value": 0.7262,
+        "string_value": ""
+    },
+    {
+        "id": 320023,
+        "metric_type": 419,
+        "org_unit": 203,
+        "year": null,
+        "value": 0.6879,
+        "string_value": ""
+    },
+    {
+        "id": 320024,
+        "metric_type": 419,
+        "org_unit": 204,
+        "year": null,
+        "value": 0.701,
+        "string_value": ""
+    },
+    {
+        "id": 320025,
+        "metric_type": 419,
+        "org_unit": 205,
+        "year": null,
+        "value": 0.621,
+        "string_value": ""
+    },
+    {
+        "id": 320026,
+        "metric_type": 419,
+        "org_unit": 206,
+        "year": null,
+        "value": 0.5977,
+        "string_value": ""
+    },
+    {
+        "id": 320027,
+        "metric_type": 419,
+        "org_unit": 207,
+        "year": null,
+        "value": 0.6492,
+        "string_value": ""
+    },
+    {
+        "id": 320028,
+        "metric_type": 419,
+        "org_unit": 208,
+        "year": null,
+        "value": 0.7119,
+        "string_value": ""
+    },
+    {
+        "id": 320029,
+        "metric_type": 419,
+        "org_unit": 209,
+        "year": null,
+        "value": 0.6432,
+        "string_value": ""
+    },
+    {
+        "id": 320030,
+        "metric_type": 419,
+        "org_unit": 210,
+        "year": null,
+        "value": 0.771,
+        "string_value": ""
+    },
+    {
+        "id": 320031,
+        "metric_type": 419,
+        "org_unit": 211,
+        "year": null,
+        "value": 0.6242,
+        "string_value": ""
+    },
+    {
+        "id": 320032,
+        "metric_type": 419,
+        "org_unit": 212,
+        "year": null,
+        "value": 0.684,
+        "string_value": ""
+    },
+    {
+        "id": 320033,
+        "metric_type": 419,
+        "org_unit": 213,
+        "year": null,
+        "value": 0.6424,
+        "string_value": ""
+    },
+    {
+        "id": 320034,
+        "metric_type": 419,
+        "org_unit": 214,
+        "year": null,
+        "value": 0.7243,
+        "string_value": ""
+    },
+    {
+        "id": 320035,
+        "metric_type": 419,
+        "org_unit": 215,
+        "year": null,
+        "value": 0.6467,
+        "string_value": ""
+    },
+    {
+        "id": 320036,
+        "metric_type": 419,
+        "org_unit": 216,
+        "year": null,
+        "value": 0.6131,
+        "string_value": ""
+    },
+    {
+        "id": 320037,
+        "metric_type": 419,
+        "org_unit": 217,
+        "year": null,
+        "value": 0.5708,
+        "string_value": ""
+    },
+    {
+        "id": 320038,
+        "metric_type": 419,
+        "org_unit": 218,
+        "year": null,
+        "value": 0.5975,
+        "string_value": ""
+    },
+    {
+        "id": 320039,
+        "metric_type": 419,
+        "org_unit": 219,
+        "year": null,
+        "value": 0.6194,
+        "string_value": ""
+    },
+    {
+        "id": 320040,
+        "metric_type": 419,
+        "org_unit": 220,
+        "year": null,
+        "value": 0.7764,
+        "string_value": ""
+    },
+    {
+        "id": 320041,
+        "metric_type": 419,
+        "org_unit": 221,
+        "year": null,
+        "value": 0.6932,
+        "string_value": ""
+    },
+    {
+        "id": 320042,
+        "metric_type": 419,
+        "org_unit": 222,
+        "year": null,
+        "value": 0.6562,
+        "string_value": ""
+    },
+    {
+        "id": 320043,
+        "metric_type": 419,
+        "org_unit": 223,
+        "year": null,
+        "value": 0.7348,
+        "string_value": ""
+    },
+    {
+        "id": 320044,
+        "metric_type": 419,
+        "org_unit": 224,
+        "year": null,
+        "value": 0.7505,
+        "string_value": ""
+    },
+    {
+        "id": 320045,
+        "metric_type": 419,
+        "org_unit": 225,
+        "year": null,
+        "value": 0.6034,
+        "string_value": ""
+    },
+    {
+        "id": 320046,
+        "metric_type": 419,
+        "org_unit": 226,
+        "year": null,
+        "value": 0.6641,
+        "string_value": ""
+    },
+    {
+        "id": 320047,
+        "metric_type": 419,
+        "org_unit": 227,
+        "year": null,
+        "value": 0.7647,
+        "string_value": ""
+    },
+    {
+        "id": 320048,
+        "metric_type": 419,
+        "org_unit": 228,
+        "year": null,
+        "value": 0.6307,
+        "string_value": ""
+    },
+    {
+        "id": 320049,
+        "metric_type": 419,
+        "org_unit": 229,
+        "year": null,
+        "value": 0.6528,
+        "string_value": ""
+    },
+    {
+        "id": 320050,
+        "metric_type": 419,
+        "org_unit": 230,
+        "year": null,
+        "value": 0.7146,
+        "string_value": ""
+    },
+    {
+        "id": 320051,
+        "metric_type": 419,
+        "org_unit": 231,
+        "year": null,
+        "value": 0.7382,
+        "string_value": ""
+    },
+    {
+        "id": 320052,
+        "metric_type": 419,
+        "org_unit": 232,
+        "year": null,
+        "value": 0.7234,
+        "string_value": ""
+    },
+    {
+        "id": 320053,
+        "metric_type": 419,
+        "org_unit": 233,
+        "year": null,
+        "value": 0.7659,
+        "string_value": ""
+    },
+    {
+        "id": 320054,
+        "metric_type": 419,
+        "org_unit": 234,
+        "year": null,
+        "value": 0.7281,
+        "string_value": ""
+    },
+    {
+        "id": 320055,
+        "metric_type": 419,
+        "org_unit": 235,
+        "year": null,
+        "value": 0.6937,
+        "string_value": ""
+    },
+    {
+        "id": 320056,
+        "metric_type": 419,
+        "org_unit": 236,
+        "year": null,
+        "value": 0.715,
+        "string_value": ""
+    },
+    {
+        "id": 320057,
+        "metric_type": 419,
+        "org_unit": 237,
+        "year": null,
+        "value": 0.7305,
+        "string_value": ""
+    },
+    {
+        "id": 320058,
+        "metric_type": 419,
+        "org_unit": 238,
+        "year": null,
+        "value": 0.73,
+        "string_value": ""
+    },
+    {
+        "id": 320059,
+        "metric_type": 419,
+        "org_unit": 239,
+        "year": null,
+        "value": 0.6203,
+        "string_value": ""
+    },
+    {
+        "id": 320060,
+        "metric_type": 419,
+        "org_unit": 240,
+        "year": null,
+        "value": 0.708,
+        "string_value": ""
+    },
+    {
+        "id": 320061,
+        "metric_type": 419,
+        "org_unit": 241,
+        "year": null,
+        "value": 0.6923,
+        "string_value": ""
+    },
+    {
+        "id": 320062,
+        "metric_type": 419,
+        "org_unit": 242,
+        "year": null,
+        "value": 0.6935,
+        "string_value": ""
+    },
+    {
+        "id": 320063,
+        "metric_type": 419,
+        "org_unit": 243,
+        "year": null,
+        "value": 0.6729,
+        "string_value": ""
+    },
+    {
+        "id": 320064,
+        "metric_type": 419,
+        "org_unit": 244,
+        "year": null,
+        "value": 0.6198,
+        "string_value": ""
+    },
+    {
+        "id": 320065,
+        "metric_type": 419,
+        "org_unit": 245,
+        "year": null,
+        "value": 0.6709,
+        "string_value": ""
+    },
+    {
+        "id": 320066,
+        "metric_type": 419,
+        "org_unit": 246,
+        "year": null,
+        "value": 0.6344,
+        "string_value": ""
+    },
+    {
+        "id": 320067,
+        "metric_type": 419,
+        "org_unit": 247,
+        "year": null,
+        "value": 0.7071,
+        "string_value": ""
+    },
+    {
+        "id": 320068,
+        "metric_type": 419,
+        "org_unit": 248,
+        "year": null,
+        "value": 0.6599,
+        "string_value": ""
+    },
+    {
+        "id": 320069,
+        "metric_type": 419,
+        "org_unit": 249,
+        "year": null,
+        "value": 0.6083,
+        "string_value": ""
+    },
+    {
+        "id": 320070,
+        "metric_type": 419,
+        "org_unit": 250,
+        "year": null,
+        "value": 0.6785,
+        "string_value": ""
+    },
+    {
+        "id": 320071,
+        "metric_type": 419,
+        "org_unit": 251,
+        "year": null,
+        "value": 0.6751,
+        "string_value": ""
+    },
+    {
+        "id": 320072,
+        "metric_type": 419,
+        "org_unit": 252,
+        "year": null,
+        "value": 0.6272,
+        "string_value": ""
+    },
+    {
+        "id": 320073,
+        "metric_type": 419,
+        "org_unit": 253,
+        "year": null,
+        "value": 0.6546,
+        "string_value": ""
+    },
+    {
+        "id": 320074,
+        "metric_type": 419,
+        "org_unit": 254,
+        "year": null,
+        "value": 0.6273,
+        "string_value": ""
+    },
+    {
+        "id": 320075,
+        "metric_type": 419,
+        "org_unit": 255,
+        "year": null,
+        "value": 0.6864,
+        "string_value": ""
+    },
+    {
+        "id": 320076,
+        "metric_type": 419,
+        "org_unit": 256,
+        "year": null,
+        "value": 0.78,
+        "string_value": ""
+    },
+    {
+        "id": 320077,
+        "metric_type": 419,
+        "org_unit": 257,
+        "year": null,
+        "value": 0.7098,
+        "string_value": ""
+    },
+    {
+        "id": 320078,
+        "metric_type": 419,
+        "org_unit": 258,
+        "year": null,
+        "value": 0.7464,
+        "string_value": ""
+    },
+    {
+        "id": 320079,
+        "metric_type": 419,
+        "org_unit": 259,
+        "year": null,
+        "value": 0.7597,
+        "string_value": ""
+    },
+    {
+        "id": 320080,
+        "metric_type": 419,
+        "org_unit": 260,
+        "year": null,
+        "value": 0.6601,
+        "string_value": ""
+    },
+    {
+        "id": 320081,
+        "metric_type": 419,
+        "org_unit": 261,
+        "year": null,
+        "value": 0.791,
+        "string_value": ""
+    },
+    {
+        "id": 320082,
+        "metric_type": 419,
+        "org_unit": 262,
+        "year": null,
+        "value": 0.7739,
+        "string_value": ""
+    },
+    {
+        "id": 320083,
+        "metric_type": 419,
+        "org_unit": 263,
+        "year": null,
+        "value": 0.7694,
+        "string_value": ""
+    },
+    {
+        "id": 320084,
+        "metric_type": 419,
+        "org_unit": 264,
+        "year": null,
+        "value": 0.6498,
+        "string_value": ""
+    },
+    {
+        "id": 320085,
+        "metric_type": 419,
+        "org_unit": 265,
+        "year": null,
+        "value": 0.6118,
+        "string_value": ""
+    },
+    {
+        "id": 320086,
+        "metric_type": 419,
+        "org_unit": 266,
+        "year": null,
+        "value": 0.612,
+        "string_value": ""
+    },
+    {
+        "id": 320087,
+        "metric_type": 419,
+        "org_unit": 267,
+        "year": null,
+        "value": 0.7762,
+        "string_value": ""
+    },
+    {
+        "id": 320088,
+        "metric_type": 419,
+        "org_unit": 268,
+        "year": null,
+        "value": 0.7165,
+        "string_value": ""
+    },
+    {
+        "id": 320089,
+        "metric_type": 419,
+        "org_unit": 269,
+        "year": null,
+        "value": 0.7334,
+        "string_value": ""
+    },
+    {
+        "id": 320090,
+        "metric_type": 419,
+        "org_unit": 270,
+        "year": null,
+        "value": 0.7832,
+        "string_value": ""
+    },
+    {
+        "id": 320091,
+        "metric_type": 419,
+        "org_unit": 271,
+        "year": null,
+        "value": 0.6198,
+        "string_value": ""
+    },
+    {
+        "id": 320092,
+        "metric_type": 419,
+        "org_unit": 272,
+        "year": null,
+        "value": 0.5981,
+        "string_value": ""
+    },
+    {
+        "id": 320093,
+        "metric_type": 419,
+        "org_unit": 273,
+        "year": null,
+        "value": 0.7184,
+        "string_value": ""
+    },
+    {
+        "id": 320094,
+        "metric_type": 419,
+        "org_unit": 274,
+        "year": null,
+        "value": 0.7844,
+        "string_value": ""
+    },
+    {
+        "id": 320095,
+        "metric_type": 419,
+        "org_unit": 275,
+        "year": null,
+        "value": 0.6266,
+        "string_value": ""
+    },
+    {
+        "id": 320096,
+        "metric_type": 419,
+        "org_unit": 276,
+        "year": null,
+        "value": 0.7981,
+        "string_value": ""
+    },
+    {
+        "id": 320097,
+        "metric_type": 419,
+        "org_unit": 277,
+        "year": null,
+        "value": 0.7131,
+        "string_value": ""
+    },
+    {
+        "id": 320098,
+        "metric_type": 419,
+        "org_unit": 278,
+        "year": null,
+        "value": 0.6612,
+        "string_value": ""
+    },
+    {
+        "id": 320099,
+        "metric_type": 419,
+        "org_unit": 279,
+        "year": null,
+        "value": 0.7512,
+        "string_value": ""
+    },
+    {
+        "id": 320100,
+        "metric_type": 419,
+        "org_unit": 280,
+        "year": null,
+        "value": 0.6965,
+        "string_value": ""
+    },
+    {
+        "id": 320101,
+        "metric_type": 419,
+        "org_unit": 281,
+        "year": null,
+        "value": 0.6052,
+        "string_value": ""
+    },
+    {
+        "id": 320102,
+        "metric_type": 419,
+        "org_unit": 282,
+        "year": null,
+        "value": 0.6541,
+        "string_value": ""
+    },
+    {
+        "id": 320103,
+        "metric_type": 419,
+        "org_unit": 283,
+        "year": null,
+        "value": 0.6328,
+        "string_value": ""
+    },
+    {
+        "id": 320104,
+        "metric_type": 419,
+        "org_unit": 284,
+        "year": null,
+        "value": 0.5891,
+        "string_value": ""
+    },
+    {
+        "id": 320105,
+        "metric_type": 419,
+        "org_unit": 285,
+        "year": null,
+        "value": 0.6323,
+        "string_value": ""
+    },
+    {
+        "id": 320106,
+        "metric_type": 419,
+        "org_unit": 286,
+        "year": null,
+        "value": 0.6504,
+        "string_value": ""
+    },
+    {
+        "id": 320107,
+        "metric_type": 419,
+        "org_unit": 287,
+        "year": null,
+        "value": 0.6564,
+        "string_value": ""
+    },
+    {
+        "id": 320108,
+        "metric_type": 419,
+        "org_unit": 288,
+        "year": null,
+        "value": 0.6065,
+        "string_value": ""
+    },
+    {
+        "id": 320109,
+        "metric_type": 419,
+        "org_unit": 289,
+        "year": null,
+        "value": 0.7506,
+        "string_value": ""
+    },
+    {
+        "id": 320110,
+        "metric_type": 419,
+        "org_unit": 290,
+        "year": null,
+        "value": 0.612,
+        "string_value": ""
+    },
+    {
+        "id": 320111,
+        "metric_type": 419,
+        "org_unit": 291,
+        "year": null,
+        "value": 0.7716,
+        "string_value": ""
+    },
+    {
+        "id": 320112,
+        "metric_type": 419,
+        "org_unit": 292,
+        "year": null,
+        "value": 0.637,
+        "string_value": ""
+    },
+    {
+        "id": 320113,
+        "metric_type": 419,
+        "org_unit": 293,
+        "year": null,
+        "value": 0.6404,
+        "string_value": ""
+    },
+    {
+        "id": 320114,
+        "metric_type": 419,
+        "org_unit": 294,
+        "year": null,
+        "value": 0.657,
+        "string_value": ""
+    },
+    {
+        "id": 320115,
+        "metric_type": 419,
+        "org_unit": 295,
+        "year": null,
+        "value": 0.6034,
+        "string_value": ""
+    },
+    {
+        "id": 320116,
+        "metric_type": 419,
+        "org_unit": 296,
+        "year": null,
+        "value": 0.7599,
+        "string_value": ""
+    },
+    {
+        "id": 320117,
+        "metric_type": 419,
+        "org_unit": 297,
+        "year": null,
+        "value": 0.7751,
+        "string_value": ""
+    },
+    {
+        "id": 320118,
+        "metric_type": 419,
+        "org_unit": 298,
+        "year": null,
+        "value": 0.6442,
+        "string_value": ""
+    },
+    {
+        "id": 320119,
+        "metric_type": 419,
+        "org_unit": 299,
+        "year": null,
+        "value": 0.6322,
+        "string_value": ""
+    },
+    {
+        "id": 320120,
+        "metric_type": 419,
+        "org_unit": 300,
+        "year": null,
+        "value": 0.6761,
+        "string_value": ""
+    },
+    {
+        "id": 320121,
+        "metric_type": 419,
+        "org_unit": 301,
+        "year": null,
+        "value": 0.7604,
+        "string_value": ""
+    },
+    {
+        "id": 320122,
+        "metric_type": 419,
+        "org_unit": 302,
+        "year": null,
+        "value": 0.6788,
+        "string_value": ""
+    },
+    {
+        "id": 320123,
+        "metric_type": 419,
+        "org_unit": 303,
+        "year": null,
+        "value": 0.751,
+        "string_value": ""
+    },
+    {
+        "id": 320124,
+        "metric_type": 419,
+        "org_unit": 304,
+        "year": null,
+        "value": 0.6579,
+        "string_value": ""
+    },
+    {
+        "id": 320125,
+        "metric_type": 419,
+        "org_unit": 305,
+        "year": null,
+        "value": 0.6823,
+        "string_value": ""
+    },
+    {
+        "id": 320126,
+        "metric_type": 419,
+        "org_unit": 306,
+        "year": null,
+        "value": 0.6421,
+        "string_value": ""
+    },
+    {
+        "id": 320127,
+        "metric_type": 419,
+        "org_unit": 307,
+        "year": null,
+        "value": 0.7512,
+        "string_value": ""
+    },
+    {
+        "id": 320128,
+        "metric_type": 419,
+        "org_unit": 308,
+        "year": null,
+        "value": 0.7071,
+        "string_value": ""
+    },
+    {
+        "id": 320129,
+        "metric_type": 419,
+        "org_unit": 309,
+        "year": null,
+        "value": 0.7683,
+        "string_value": ""
+    },
+    {
+        "id": 320130,
+        "metric_type": 419,
+        "org_unit": 310,
+        "year": null,
+        "value": 0.6304,
+        "string_value": ""
+    },
+    {
+        "id": 320131,
+        "metric_type": 419,
+        "org_unit": 311,
+        "year": null,
+        "value": 0.7559,
+        "string_value": ""
+    },
+    {
+        "id": 320132,
+        "metric_type": 419,
+        "org_unit": 312,
+        "year": null,
+        "value": 0.762,
+        "string_value": ""
+    },
+    {
+        "id": 320133,
+        "metric_type": 419,
+        "org_unit": 313,
+        "year": null,
+        "value": 0.7011,
+        "string_value": ""
+    },
+    {
+        "id": 320134,
+        "metric_type": 419,
+        "org_unit": 314,
+        "year": null,
+        "value": 0.8018,
+        "string_value": ""
+    },
+    {
+        "id": 320135,
+        "metric_type": 419,
+        "org_unit": 315,
+        "year": null,
+        "value": 0.6668,
+        "string_value": ""
+    },
+    {
+        "id": 320136,
+        "metric_type": 419,
+        "org_unit": 316,
+        "year": null,
+        "value": 0.7435,
+        "string_value": ""
+    },
+    {
+        "id": 320137,
+        "metric_type": 419,
+        "org_unit": 317,
+        "year": null,
+        "value": 0.6455,
+        "string_value": ""
+    },
+    {
+        "id": 320138,
+        "metric_type": 419,
+        "org_unit": 318,
+        "year": null,
+        "value": 0.7676,
+        "string_value": ""
+    },
+    {
+        "id": 320139,
+        "metric_type": 419,
+        "org_unit": 319,
+        "year": null,
+        "value": 0.7742,
+        "string_value": ""
+    },
+    {
+        "id": 320140,
+        "metric_type": 419,
+        "org_unit": 320,
+        "year": null,
+        "value": 0.6979,
+        "string_value": ""
+    },
+    {
+        "id": 320141,
+        "metric_type": 419,
+        "org_unit": 321,
+        "year": null,
+        "value": 0.6768,
+        "string_value": ""
+    },
+    {
+        "id": 320142,
+        "metric_type": 419,
+        "org_unit": 322,
+        "year": null,
+        "value": 0.626,
+        "string_value": ""
+    },
+    {
+        "id": 320143,
+        "metric_type": 419,
+        "org_unit": 323,
+        "year": null,
+        "value": 0.6358,
+        "string_value": ""
+    },
+    {
+        "id": 320144,
+        "metric_type": 419,
+        "org_unit": 324,
+        "year": null,
+        "value": 0.8016,
+        "string_value": ""
+    },
+    {
+        "id": 320145,
+        "metric_type": 419,
+        "org_unit": 325,
+        "year": null,
+        "value": 0.7413,
+        "string_value": ""
+    },
+    {
+        "id": 320146,
+        "metric_type": 419,
+        "org_unit": 326,
+        "year": null,
+        "value": 0.7137,
+        "string_value": ""
+    },
+    {
+        "id": 320147,
+        "metric_type": 419,
+        "org_unit": 327,
+        "year": null,
+        "value": 0.6067,
+        "string_value": ""
+    },
+    {
+        "id": 320148,
+        "metric_type": 419,
+        "org_unit": 328,
+        "year": null,
+        "value": 0.782,
+        "string_value": ""
+    },
+    {
+        "id": 320149,
+        "metric_type": 419,
+        "org_unit": 329,
+        "year": null,
+        "value": 0.7067,
+        "string_value": ""
+    },
+    {
+        "id": 320150,
+        "metric_type": 419,
+        "org_unit": 330,
+        "year": null,
+        "value": 0.625,
+        "string_value": ""
+    },
+    {
+        "id": 320151,
+        "metric_type": 419,
+        "org_unit": 331,
+        "year": null,
+        "value": 0.6607,
+        "string_value": ""
+    },
+    {
+        "id": 320152,
+        "metric_type": 419,
+        "org_unit": 332,
+        "year": null,
+        "value": 0.7012,
+        "string_value": ""
+    },
+    {
+        "id": 320153,
+        "metric_type": 419,
+        "org_unit": 333,
+        "year": null,
+        "value": 0.7656,
+        "string_value": ""
+    },
+    {
+        "id": 320154,
+        "metric_type": 419,
+        "org_unit": 334,
+        "year": null,
+        "value": 0.7609,
+        "string_value": ""
+    },
+    {
+        "id": 320155,
+        "metric_type": 419,
+        "org_unit": 335,
+        "year": null,
+        "value": 0.7846,
+        "string_value": ""
+    },
+    {
+        "id": 320156,
+        "metric_type": 419,
+        "org_unit": 336,
+        "year": null,
+        "value": 0.6332,
+        "string_value": ""
+    },
+    {
+        "id": 320157,
+        "metric_type": 419,
+        "org_unit": 337,
+        "year": null,
+        "value": 0.6506,
+        "string_value": ""
+    },
+    {
+        "id": 320158,
+        "metric_type": 419,
+        "org_unit": 338,
+        "year": null,
+        "value": 0.7468,
+        "string_value": ""
+    },
+    {
+        "id": 320159,
+        "metric_type": 419,
+        "org_unit": 339,
+        "year": null,
+        "value": 0.6859,
+        "string_value": ""
+    },
+    {
+        "id": 320160,
+        "metric_type": 419,
+        "org_unit": 340,
+        "year": null,
+        "value": 0.6581,
+        "string_value": ""
+    },
+    {
+        "id": 320161,
+        "metric_type": 419,
+        "org_unit": 341,
+        "year": null,
+        "value": 0.6961,
+        "string_value": ""
+    },
+    {
+        "id": 320162,
+        "metric_type": 419,
+        "org_unit": 342,
+        "year": null,
+        "value": 0.7277,
+        "string_value": ""
+    },
+    {
+        "id": 320163,
+        "metric_type": 419,
+        "org_unit": 343,
+        "year": null,
+        "value": 0.6081,
+        "string_value": ""
+    },
+    {
+        "id": 320164,
+        "metric_type": 419,
+        "org_unit": 344,
+        "year": null,
+        "value": 0.7523,
+        "string_value": ""
+    },
+    {
+        "id": 320165,
+        "metric_type": 419,
+        "org_unit": 345,
+        "year": null,
+        "value": 0.5957,
+        "string_value": ""
+    },
+    {
+        "id": 320166,
+        "metric_type": 419,
+        "org_unit": 346,
+        "year": null,
+        "value": 0.6568,
+        "string_value": ""
+    },
+    {
+        "id": 320167,
+        "metric_type": 419,
+        "org_unit": 347,
+        "year": null,
+        "value": 0.567,
+        "string_value": ""
+    },
+    {
+        "id": 320168,
+        "metric_type": 419,
+        "org_unit": 348,
+        "year": null,
+        "value": 0.7424,
+        "string_value": ""
+    },
+    {
+        "id": 320169,
+        "metric_type": 419,
+        "org_unit": 349,
+        "year": null,
+        "value": 0.7617,
+        "string_value": ""
+    },
+    {
+        "id": 320170,
+        "metric_type": 419,
+        "org_unit": 350,
+        "year": null,
+        "value": 0.678,
+        "string_value": ""
+    },
+    {
+        "id": 320171,
+        "metric_type": 419,
+        "org_unit": 351,
+        "year": null,
+        "value": 0.6293,
+        "string_value": ""
+    },
+    {
+        "id": 320172,
+        "metric_type": 419,
+        "org_unit": 352,
+        "year": null,
+        "value": 0.5894,
+        "string_value": ""
+    },
+    {
+        "id": 320173,
+        "metric_type": 419,
+        "org_unit": 353,
+        "year": null,
+        "value": 0.6606,
+        "string_value": ""
+    },
+    {
+        "id": 320174,
+        "metric_type": 419,
+        "org_unit": 354,
+        "year": null,
+        "value": 0.5714,
+        "string_value": ""
+    },
+    {
+        "id": 320175,
+        "metric_type": 419,
+        "org_unit": 355,
+        "year": null,
+        "value": 0.6321,
+        "string_value": ""
+    },
+    {
+        "id": 320176,
+        "metric_type": 419,
+        "org_unit": 356,
+        "year": null,
+        "value": 0.6189,
+        "string_value": ""
+    },
+    {
+        "id": 320177,
+        "metric_type": 419,
+        "org_unit": 357,
+        "year": null,
+        "value": 0.707,
+        "string_value": ""
+    },
+    {
+        "id": 320178,
+        "metric_type": 419,
+        "org_unit": 358,
+        "year": null,
+        "value": 0.5949,
+        "string_value": ""
+    },
+    {
+        "id": 320179,
+        "metric_type": 419,
+        "org_unit": 359,
+        "year": null,
+        "value": 0.5913,
+        "string_value": ""
+    },
+    {
+        "id": 320180,
+        "metric_type": 419,
+        "org_unit": 360,
+        "year": null,
+        "value": 0.7633,
+        "string_value": ""
+    },
+    {
+        "id": 320181,
+        "metric_type": 419,
+        "org_unit": 361,
+        "year": null,
+        "value": 0.7444,
+        "string_value": ""
+    },
+    {
+        "id": 320182,
+        "metric_type": 419,
+        "org_unit": 362,
+        "year": null,
+        "value": 0.7423,
+        "string_value": ""
+    },
+    {
+        "id": 320183,
+        "metric_type": 419,
+        "org_unit": 363,
+        "year": null,
+        "value": 0.6905,
+        "string_value": ""
+    },
+    {
+        "id": 320184,
+        "metric_type": 419,
+        "org_unit": 364,
+        "year": null,
+        "value": 0.6254,
+        "string_value": ""
+    },
+    {
+        "id": 320185,
+        "metric_type": 419,
+        "org_unit": 365,
+        "year": null,
+        "value": 0.6734,
+        "string_value": ""
+    },
+    {
+        "id": 320186,
+        "metric_type": 419,
+        "org_unit": 366,
+        "year": null,
+        "value": 0.7091,
+        "string_value": ""
+    },
+    {
+        "id": 320187,
+        "metric_type": 419,
+        "org_unit": 367,
+        "year": null,
+        "value": 0.7535,
+        "string_value": ""
+    },
+    {
+        "id": 320188,
+        "metric_type": 419,
+        "org_unit": 368,
+        "year": null,
+        "value": 0.6578,
+        "string_value": ""
+    },
+    {
+        "id": 320189,
+        "metric_type": 419,
+        "org_unit": 369,
+        "year": null,
+        "value": 0.6775,
+        "string_value": ""
+    },
+    {
+        "id": 320190,
+        "metric_type": 419,
+        "org_unit": 370,
+        "year": null,
+        "value": 0.7162,
+        "string_value": ""
+    },
+    {
+        "id": 320191,
+        "metric_type": 419,
+        "org_unit": 371,
+        "year": null,
+        "value": 0.6741,
+        "string_value": ""
+    },
+    {
+        "id": 320192,
+        "metric_type": 419,
+        "org_unit": 372,
+        "year": null,
+        "value": 0.7028,
+        "string_value": ""
+    },
+    {
+        "id": 320193,
+        "metric_type": 419,
+        "org_unit": 373,
+        "year": null,
+        "value": 0.5743,
+        "string_value": ""
+    },
+    {
+        "id": 320194,
+        "metric_type": 419,
+        "org_unit": 374,
+        "year": null,
+        "value": 0.6029,
+        "string_value": ""
+    },
+    {
+        "id": 320195,
+        "metric_type": 419,
+        "org_unit": 375,
+        "year": null,
+        "value": 0.5972,
+        "string_value": ""
+    },
+    {
+        "id": 320196,
+        "metric_type": 419,
+        "org_unit": 376,
+        "year": null,
+        "value": 0.6752,
+        "string_value": ""
+    },
+    {
+        "id": 320197,
+        "metric_type": 419,
+        "org_unit": 377,
+        "year": null,
+        "value": 0.6655,
+        "string_value": ""
+    },
+    {
+        "id": 320198,
+        "metric_type": 419,
+        "org_unit": 378,
+        "year": null,
+        "value": 0.6572,
+        "string_value": ""
+    },
+    {
+        "id": 320199,
+        "metric_type": 419,
+        "org_unit": 379,
+        "year": null,
+        "value": 0.556,
+        "string_value": ""
+    },
+    {
+        "id": 320200,
+        "metric_type": 419,
+        "org_unit": 380,
+        "year": null,
+        "value": 0.7666,
+        "string_value": ""
+    },
+    {
+        "id": 320201,
+        "metric_type": 419,
+        "org_unit": 381,
+        "year": null,
+        "value": 0.6316,
+        "string_value": ""
+    },
+    {
+        "id": 320202,
+        "metric_type": 419,
+        "org_unit": 382,
+        "year": null,
+        "value": 0.7737,
+        "string_value": ""
+    },
+    {
+        "id": 320203,
+        "metric_type": 419,
+        "org_unit": 383,
+        "year": null,
+        "value": 0.7325,
+        "string_value": ""
+    },
+    {
+        "id": 320204,
+        "metric_type": 419,
+        "org_unit": 384,
+        "year": null,
+        "value": 0.724,
+        "string_value": ""
+    },
+    {
+        "id": 320205,
+        "metric_type": 419,
+        "org_unit": 385,
+        "year": null,
+        "value": 0.7872,
+        "string_value": ""
+    },
+    {
+        "id": 320206,
+        "metric_type": 419,
+        "org_unit": 386,
+        "year": null,
+        "value": 0.5852,
+        "string_value": ""
+    },
+    {
+        "id": 320207,
+        "metric_type": 419,
+        "org_unit": 387,
+        "year": null,
+        "value": 0.6057,
+        "string_value": ""
+    },
+    {
+        "id": 320208,
+        "metric_type": 419,
+        "org_unit": 388,
+        "year": null,
+        "value": 0.5603,
+        "string_value": ""
+    },
+    {
+        "id": 320209,
+        "metric_type": 419,
+        "org_unit": 389,
+        "year": null,
+        "value": 0.6208,
+        "string_value": ""
+    },
+    {
+        "id": 320210,
+        "metric_type": 419,
+        "org_unit": 390,
+        "year": null,
+        "value": 0.7035,
+        "string_value": ""
+    },
+    {
+        "id": 320211,
+        "metric_type": 419,
+        "org_unit": 391,
+        "year": null,
+        "value": 0.7707,
+        "string_value": ""
+    },
+    {
+        "id": 320212,
+        "metric_type": 419,
+        "org_unit": 392,
+        "year": null,
+        "value": 0.6898,
+        "string_value": ""
+    },
+    {
+        "id": 320213,
+        "metric_type": 419,
+        "org_unit": 393,
+        "year": null,
+        "value": 0.6677,
+        "string_value": ""
+    },
+    {
+        "id": 320214,
+        "metric_type": 419,
+        "org_unit": 394,
+        "year": null,
+        "value": 0.6268,
+        "string_value": ""
+    },
+    {
+        "id": 320215,
+        "metric_type": 419,
+        "org_unit": 395,
+        "year": null,
+        "value": 0.7642,
+        "string_value": ""
+    },
+    {
+        "id": 320216,
+        "metric_type": 419,
+        "org_unit": 396,
+        "year": null,
+        "value": 0.769,
+        "string_value": ""
+    },
+    {
+        "id": 320217,
+        "metric_type": 419,
+        "org_unit": 397,
+        "year": null,
+        "value": 0.5868,
+        "string_value": ""
+    },
+    {
+        "id": 320218,
+        "metric_type": 419,
+        "org_unit": 398,
+        "year": null,
+        "value": 0.5802,
+        "string_value": ""
+    },
+    {
+        "id": 320219,
+        "metric_type": 419,
+        "org_unit": 399,
+        "year": null,
+        "value": 0.6113,
+        "string_value": ""
+    },
+    {
+        "id": 320220,
+        "metric_type": 419,
+        "org_unit": 400,
+        "year": null,
+        "value": 0.5858,
+        "string_value": ""
+    },
+    {
+        "id": 320221,
+        "metric_type": 419,
+        "org_unit": 401,
+        "year": null,
+        "value": 0.7395,
+        "string_value": ""
+    },
+    {
+        "id": 320222,
+        "metric_type": 419,
+        "org_unit": 402,
+        "year": null,
+        "value": 0.7093,
+        "string_value": ""
+    },
+    {
+        "id": 320223,
+        "metric_type": 419,
+        "org_unit": 403,
+        "year": null,
+        "value": 0.72,
+        "string_value": ""
+    },
+    {
+        "id": 320224,
+        "metric_type": 419,
+        "org_unit": 404,
+        "year": null,
+        "value": 0.6777,
+        "string_value": ""
+    },
+    {
+        "id": 320225,
+        "metric_type": 419,
+        "org_unit": 405,
+        "year": null,
+        "value": 0.7933,
+        "string_value": ""
+    },
+    {
+        "id": 320226,
+        "metric_type": 419,
+        "org_unit": 406,
+        "year": null,
+        "value": 0.6112,
+        "string_value": ""
+    },
+    {
+        "id": 320227,
+        "metric_type": 419,
+        "org_unit": 407,
+        "year": null,
+        "value": 0.7837,
+        "string_value": ""
+    },
+    {
+        "id": 320228,
+        "metric_type": 419,
+        "org_unit": 408,
+        "year": null,
+        "value": 0.7057,
+        "string_value": ""
+    },
+    {
+        "id": 320229,
+        "metric_type": 419,
+        "org_unit": 409,
+        "year": null,
+        "value": 0.6344,
+        "string_value": ""
+    },
+    {
+        "id": 320230,
+        "metric_type": 419,
+        "org_unit": 410,
+        "year": null,
+        "value": 0.7352,
+        "string_value": ""
+    },
+    {
+        "id": 320231,
+        "metric_type": 419,
+        "org_unit": 411,
+        "year": null,
+        "value": 0.7905,
+        "string_value": ""
+    },
+    {
+        "id": 320232,
+        "metric_type": 419,
+        "org_unit": 412,
+        "year": null,
+        "value": 0.7711,
+        "string_value": ""
+    },
+    {
+        "id": 320233,
+        "metric_type": 419,
+        "org_unit": 413,
+        "year": null,
+        "value": 0.6824,
+        "string_value": ""
+    },
+    {
+        "id": 320234,
+        "metric_type": 419,
+        "org_unit": 414,
+        "year": null,
+        "value": 0.5887,
+        "string_value": ""
+    },
+    {
+        "id": 320235,
+        "metric_type": 419,
+        "org_unit": 415,
+        "year": null,
+        "value": 0.7554,
+        "string_value": ""
+    },
+    {
+        "id": 320236,
+        "metric_type": 419,
+        "org_unit": 416,
+        "year": null,
+        "value": 0.5817,
+        "string_value": ""
+    },
+    {
+        "id": 320237,
+        "metric_type": 419,
+        "org_unit": 417,
+        "year": null,
+        "value": 0.5938,
+        "string_value": ""
+    },
+    {
+        "id": 320238,
+        "metric_type": 419,
+        "org_unit": 418,
+        "year": null,
+        "value": 0.6583,
+        "string_value": ""
+    },
+    {
+        "id": 320239,
+        "metric_type": 419,
+        "org_unit": 419,
+        "year": null,
+        "value": 0.7804,
+        "string_value": ""
+    },
+    {
+        "id": 320240,
+        "metric_type": 419,
+        "org_unit": 420,
+        "year": null,
+        "value": 0.7758,
+        "string_value": ""
+    },
+    {
+        "id": 320241,
+        "metric_type": 419,
+        "org_unit": 421,
+        "year": null,
+        "value": 0.7284,
+        "string_value": ""
+    },
+    {
+        "id": 320242,
+        "metric_type": 419,
+        "org_unit": 422,
+        "year": null,
+        "value": 0.6409,
+        "string_value": ""
+    },
+    {
+        "id": 320243,
+        "metric_type": 419,
+        "org_unit": 423,
+        "year": null,
+        "value": 0.6381,
+        "string_value": ""
+    },
+    {
+        "id": 320244,
+        "metric_type": 419,
+        "org_unit": 424,
+        "year": null,
+        "value": 0.6127,
+        "string_value": ""
+    },
+    {
+        "id": 320245,
+        "metric_type": 419,
+        "org_unit": 425,
+        "year": null,
+        "value": 0.641,
+        "string_value": ""
+    },
+    {
+        "id": 320246,
+        "metric_type": 419,
+        "org_unit": 426,
+        "year": null,
+        "value": 0.7378,
+        "string_value": ""
+    },
+    {
+        "id": 320247,
+        "metric_type": 419,
+        "org_unit": 427,
+        "year": null,
+        "value": 0.6878,
+        "string_value": ""
+    },
+    {
+        "id": 320248,
+        "metric_type": 419,
+        "org_unit": 428,
+        "year": null,
+        "value": 0.6925,
+        "string_value": ""
+    },
+    {
+        "id": 320249,
+        "metric_type": 419,
+        "org_unit": 429,
+        "year": null,
+        "value": 0.5985,
+        "string_value": ""
+    },
+    {
+        "id": 320250,
+        "metric_type": 419,
+        "org_unit": 430,
+        "year": null,
+        "value": 0.6667,
+        "string_value": ""
+    },
+    {
+        "id": 320251,
+        "metric_type": 419,
+        "org_unit": 431,
+        "year": null,
+        "value": 0.6788,
+        "string_value": ""
+    },
+    {
+        "id": 320252,
+        "metric_type": 419,
+        "org_unit": 432,
+        "year": null,
+        "value": 0.7752,
+        "string_value": ""
+    },
+    {
+        "id": 320253,
+        "metric_type": 419,
+        "org_unit": 433,
+        "year": null,
+        "value": 0.6353,
+        "string_value": ""
+    },
+    {
+        "id": 320254,
+        "metric_type": 419,
+        "org_unit": 434,
+        "year": null,
+        "value": 0.65,
+        "string_value": ""
+    },
+    {
+        "id": 320255,
+        "metric_type": 419,
+        "org_unit": 435,
+        "year": null,
+        "value": 0.6054,
+        "string_value": ""
+    },
+    {
+        "id": 320256,
+        "metric_type": 419,
+        "org_unit": 436,
+        "year": null,
+        "value": 0.6595,
+        "string_value": ""
+    },
+    {
+        "id": 320257,
+        "metric_type": 419,
+        "org_unit": 437,
+        "year": null,
+        "value": 0.6132,
+        "string_value": ""
+    },
+    {
+        "id": 320258,
+        "metric_type": 419,
+        "org_unit": 438,
+        "year": null,
+        "value": 0.61,
+        "string_value": ""
+    },
+    {
+        "id": 320259,
+        "metric_type": 419,
+        "org_unit": 439,
+        "year": null,
+        "value": 0.6746,
+        "string_value": ""
+    },
+    {
+        "id": 320260,
+        "metric_type": 419,
+        "org_unit": 440,
+        "year": null,
+        "value": 0.6034,
+        "string_value": ""
+    },
+    {
+        "id": 320261,
+        "metric_type": 419,
+        "org_unit": 441,
+        "year": null,
+        "value": 0.5832,
+        "string_value": ""
+    },
+    {
+        "id": 320262,
+        "metric_type": 419,
+        "org_unit": 442,
+        "year": null,
+        "value": 0.634,
+        "string_value": ""
+    },
+    {
+        "id": 320263,
+        "metric_type": 419,
+        "org_unit": 443,
+        "year": null,
+        "value": 0.7004,
+        "string_value": ""
+    },
+    {
+        "id": 320264,
+        "metric_type": 419,
+        "org_unit": 444,
+        "year": null,
+        "value": 0.6148,
+        "string_value": ""
+    },
+    {
+        "id": 320265,
+        "metric_type": 419,
+        "org_unit": 445,
+        "year": null,
+        "value": 0.6001,
+        "string_value": ""
+    },
+    {
+        "id": 320266,
+        "metric_type": 419,
+        "org_unit": 446,
+        "year": null,
+        "value": 0.6949,
+        "string_value": ""
+    },
+    {
+        "id": 320267,
+        "metric_type": 419,
+        "org_unit": 447,
+        "year": null,
+        "value": 0.6095,
+        "string_value": ""
+    },
+    {
+        "id": 320268,
+        "metric_type": 419,
+        "org_unit": 448,
+        "year": null,
+        "value": 0.71,
+        "string_value": ""
+    },
+    {
+        "id": 320269,
+        "metric_type": 419,
+        "org_unit": 449,
+        "year": null,
+        "value": 0.7628,
+        "string_value": ""
+    },
+    {
+        "id": 320270,
+        "metric_type": 419,
+        "org_unit": 450,
+        "year": null,
+        "value": 0.6707,
+        "string_value": ""
+    },
+    {
+        "id": 320271,
+        "metric_type": 419,
+        "org_unit": 451,
+        "year": null,
+        "value": 0.7274,
+        "string_value": ""
+    },
+    {
+        "id": 320272,
+        "metric_type": 419,
+        "org_unit": 452,
+        "year": null,
+        "value": 0.7396,
+        "string_value": ""
+    },
+    {
+        "id": 320273,
+        "metric_type": 419,
+        "org_unit": 453,
+        "year": null,
+        "value": 0.7295,
+        "string_value": ""
+    },
+    {
+        "id": 320274,
+        "metric_type": 419,
+        "org_unit": 454,
+        "year": null,
+        "value": 0.5989,
+        "string_value": ""
+    },
+    {
+        "id": 320275,
+        "metric_type": 419,
+        "org_unit": 455,
+        "year": null,
+        "value": 0.753,
+        "string_value": ""
+    },
+    {
+        "id": 320276,
+        "metric_type": 419,
+        "org_unit": 456,
+        "year": null,
+        "value": 0.6639,
+        "string_value": ""
+    },
+    {
+        "id": 320277,
+        "metric_type": 419,
+        "org_unit": 457,
+        "year": null,
+        "value": 0.7272,
+        "string_value": ""
+    },
+    {
+        "id": 320278,
+        "metric_type": 419,
+        "org_unit": 458,
+        "year": null,
+        "value": 0.7274,
+        "string_value": ""
+    },
+    {
+        "id": 320279,
+        "metric_type": 419,
+        "org_unit": 459,
+        "year": null,
+        "value": 0.55,
+        "string_value": ""
+    },
+    {
+        "id": 320280,
+        "metric_type": 419,
+        "org_unit": 460,
+        "year": null,
+        "value": 0.7528,
+        "string_value": ""
+    },
+    {
+        "id": 320281,
+        "metric_type": 419,
+        "org_unit": 461,
+        "year": null,
+        "value": 0.6994,
+        "string_value": ""
+    },
+    {
+        "id": 320282,
+        "metric_type": 419,
+        "org_unit": 462,
+        "year": null,
+        "value": 0.6217,
+        "string_value": ""
+    },
+    {
+        "id": 320283,
+        "metric_type": 419,
+        "org_unit": 463,
+        "year": null,
+        "value": 0.7704,
+        "string_value": ""
+    },
+    {
+        "id": 320284,
+        "metric_type": 419,
+        "org_unit": 464,
+        "year": null,
+        "value": 0.7221,
+        "string_value": ""
+    },
+    {
+        "id": 320285,
+        "metric_type": 419,
+        "org_unit": 465,
+        "year": null,
+        "value": 0.7655,
+        "string_value": ""
+    },
+    {
+        "id": 320286,
+        "metric_type": 419,
+        "org_unit": 466,
+        "year": null,
+        "value": 0.7581,
+        "string_value": ""
+    },
+    {
+        "id": 320287,
+        "metric_type": 419,
+        "org_unit": 467,
+        "year": null,
+        "value": 0.6725,
+        "string_value": ""
+    },
+    {
+        "id": 320288,
+        "metric_type": 419,
+        "org_unit": 468,
+        "year": null,
+        "value": 0.678,
+        "string_value": ""
+    },
+    {
+        "id": 320289,
+        "metric_type": 419,
+        "org_unit": 469,
+        "year": null,
+        "value": 0.7038,
+        "string_value": ""
+    },
+    {
+        "id": 320290,
+        "metric_type": 419,
+        "org_unit": 470,
+        "year": null,
+        "value": 0.7988,
+        "string_value": ""
+    },
+    {
+        "id": 320291,
+        "metric_type": 419,
+        "org_unit": 471,
+        "year": null,
+        "value": 0.7241,
+        "string_value": ""
+    },
+    {
+        "id": 320292,
+        "metric_type": 419,
+        "org_unit": 472,
+        "year": null,
+        "value": 0.6465,
+        "string_value": ""
+    },
+    {
+        "id": 320293,
+        "metric_type": 419,
+        "org_unit": 473,
+        "year": null,
+        "value": 0.5736,
+        "string_value": ""
+    },
+    {
+        "id": 320294,
+        "metric_type": 419,
+        "org_unit": 474,
+        "year": null,
+        "value": 0.6402,
+        "string_value": ""
+    },
+    {
+        "id": 320295,
+        "metric_type": 419,
+        "org_unit": 475,
+        "year": null,
+        "value": 0.6747,
+        "string_value": ""
+    },
+    {
+        "id": 320296,
+        "metric_type": 419,
+        "org_unit": 476,
+        "year": null,
+        "value": 0.6856,
+        "string_value": ""
+    },
+    {
+        "id": 320297,
+        "metric_type": 419,
+        "org_unit": 477,
+        "year": null,
+        "value": 0.7108,
+        "string_value": ""
+    },
+    {
+        "id": 320298,
+        "metric_type": 419,
+        "org_unit": 478,
+        "year": null,
+        "value": 0.7595,
+        "string_value": ""
+    },
+    {
+        "id": 320299,
+        "metric_type": 419,
+        "org_unit": 479,
+        "year": null,
+        "value": 0.7382,
+        "string_value": ""
+    },
+    {
+        "id": 320300,
+        "metric_type": 419,
+        "org_unit": 480,
+        "year": null,
+        "value": 0.6395,
+        "string_value": ""
+    },
+    {
+        "id": 320301,
+        "metric_type": 419,
+        "org_unit": 481,
+        "year": null,
+        "value": 0.6071,
+        "string_value": ""
+    },
+    {
+        "id": 320302,
+        "metric_type": 419,
+        "org_unit": 482,
+        "year": null,
+        "value": 0.6245,
+        "string_value": ""
+    },
+    {
+        "id": 320303,
+        "metric_type": 419,
+        "org_unit": 483,
+        "year": null,
+        "value": 0.7101,
+        "string_value": ""
+    },
+    {
+        "id": 320304,
+        "metric_type": 419,
+        "org_unit": 484,
+        "year": null,
+        "value": 0.7224,
+        "string_value": ""
+    },
+    {
+        "id": 320305,
+        "metric_type": 419,
+        "org_unit": 485,
+        "year": null,
+        "value": 0.695,
+        "string_value": ""
+    },
+    {
+        "id": 320306,
+        "metric_type": 419,
+        "org_unit": 486,
+        "year": null,
+        "value": 0.7185,
+        "string_value": ""
+    },
+    {
+        "id": 320307,
+        "metric_type": 419,
+        "org_unit": 487,
+        "year": null,
+        "value": 0.6991,
+        "string_value": ""
+    },
+    {
+        "id": 320308,
+        "metric_type": 419,
+        "org_unit": 488,
+        "year": null,
+        "value": 0.5948,
+        "string_value": ""
+    },
+    {
+        "id": 320309,
+        "metric_type": 419,
+        "org_unit": 489,
+        "year": null,
+        "value": 0.5936,
+        "string_value": ""
+    },
+    {
+        "id": 320310,
+        "metric_type": 419,
+        "org_unit": 490,
+        "year": null,
+        "value": 0.7574,
+        "string_value": ""
+    },
+    {
+        "id": 320311,
+        "metric_type": 419,
+        "org_unit": 491,
+        "year": null,
+        "value": 0.7352,
+        "string_value": ""
+    },
+    {
+        "id": 320312,
+        "metric_type": 419,
+        "org_unit": 492,
+        "year": null,
+        "value": 0.7462,
+        "string_value": ""
+    },
+    {
+        "id": 320313,
+        "metric_type": 419,
+        "org_unit": 493,
+        "year": null,
+        "value": 0.621,
+        "string_value": ""
+    },
+    {
+        "id": 320314,
+        "metric_type": 419,
+        "org_unit": 494,
+        "year": null,
+        "value": 0.6293,
+        "string_value": ""
+    },
+    {
+        "id": 320315,
+        "metric_type": 419,
+        "org_unit": 495,
+        "year": null,
+        "value": 0.7304,
+        "string_value": ""
+    },
+    {
+        "id": 320316,
+        "metric_type": 419,
+        "org_unit": 496,
+        "year": null,
+        "value": 0.7756,
+        "string_value": ""
+    },
+    {
+        "id": 320317,
+        "metric_type": 419,
+        "org_unit": 497,
+        "year": null,
+        "value": 0.7073,
+        "string_value": ""
+    },
+    {
+        "id": 320318,
+        "metric_type": 419,
+        "org_unit": 498,
+        "year": null,
+        "value": 0.6019,
+        "string_value": ""
+    },
+    {
+        "id": 320319,
+        "metric_type": 419,
+        "org_unit": 499,
+        "year": null,
+        "value": 0.6541,
+        "string_value": ""
+    },
+    {
+        "id": 320320,
+        "metric_type": 419,
+        "org_unit": 500,
+        "year": null,
+        "value": 0.7337,
+        "string_value": ""
+    },
+    {
+        "id": 320321,
+        "metric_type": 419,
+        "org_unit": 501,
+        "year": null,
+        "value": 0.6642,
+        "string_value": ""
+    },
+    {
+        "id": 320322,
+        "metric_type": 419,
+        "org_unit": 502,
+        "year": null,
+        "value": 0.7162,
+        "string_value": ""
+    },
+    {
+        "id": 320323,
+        "metric_type": 419,
+        "org_unit": 503,
+        "year": null,
+        "value": 0.6793,
+        "string_value": ""
+    },
+    {
+        "id": 320324,
+        "metric_type": 419,
+        "org_unit": 504,
+        "year": null,
+        "value": 0.6934,
+        "string_value": ""
+    },
+    {
+        "id": 320325,
+        "metric_type": 419,
+        "org_unit": 505,
+        "year": null,
+        "value": 0.6571,
+        "string_value": ""
+    },
+    {
+        "id": 320326,
+        "metric_type": 419,
+        "org_unit": 506,
+        "year": null,
+        "value": 0.7946,
+        "string_value": ""
+    },
+    {
+        "id": 320327,
+        "metric_type": 419,
+        "org_unit": 507,
+        "year": null,
+        "value": 0.6505,
+        "string_value": ""
+    },
+    {
+        "id": 320328,
+        "metric_type": 419,
+        "org_unit": 508,
+        "year": null,
+        "value": 0.637,
+        "string_value": ""
+    },
+    {
+        "id": 320329,
+        "metric_type": 419,
+        "org_unit": 509,
+        "year": null,
+        "value": 0.6392,
+        "string_value": ""
+    },
+    {
+        "id": 320330,
+        "metric_type": 419,
+        "org_unit": 510,
+        "year": null,
+        "value": 0.7619,
+        "string_value": ""
+    },
+    {
+        "id": 320331,
+        "metric_type": 419,
+        "org_unit": 511,
+        "year": null,
+        "value": 0.7589,
+        "string_value": ""
+    },
+    {
+        "id": 320332,
+        "metric_type": 419,
+        "org_unit": 512,
+        "year": null,
+        "value": 0.7879,
+        "string_value": ""
+    },
+    {
+        "id": 320333,
+        "metric_type": 419,
+        "org_unit": 513,
+        "year": null,
+        "value": 0.7404,
+        "string_value": ""
+    },
+    {
+        "id": 320334,
+        "metric_type": 419,
+        "org_unit": 514,
+        "year": null,
+        "value": 0.6113,
+        "string_value": ""
+    },
+    {
+        "id": 320335,
+        "metric_type": 419,
+        "org_unit": 515,
+        "year": null,
+        "value": 0.7347,
+        "string_value": ""
+    },
+    {
+        "id": 320336,
+        "metric_type": 419,
+        "org_unit": 516,
+        "year": null,
+        "value": 0.6014,
+        "string_value": ""
+    },
+    {
+        "id": 320337,
+        "metric_type": 419,
+        "org_unit": 517,
+        "year": null,
+        "value": 0.6064,
+        "string_value": ""
+    },
+    {
+        "id": 320338,
+        "metric_type": 419,
+        "org_unit": 518,
+        "year": null,
+        "value": 0.617,
+        "string_value": ""
+    },
+    {
+        "id": 320339,
+        "metric_type": 419,
+        "org_unit": 519,
+        "year": null,
+        "value": 0.7271,
+        "string_value": ""
+    },
+    {
+        "id": 320340,
+        "metric_type": 419,
+        "org_unit": 520,
+        "year": null,
+        "value": 0.6198,
+        "string_value": ""
+    },
+    {
+        "id": 320341,
+        "metric_type": 419,
+        "org_unit": 521,
+        "year": null,
+        "value": 0.5677,
+        "string_value": ""
+    },
+    {
+        "id": 320342,
+        "metric_type": 419,
+        "org_unit": 522,
+        "year": null,
+        "value": 0.7775,
+        "string_value": ""
+    },
+    {
+        "id": 320343,
+        "metric_type": 419,
+        "org_unit": 523,
+        "year": null,
+        "value": 0.6348,
+        "string_value": ""
+    },
+    {
+        "id": 320344,
+        "metric_type": 419,
+        "org_unit": 524,
+        "year": null,
+        "value": 0.572,
+        "string_value": ""
+    },
+    {
+        "id": 320345,
+        "metric_type": 419,
+        "org_unit": 525,
+        "year": null,
+        "value": 0.596,
+        "string_value": ""
+    },
+    {
+        "id": 320346,
+        "metric_type": 419,
+        "org_unit": 526,
+        "year": null,
+        "value": 0.7373,
+        "string_value": ""
+    },
+    {
+        "id": 320347,
+        "metric_type": 419,
+        "org_unit": 527,
+        "year": null,
+        "value": 0.7994,
+        "string_value": ""
+    },
+    {
+        "id": 320348,
+        "metric_type": 419,
+        "org_unit": 528,
+        "year": null,
+        "value": 0.7118,
+        "string_value": ""
+    },
+    {
+        "id": 320349,
+        "metric_type": 419,
+        "org_unit": 529,
+        "year": null,
+        "value": 0.7518,
+        "string_value": ""
+    },
+    {
+        "id": 320350,
+        "metric_type": 419,
+        "org_unit": 530,
+        "year": null,
+        "value": 0.7022,
+        "string_value": ""
+    },
+    {
+        "id": 320351,
+        "metric_type": 419,
+        "org_unit": 531,
+        "year": null,
+        "value": 0.754,
+        "string_value": ""
+    },
+    {
+        "id": 320352,
+        "metric_type": 419,
+        "org_unit": 532,
+        "year": null,
+        "value": 0.7271,
+        "string_value": ""
+    },
+    {
+        "id": 320353,
+        "metric_type": 419,
+        "org_unit": 533,
+        "year": null,
+        "value": 0.6364,
+        "string_value": ""
+    },
+    {
+        "id": 320354,
+        "metric_type": 419,
+        "org_unit": 534,
+        "year": null,
+        "value": 0.6904,
+        "string_value": ""
+    },
+    {
+        "id": 320355,
+        "metric_type": 419,
+        "org_unit": 535,
+        "year": null,
+        "value": 0.7186,
+        "string_value": ""
+    },
+    {
+        "id": 320356,
+        "metric_type": 419,
+        "org_unit": 536,
+        "year": null,
+        "value": 0.6281,
+        "string_value": ""
+    },
+    {
+        "id": 320357,
+        "metric_type": 419,
+        "org_unit": 537,
+        "year": null,
+        "value": 0.5864,
+        "string_value": ""
+    },
+    {
+        "id": 320358,
+        "metric_type": 419,
+        "org_unit": 538,
+        "year": null,
+        "value": 0.7428,
+        "string_value": ""
+    },
+    {
+        "id": 320359,
+        "metric_type": 419,
+        "org_unit": 539,
+        "year": null,
+        "value": 0.7779,
+        "string_value": ""
+    },
+    {
+        "id": 320360,
+        "metric_type": 419,
+        "org_unit": 540,
+        "year": null,
+        "value": 0.6447,
+        "string_value": ""
+    },
+    {
+        "id": 320361,
+        "metric_type": 419,
+        "org_unit": 541,
+        "year": null,
+        "value": 0.6701,
+        "string_value": ""
+    },
+    {
+        "id": 320362,
+        "metric_type": 419,
+        "org_unit": 542,
+        "year": null,
+        "value": 0.6415,
+        "string_value": ""
+    },
+    {
+        "id": 320363,
+        "metric_type": 419,
+        "org_unit": 543,
+        "year": null,
+        "value": 0.6922,
+        "string_value": ""
+    },
+    {
+        "id": 320364,
+        "metric_type": 419,
+        "org_unit": 544,
+        "year": null,
+        "value": 0.674,
+        "string_value": ""
+    },
+    {
+        "id": 320365,
+        "metric_type": 419,
+        "org_unit": 545,
+        "year": null,
+        "value": 0.5953,
+        "string_value": ""
+    },
+    {
+        "id": 320366,
+        "metric_type": 419,
+        "org_unit": 546,
+        "year": null,
+        "value": 0.716,
+        "string_value": ""
+    },
+    {
+        "id": 320367,
+        "metric_type": 419,
+        "org_unit": 547,
+        "year": null,
+        "value": 0.7906,
+        "string_value": ""
+    },
+    {
+        "id": 320368,
+        "metric_type": 419,
+        "org_unit": 548,
+        "year": null,
+        "value": 0.6774,
+        "string_value": ""
+    },
+    {
+        "id": 320369,
+        "metric_type": 419,
+        "org_unit": 549,
+        "year": null,
+        "value": 0.6899,
+        "string_value": ""
+    },
+    {
+        "id": 320370,
+        "metric_type": 419,
+        "org_unit": 550,
+        "year": null,
+        "value": 0.6461,
+        "string_value": ""
+    },
+    {
+        "id": 320371,
+        "metric_type": 419,
+        "org_unit": 551,
+        "year": null,
+        "value": 0.7102,
+        "string_value": ""
+    },
+    {
+        "id": 320372,
+        "metric_type": 419,
+        "org_unit": 552,
+        "year": null,
+        "value": 0.6422,
+        "string_value": ""
+    },
+    {
+        "id": 320373,
+        "metric_type": 419,
+        "org_unit": 553,
+        "year": null,
+        "value": 0.7714,
+        "string_value": ""
+    },
+    {
+        "id": 320374,
+        "metric_type": 419,
+        "org_unit": 554,
+        "year": null,
+        "value": 0.7789,
+        "string_value": ""
+    },
+    {
+        "id": 320375,
+        "metric_type": 419,
+        "org_unit": 555,
+        "year": null,
+        "value": 0.6997,
+        "string_value": ""
+    },
+    {
+        "id": 320376,
+        "metric_type": 419,
+        "org_unit": 556,
+        "year": null,
+        "value": 0.7169,
+        "string_value": ""
+    },
+    {
+        "id": 320377,
+        "metric_type": 419,
+        "org_unit": 557,
+        "year": null,
+        "value": 0.694,
+        "string_value": ""
+    },
+    {
+        "id": 320378,
+        "metric_type": 419,
+        "org_unit": 558,
+        "year": null,
+        "value": 0.7369,
+        "string_value": ""
+    },
+    {
+        "id": 320379,
+        "metric_type": 419,
+        "org_unit": 559,
+        "year": null,
+        "value": 0.6841,
+        "string_value": ""
+    },
+    {
+        "id": 320380,
+        "metric_type": 419,
+        "org_unit": 560,
+        "year": null,
+        "value": 0.7658,
+        "string_value": ""
+    },
+    {
+        "id": 320381,
+        "metric_type": 419,
+        "org_unit": 561,
+        "year": null,
+        "value": 0.6143,
+        "string_value": ""
+    },
+    {
+        "id": 320382,
+        "metric_type": 419,
+        "org_unit": 562,
+        "year": null,
+        "value": 0.7106,
+        "string_value": ""
+    },
+    {
+        "id": 320383,
+        "metric_type": 419,
+        "org_unit": 563,
+        "year": null,
+        "value": 0.6854,
+        "string_value": ""
+    },
+    {
+        "id": 320384,
+        "metric_type": 419,
+        "org_unit": 564,
+        "year": null,
+        "value": 0.6047,
+        "string_value": ""
+    },
+    {
+        "id": 320385,
+        "metric_type": 419,
+        "org_unit": 565,
+        "year": null,
+        "value": 0.6082,
+        "string_value": ""
+    },
+    {
+        "id": 320386,
+        "metric_type": 419,
+        "org_unit": 566,
+        "year": null,
+        "value": 0.8062,
+        "string_value": ""
+    },
+    {
+        "id": 320387,
+        "metric_type": 419,
+        "org_unit": 567,
+        "year": null,
+        "value": 0.6302,
+        "string_value": ""
+    },
+    {
+        "id": 320388,
+        "metric_type": 419,
+        "org_unit": 568,
+        "year": null,
+        "value": 0.7187,
+        "string_value": ""
+    },
+    {
+        "id": 320389,
+        "metric_type": 419,
+        "org_unit": 569,
+        "year": null,
+        "value": 0.6771,
+        "string_value": ""
+    },
+    {
+        "id": 320390,
+        "metric_type": 419,
+        "org_unit": 570,
+        "year": null,
+        "value": 0.752,
+        "string_value": ""
+    },
+    {
+        "id": 320391,
+        "metric_type": 419,
+        "org_unit": 571,
+        "year": null,
+        "value": 0.675,
+        "string_value": ""
+    },
+    {
+        "id": 320392,
+        "metric_type": 419,
+        "org_unit": 572,
+        "year": null,
+        "value": 0.5795,
+        "string_value": ""
+    },
+    {
+        "id": 320393,
+        "metric_type": 419,
+        "org_unit": 573,
+        "year": null,
+        "value": 0.7493,
+        "string_value": ""
+    },
+    {
+        "id": 320394,
+        "metric_type": 419,
+        "org_unit": 574,
+        "year": null,
+        "value": 0.6538,
+        "string_value": ""
+    },
+    {
+        "id": 320395,
+        "metric_type": 419,
+        "org_unit": 575,
+        "year": null,
+        "value": 0.7861,
+        "string_value": ""
+    },
+    {
+        "id": 320396,
+        "metric_type": 419,
+        "org_unit": 576,
+        "year": null,
+        "value": 0.7244,
+        "string_value": ""
+    },
+    {
+        "id": 320397,
+        "metric_type": 419,
+        "org_unit": 577,
+        "year": null,
+        "value": 0.609,
+        "string_value": ""
+    },
+    {
+        "id": 320398,
+        "metric_type": 419,
+        "org_unit": 578,
+        "year": null,
+        "value": 0.5853,
+        "string_value": ""
+    },
+    {
+        "id": 320399,
+        "metric_type": 419,
+        "org_unit": 579,
+        "year": null,
+        "value": 0.7037,
+        "string_value": ""
+    },
+    {
+        "id": 320400,
+        "metric_type": 419,
+        "org_unit": 580,
+        "year": null,
+        "value": 0.6992,
+        "string_value": ""
+    },
+    {
+        "id": 320401,
+        "metric_type": 419,
+        "org_unit": 581,
+        "year": null,
+        "value": 0.6332,
+        "string_value": ""
+    },
+    {
+        "id": 320402,
+        "metric_type": 419,
+        "org_unit": 582,
+        "year": null,
+        "value": 0.6168,
+        "string_value": ""
+    },
+    {
+        "id": 320403,
+        "metric_type": 419,
+        "org_unit": 583,
+        "year": null,
+        "value": 0.6702,
+        "string_value": ""
+    },
+    {
+        "id": 320404,
+        "metric_type": 419,
+        "org_unit": 584,
+        "year": null,
+        "value": 0.7594,
+        "string_value": ""
+    },
+    {
+        "id": 320405,
+        "metric_type": 419,
+        "org_unit": 585,
+        "year": null,
+        "value": 0.595,
+        "string_value": ""
+    },
+    {
+        "id": 320406,
+        "metric_type": 419,
+        "org_unit": 586,
+        "year": null,
+        "value": 0.6467,
+        "string_value": ""
+    },
+    {
+        "id": 320407,
+        "metric_type": 419,
+        "org_unit": 587,
+        "year": null,
+        "value": 0.569,
+        "string_value": ""
+    },
+    {
+        "id": 320408,
+        "metric_type": 419,
+        "org_unit": 588,
+        "year": null,
+        "value": 0.5896,
+        "string_value": ""
+    },
+    {
+        "id": 320409,
+        "metric_type": 419,
+        "org_unit": 589,
+        "year": null,
+        "value": 0.6985,
+        "string_value": ""
+    },
+    {
+        "id": 320410,
+        "metric_type": 419,
+        "org_unit": 590,
+        "year": null,
+        "value": 0.7185,
+        "string_value": ""
+    },
+    {
+        "id": 320411,
+        "metric_type": 419,
+        "org_unit": 591,
+        "year": null,
+        "value": 0.7033,
+        "string_value": ""
+    },
+    {
+        "id": 320412,
+        "metric_type": 419,
+        "org_unit": 592,
+        "year": null,
+        "value": 0.6565,
+        "string_value": ""
+    },
+    {
+        "id": 320413,
+        "metric_type": 419,
+        "org_unit": 593,
+        "year": null,
+        "value": 0.752,
+        "string_value": ""
+    },
+    {
+        "id": 320414,
+        "metric_type": 419,
+        "org_unit": 594,
+        "year": null,
+        "value": 0.6528,
+        "string_value": ""
+    },
+    {
+        "id": 320415,
+        "metric_type": 419,
+        "org_unit": 595,
+        "year": null,
+        "value": 0.6379,
+        "string_value": ""
+    },
+    {
+        "id": 320416,
+        "metric_type": 419,
+        "org_unit": 596,
+        "year": null,
+        "value": 0.769,
+        "string_value": ""
+    },
+    {
+        "id": 320417,
+        "metric_type": 419,
+        "org_unit": 597,
+        "year": null,
+        "value": 0.6492,
+        "string_value": ""
+    },
+    {
+        "id": 320418,
+        "metric_type": 419,
+        "org_unit": 598,
+        "year": null,
+        "value": 0.6804,
+        "string_value": ""
+    },
+    {
+        "id": 320419,
+        "metric_type": 419,
+        "org_unit": 599,
+        "year": null,
+        "value": 0.7701,
+        "string_value": ""
+    },
+    {
+        "id": 320420,
+        "metric_type": 419,
+        "org_unit": 600,
+        "year": null,
+        "value": 0.6509,
+        "string_value": ""
+    },
+    {
+        "id": 320421,
+        "metric_type": 419,
+        "org_unit": 601,
+        "year": null,
+        "value": 0.6197,
+        "string_value": ""
+    },
+    {
+        "id": 320422,
+        "metric_type": 419,
+        "org_unit": 602,
+        "year": null,
+        "value": 0.6403,
+        "string_value": ""
+    },
+    {
+        "id": 320423,
+        "metric_type": 419,
+        "org_unit": 603,
+        "year": null,
+        "value": 0.7388,
+        "string_value": ""
+    },
+    {
+        "id": 320424,
+        "metric_type": 419,
+        "org_unit": 604,
+        "year": null,
+        "value": 0.7139,
+        "string_value": ""
+    },
+    {
+        "id": 320425,
+        "metric_type": 419,
+        "org_unit": 605,
+        "year": null,
+        "value": 0.6383,
+        "string_value": ""
+    },
+    {
+        "id": 320426,
+        "metric_type": 419,
+        "org_unit": 606,
+        "year": null,
+        "value": 0.7574,
+        "string_value": ""
+    },
+    {
+        "id": 320427,
+        "metric_type": 419,
+        "org_unit": 607,
+        "year": null,
+        "value": 0.6334,
+        "string_value": ""
+    },
+    {
+        "id": 320428,
+        "metric_type": 419,
+        "org_unit": 608,
+        "year": null,
+        "value": 0.6359,
+        "string_value": ""
+    },
+    {
+        "id": 320429,
+        "metric_type": 419,
+        "org_unit": 609,
+        "year": null,
+        "value": 0.7101,
+        "string_value": ""
+    },
+    {
+        "id": 320430,
+        "metric_type": 419,
+        "org_unit": 610,
+        "year": null,
+        "value": 0.6569,
+        "string_value": ""
+    },
+    {
+        "id": 320431,
+        "metric_type": 419,
+        "org_unit": 611,
+        "year": null,
+        "value": 0.6264,
+        "string_value": ""
+    },
+    {
+        "id": 320432,
+        "metric_type": 419,
+        "org_unit": 612,
+        "year": null,
+        "value": 0.616,
+        "string_value": ""
+    },
+    {
+        "id": 320433,
+        "metric_type": 419,
+        "org_unit": 613,
+        "year": null,
+        "value": 0.7631,
+        "string_value": ""
+    },
+    {
+        "id": 320434,
+        "metric_type": 419,
+        "org_unit": 614,
+        "year": null,
+        "value": 0.7367,
+        "string_value": ""
+    },
+    {
+        "id": 320435,
+        "metric_type": 419,
+        "org_unit": 615,
+        "year": null,
+        "value": 0.636,
+        "string_value": ""
+    },
+    {
+        "id": 320436,
+        "metric_type": 419,
+        "org_unit": 616,
+        "year": null,
+        "value": 0.6451,
+        "string_value": ""
+    },
+    {
+        "id": 320437,
+        "metric_type": 419,
+        "org_unit": 617,
+        "year": null,
+        "value": 0.5786,
+        "string_value": ""
+    },
+    {
+        "id": 320438,
+        "metric_type": 419,
+        "org_unit": 618,
+        "year": null,
+        "value": 0.7416,
+        "string_value": ""
+    },
+    {
+        "id": 320439,
+        "metric_type": 419,
+        "org_unit": 619,
+        "year": null,
+        "value": 0.6696,
+        "string_value": ""
+    },
+    {
+        "id": 320440,
+        "metric_type": 419,
+        "org_unit": 620,
+        "year": null,
+        "value": 0.6814,
+        "string_value": ""
+    },
+    {
+        "id": 320441,
+        "metric_type": 419,
+        "org_unit": 621,
+        "year": null,
+        "value": 0.6304,
+        "string_value": ""
+    },
+    {
+        "id": 320442,
+        "metric_type": 419,
+        "org_unit": 622,
+        "year": null,
+        "value": 0.7008,
+        "string_value": ""
+    },
+    {
+        "id": 320443,
+        "metric_type": 419,
+        "org_unit": 623,
+        "year": null,
+        "value": 0.7914,
+        "string_value": ""
+    },
+    {
+        "id": 320444,
+        "metric_type": 419,
+        "org_unit": 624,
+        "year": null,
+        "value": 0.7228,
+        "string_value": ""
+    },
+    {
+        "id": 320445,
+        "metric_type": 419,
+        "org_unit": 625,
+        "year": null,
+        "value": 0.6521,
+        "string_value": ""
+    },
+    {
+        "id": 320446,
+        "metric_type": 419,
+        "org_unit": 626,
+        "year": null,
+        "value": 0.6309,
+        "string_value": ""
+    },
+    {
+        "id": 320447,
+        "metric_type": 419,
+        "org_unit": 627,
+        "year": null,
+        "value": 0.6493,
+        "string_value": ""
+    },
+    {
+        "id": 320448,
+        "metric_type": 419,
+        "org_unit": 628,
+        "year": null,
+        "value": 0.5969,
+        "string_value": ""
+    },
+    {
+        "id": 320449,
+        "metric_type": 419,
+        "org_unit": 629,
+        "year": null,
+        "value": 0.7354,
+        "string_value": ""
+    },
+    {
+        "id": 320450,
+        "metric_type": 419,
+        "org_unit": 630,
+        "year": null,
+        "value": 0.6522,
+        "string_value": ""
+    },
+    {
+        "id": 320451,
+        "metric_type": 419,
+        "org_unit": 631,
+        "year": null,
+        "value": 0.6904,
+        "string_value": ""
+    },
+    {
+        "id": 320452,
+        "metric_type": 419,
+        "org_unit": 632,
+        "year": null,
+        "value": 0.6203,
+        "string_value": ""
+    },
+    {
+        "id": 320453,
+        "metric_type": 419,
+        "org_unit": 633,
+        "year": null,
+        "value": 0.7479,
+        "string_value": ""
+    },
+    {
+        "id": 320454,
+        "metric_type": 419,
+        "org_unit": 634,
+        "year": null,
+        "value": 0.7533,
+        "string_value": ""
+    },
+    {
+        "id": 320455,
+        "metric_type": 419,
+        "org_unit": 635,
+        "year": null,
+        "value": 0.7273,
+        "string_value": ""
+    },
+    {
+        "id": 320456,
+        "metric_type": 419,
+        "org_unit": 636,
+        "year": null,
+        "value": 0.689,
+        "string_value": ""
+    },
+    {
+        "id": 320457,
+        "metric_type": 419,
+        "org_unit": 637,
+        "year": null,
+        "value": 0.7507,
+        "string_value": ""
+    },
+    {
+        "id": 320458,
+        "metric_type": 419,
+        "org_unit": 638,
+        "year": null,
+        "value": 0.7065,
+        "string_value": ""
+    },
+    {
+        "id": 320459,
+        "metric_type": 419,
+        "org_unit": 639,
+        "year": null,
+        "value": 0.5821,
+        "string_value": ""
+    },
+    {
+        "id": 320460,
+        "metric_type": 419,
+        "org_unit": 640,
+        "year": null,
+        "value": 0.7808,
+        "string_value": ""
+    },
+    {
+        "id": 320461,
+        "metric_type": 419,
+        "org_unit": 641,
+        "year": null,
+        "value": 0.6969,
+        "string_value": ""
+    },
+    {
+        "id": 320462,
+        "metric_type": 419,
+        "org_unit": 642,
+        "year": null,
+        "value": 0.7684,
+        "string_value": ""
+    },
+    {
+        "id": 320463,
+        "metric_type": 419,
+        "org_unit": 643,
+        "year": null,
+        "value": 0.7671,
+        "string_value": ""
+    },
+    {
+        "id": 320464,
+        "metric_type": 419,
+        "org_unit": 644,
+        "year": null,
+        "value": 0.7464,
+        "string_value": ""
+    },
+    {
+        "id": 320465,
+        "metric_type": 419,
+        "org_unit": 645,
+        "year": null,
+        "value": 0.6991,
+        "string_value": ""
+    },
+    {
+        "id": 320466,
+        "metric_type": 419,
+        "org_unit": 646,
+        "year": null,
+        "value": 0.7873,
+        "string_value": ""
+    },
+    {
+        "id": 320467,
+        "metric_type": 419,
+        "org_unit": 647,
+        "year": null,
+        "value": 0.6165,
+        "string_value": ""
+    },
+    {
+        "id": 320468,
+        "metric_type": 419,
+        "org_unit": 648,
+        "year": null,
+        "value": 0.7216,
+        "string_value": ""
+    },
+    {
+        "id": 320469,
+        "metric_type": 419,
+        "org_unit": 649,
+        "year": null,
+        "value": 0.7285,
+        "string_value": ""
+    },
+    {
+        "id": 320470,
+        "metric_type": 419,
+        "org_unit": 650,
+        "year": null,
+        "value": 0.6283,
+        "string_value": ""
+    },
+    {
+        "id": 320471,
+        "metric_type": 419,
+        "org_unit": 651,
+        "year": null,
+        "value": 0.7397,
+        "string_value": ""
+    },
+    {
+        "id": 320472,
+        "metric_type": 419,
+        "org_unit": 652,
+        "year": null,
+        "value": 0.5746,
+        "string_value": ""
+    },
+    {
+        "id": 320473,
+        "metric_type": 419,
+        "org_unit": 653,
+        "year": null,
+        "value": 0.7615,
+        "string_value": ""
+    },
+    {
+        "id": 320474,
+        "metric_type": 419,
+        "org_unit": 654,
+        "year": null,
+        "value": 0.7419,
+        "string_value": ""
+    },
+    {
+        "id": 320475,
+        "metric_type": 419,
+        "org_unit": 655,
+        "year": null,
+        "value": 0.7483,
+        "string_value": ""
+    },
+    {
+        "id": 320476,
+        "metric_type": 419,
+        "org_unit": 656,
+        "year": null,
+        "value": 0.7484,
+        "string_value": ""
+    },
+    {
+        "id": 320477,
+        "metric_type": 419,
+        "org_unit": 657,
+        "year": null,
+        "value": 0.7346,
+        "string_value": ""
+    },
+    {
+        "id": 320478,
+        "metric_type": 419,
+        "org_unit": 658,
+        "year": null,
+        "value": 0.5909,
+        "string_value": ""
+    },
+    {
+        "id": 320479,
+        "metric_type": 419,
+        "org_unit": 659,
+        "year": null,
+        "value": 0.6734,
+        "string_value": ""
+    },
+    {
+        "id": 320480,
+        "metric_type": 419,
+        "org_unit": 660,
+        "year": null,
+        "value": 0.7271,
+        "string_value": ""
+    },
+    {
+        "id": 320481,
+        "metric_type": 419,
+        "org_unit": 661,
+        "year": null,
+        "value": 0.7797,
+        "string_value": ""
+    },
+    {
+        "id": 320482,
+        "metric_type": 419,
+        "org_unit": 662,
+        "year": null,
+        "value": 0.6031,
+        "string_value": ""
+    },
+    {
+        "id": 320483,
+        "metric_type": 419,
+        "org_unit": 663,
+        "year": null,
+        "value": 0.7077,
+        "string_value": ""
+    },
+    {
+        "id": 320484,
+        "metric_type": 419,
+        "org_unit": 664,
+        "year": null,
+        "value": 0.7925,
+        "string_value": ""
+    },
+    {
+        "id": 320485,
+        "metric_type": 419,
+        "org_unit": 665,
+        "year": null,
+        "value": 0.7533,
+        "string_value": ""
+    },
+    {
+        "id": 320486,
+        "metric_type": 419,
+        "org_unit": 666,
+        "year": null,
+        "value": 0.7379,
+        "string_value": ""
+    },
+    {
+        "id": 320487,
+        "metric_type": 419,
+        "org_unit": 667,
+        "year": null,
+        "value": 0.7206,
+        "string_value": ""
+    },
+    {
+        "id": 320488,
+        "metric_type": 419,
+        "org_unit": 668,
+        "year": null,
+        "value": 0.7592,
+        "string_value": ""
+    },
+    {
+        "id": 320489,
+        "metric_type": 419,
+        "org_unit": 669,
+        "year": null,
+        "value": 0.7644,
+        "string_value": ""
+    },
+    {
+        "id": 320490,
+        "metric_type": 419,
+        "org_unit": 670,
+        "year": null,
+        "value": 0.7301,
+        "string_value": ""
+    },
+    {
+        "id": 320491,
+        "metric_type": 419,
+        "org_unit": 671,
+        "year": null,
+        "value": 0.6079,
+        "string_value": ""
+    },
+    {
+        "id": 320492,
+        "metric_type": 419,
+        "org_unit": 672,
+        "year": null,
+        "value": 0.7107,
+        "string_value": ""
+    },
+    {
+        "id": 320493,
+        "metric_type": 419,
+        "org_unit": 673,
+        "year": null,
+        "value": 0.7014,
+        "string_value": ""
+    },
+    {
+        "id": 320494,
+        "metric_type": 419,
+        "org_unit": 674,
+        "year": null,
+        "value": 0.55,
+        "string_value": ""
+    },
+    {
+        "id": 320495,
+        "metric_type": 419,
+        "org_unit": 675,
+        "year": null,
+        "value": 0.7011,
+        "string_value": ""
+    },
+    {
+        "id": 320496,
+        "metric_type": 419,
+        "org_unit": 676,
+        "year": null,
+        "value": 0.5762,
+        "string_value": ""
+    },
+    {
+        "id": 320497,
+        "metric_type": 419,
+        "org_unit": 677,
+        "year": null,
+        "value": 0.7392,
+        "string_value": ""
+    },
+    {
+        "id": 320498,
+        "metric_type": 419,
+        "org_unit": 678,
+        "year": null,
+        "value": 0.7757,
+        "string_value": ""
+    },
+    {
+        "id": 320499,
+        "metric_type": 419,
+        "org_unit": 679,
+        "year": null,
+        "value": 0.578,
+        "string_value": ""
+    },
+    {
+        "id": 320500,
+        "metric_type": 419,
+        "org_unit": 680,
+        "year": null,
+        "value": 0.748,
+        "string_value": ""
+    },
+    {
+        "id": 320501,
+        "metric_type": 419,
+        "org_unit": 681,
+        "year": null,
+        "value": 0.6839,
+        "string_value": ""
+    },
+    {
+        "id": 320502,
+        "metric_type": 419,
+        "org_unit": 682,
+        "year": null,
+        "value": 0.7537,
+        "string_value": ""
+    },
+    {
+        "id": 320503,
+        "metric_type": 419,
+        "org_unit": 683,
+        "year": null,
+        "value": 0.6189,
+        "string_value": ""
+    },
+    {
+        "id": 320504,
+        "metric_type": 419,
+        "org_unit": 684,
+        "year": null,
+        "value": 0.7657,
+        "string_value": ""
+    },
+    {
+        "id": 320505,
+        "metric_type": 419,
+        "org_unit": 685,
+        "year": null,
+        "value": 0.6717,
+        "string_value": ""
+    },
+    {
+        "id": 320506,
+        "metric_type": 419,
+        "org_unit": 686,
+        "year": null,
+        "value": 0.7177,
+        "string_value": ""
+    },
+    {
+        "id": 320507,
+        "metric_type": 419,
+        "org_unit": 687,
+        "year": null,
+        "value": 0.7044,
+        "string_value": ""
+    },
+    {
+        "id": 320508,
+        "metric_type": 419,
+        "org_unit": 688,
+        "year": null,
+        "value": 0.6022,
+        "string_value": ""
+    },
+    {
+        "id": 320509,
+        "metric_type": 419,
+        "org_unit": 689,
+        "year": null,
+        "value": 0.6608,
+        "string_value": ""
+    },
+    {
+        "id": 320510,
+        "metric_type": 419,
+        "org_unit": 690,
+        "year": null,
+        "value": 0.5994,
+        "string_value": ""
+    },
+    {
+        "id": 320511,
+        "metric_type": 419,
+        "org_unit": 691,
+        "year": null,
+        "value": 0.7653,
+        "string_value": ""
+    },
+    {
+        "id": 320512,
+        "metric_type": 419,
+        "org_unit": 692,
+        "year": null,
+        "value": 0.7463,
+        "string_value": ""
+    },
+    {
+        "id": 320513,
+        "metric_type": 419,
+        "org_unit": 693,
+        "year": null,
+        "value": 0.6865,
+        "string_value": ""
+    },
+    {
+        "id": 320514,
+        "metric_type": 419,
+        "org_unit": 694,
+        "year": null,
+        "value": 0.6456,
+        "string_value": ""
+    },
+    {
+        "id": 320515,
+        "metric_type": 419,
+        "org_unit": 695,
+        "year": null,
+        "value": 0.7843,
+        "string_value": ""
+    },
+    {
+        "id": 320516,
+        "metric_type": 419,
+        "org_unit": 696,
+        "year": null,
+        "value": 0.7421,
+        "string_value": ""
+    },
+    {
+        "id": 320517,
+        "metric_type": 419,
+        "org_unit": 697,
+        "year": null,
+        "value": 0.6663,
+        "string_value": ""
+    },
+    {
+        "id": 320518,
+        "metric_type": 419,
+        "org_unit": 698,
+        "year": null,
+        "value": 0.5983,
+        "string_value": ""
+    }
+]

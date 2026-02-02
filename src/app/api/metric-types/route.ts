@@ -7,8 +7,7 @@ export async function GET() {
     // Read from the external data file (mock data source)
     const dataPath = path.join(
       process.cwd(),
-      "..",
-      "api",
+      "data",
       "metric-types",
       "data.json"
     );

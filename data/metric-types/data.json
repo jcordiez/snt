@@ -1,0 +1,564 @@
+[
+    {
+        "id": 404,
+        "account": 3,
+        "name": "Population",
+        "category": "Variables de population",
+        "description": "Nombre total de personnes vivant dans une zone spécifique",
+        "source": "PNLP data",
+        "units": "Nombre de personnes",
+        "unit_symbol": "",
+        "comments": "",
+        "legend_config": {
+            "range": [
+                "#A2CAEA",
+                "#6BD39D",
+                "#ACDF9B",
+                "#F5F1A0",
+                "#F2B16E",
+                "#E4754F",
+                "#A93A42"
+            ],
+            "domain": [
+                50000.0,
+                100000.0,
+                200000.0,
+                300000.0,
+                400000.0,
+                500000.0
+            ]
+        },
+        "legend_type": "threshold",
+        "created_at": "2026-01-20T16:35:40.988691Z",
+        "updated_at": "2026-01-20T16:35:47.070579Z"
+    },
+    {
+        "id": 405,
+        "account": 3,
+        "name": "Population rurale",
+        "category": "Variables de population",
+        "description": "Moyenne pondérée par la population de la classification au niveau des zones de santé (rurale, semi-urbaine, urbaine) (1, 0,5, 0)",
+        "source": "PNLP data",
+        "units": "Proportion",
+        "unit_symbol": "%",
+        "comments": "",
+        "legend_config": {
+            "range": [
+                "#A2CAEA",
+                "#6BD39D",
+                "#ACDF9B",
+                "#F5F1A0",
+                "#F2B16E",
+                "#E4754F",
+                "#A93A42"
+            ],
+            "domain": [
+                0.0,
+                0.2,
+                0.4,
+                0.6,
+                0.8,
+                1.0
+            ]
+        },
+        "legend_type": "threshold",
+        "created_at": "2026-01-20T16:35:40.991374Z",
+        "updated_at": "2026-01-20T16:35:47.073486Z"
+    },
+    {
+        "id": 406,
+        "account": 3,
+        "name": "Taux de déplacement",
+        "category": "",
+        "description": "Population déplacée pour 1,000 habitants",
+        "source": "UNOCHA",
+        "units": "Proportion",
+        "unit_symbol": "%",
+        "comments": "",
+        "legend_config": {
+            "range": [
+                "#A2CAEA",
+                "#6BD39D",
+                "#ACDF9B",
+                "#F5F1A0",
+                "#F2B16E",
+                "#E4754F",
+                "#A93A42"
+            ],
+            "domain": [
+                0.0,
+                0.2,
+                0.4,
+                0.6,
+                0.8,
+                1.0
+            ]
+        },
+        "legend_type": "threshold",
+        "created_at": "2026-01-20T16:35:40.993327Z",
+        "updated_at": "2026-01-20T16:35:47.076520Z"
+    },
+    {
+        "id": 407,
+        "account": 3,
+        "name": "Mortalité infanto-juvénile",
+        "category": "Variables de santé",
+        "description": "Mortalité en 2024 pour 100,000 habitants",
+        "source": "SNIS",
+        "units": "Proportion",
+        "unit_symbol": "",
+        "comments": "",
+        "legend_config": {
+            "range": [
+                "#A2CAEA",
+                "#80B3DC",
+                "#6BD39D",
+                "#ACDF9B",
+                "#F5F1A0",
+                "#F2B16E",
+                "#E4754F",
+                "#C54A53",
+                "#A93A42"
+            ],
+            "domain": [
+                1.0,
+                2.0,
+                3.0,
+                4.0,
+                5.0,
+                10.0,
+                15.0,
+                20.0
+            ]
+        },
+        "legend_type": "threshold",
+        "created_at": "2026-01-20T16:35:40.995426Z",
+        "updated_at": "2026-01-20T16:35:47.078748Z"
+    },
+    {
+        "id": 408,
+        "account": 3,
+        "name": "Non-recours aux services curatifs",
+        "category": "Variables de santé",
+        "description": "Un moins le nombre de cas en consultation curative rapporté à la population en 2024",
+        "source": "SNIS",
+        "units": "Proportion",
+        "unit_symbol": "%",
+        "comments": "",
+        "legend_config": {
+            "range": [
+                "#A2CAEA",
+                "#6BD39D",
+                "#ACDF9B",
+                "#F5F1A0",
+                "#F2B16E",
+                "#E4754F",
+                "#A93A42"
+            ],
+            "domain": [
+                0.0,
+                0.2,
+                0.4,
+                0.6,
+                0.8,
+                1.0
+            ]
+        },
+        "legend_type": "threshold",
+        "created_at": "2026-01-20T16:35:40.997110Z",
+        "updated_at": "2026-01-20T16:35:47.081574Z"
+    },
+    {
+        "id": 409,
+        "account": 3,
+        "name": "Inaccessibilité aux soins",
+        "category": "Variables de santé",
+        "description": "Proportion de la population située à plus de 5 km d’un établissement de santé",
+        "source": "FOSA géo-localisation / WorldPop",
+        "units": "Proportion",
+        "unit_symbol": "%",
+        "comments": "",
+        "legend_config": {
+            "range": [
+                "#A2CAEA",
+                "#6BD39D",
+                "#ACDF9B",
+                "#F5F1A0",
+                "#F2B16E",
+                "#E4754F",
+                "#A93A42"
+            ],
+            "domain": [
+                0.0,
+                0.2,
+                0.4,
+                0.6,
+                0.8,
+                1.0
+            ]
+        },
+        "legend_type": "threshold",
+        "created_at": "2026-01-20T16:35:40.998941Z",
+        "updated_at": "2026-01-20T16:35:47.083791Z"
+    },
+    {
+        "id": 410,
+        "account": 3,
+        "name": "Incidence ajustés pour le taux dépistage et le taux de rapportage",
+        "category": "Indicateurs épidémiologiques",
+        "description": "Incidence annuelle moyenne (2022–2024) pour 1,000 habitants",
+        "source": "SNIS",
+        "units": "Pour 1,000 personnes",
+        "unit_symbol": "",
+        "comments": "",
+        "legend_config": {
+            "range": [
+                "#A2CAEA",
+                "#6BD39D",
+                "#ACDF9B",
+                "#F5F1A0",
+                "#F2B16E",
+                "#E4754F",
+                "#A93A42"
+            ],
+            "domain": [
+                50.0,
+                150.0,
+                250.0,
+                350.0,
+                450.0,
+                1000.0
+            ]
+        },
+        "legend_type": "threshold",
+        "created_at": "2026-01-20T16:35:41.000742Z",
+        "updated_at": "2026-01-20T16:35:47.085997Z"
+    },
+    {
+        "id": 411,
+        "account": 3,
+        "name": "Prévalence du paludisme chez les enfants de 6 à 59 mois",
+        "category": "Indicateurs épidémiologiques",
+        "description": "Pourcentage d'enfants âgés de 6 à 59 mois ayant le paludisme",
+        "source": "DHS",
+        "units": "Pour 100 enfants",
+        "unit_symbol": "",
+        "comments": "",
+        "legend_config": {
+            "range": [
+                "#A2CAEA",
+                "#6BD39D",
+                "#ACDF9B",
+                "#F5F1A0",
+                "#F2B16E",
+                "#E4754F",
+                "#A93A42"
+            ],
+            "domain": [
+                0.0,
+                0.2,
+                0.4,
+                0.6,
+                0.8,
+                1.0
+            ]
+        },
+        "legend_type": "threshold",
+        "created_at": "2026-01-20T16:35:41.003412Z",
+        "updated_at": "2026-01-20T16:35:47.087893Z"
+    },
+    {
+        "id": 412,
+        "account": 3,
+        "name": "Résistance aux insecticides",
+        "category": "Indicateurs Entomologiques",
+        "description": "Pourcentage de moustiques survivant à une dose de pyréthrinoïde lors d’un bio-essai de sensibilité",
+        "source": "Sherrard-Smith et al.",
+        "units": "Pour 100 moustiques",
+        "unit_symbol": "%",
+        "comments": "",
+        "legend_config": {
+            "range": [
+                "#A2CAEA",
+                "#6BD39D",
+                "#ACDF9B",
+                "#F5F1A0",
+                "#F2B16E",
+                "#E4754F",
+                "#A93A42"
+            ],
+            "domain": [
+                0.0,
+                0.2,
+                0.4,
+                0.6,
+                0.8,
+                1.0
+            ]
+        },
+        "legend_type": "threshold",
+        "created_at": "2026-01-20T16:35:41.005253Z",
+        "updated_at": "2026-01-20T16:35:47.089820Z"
+    },
+    {
+        "id": 413,
+        "account": 3,
+        "name": "Saisonnalité",
+        "category": "Indicateurs environnementaux",
+        "description": "Proportion des précipitations annuelles reçues au cours des quatre mois les plus arrosés",
+        "source": "CHIRPS",
+        "units": "Proportion",
+        "unit_symbol": "%",
+        "comments": "",
+        "legend_config": {
+            "range": [
+                "#A2CAEA",
+                "#6BD39D",
+                "#ACDF9B",
+                "#F5F1A0",
+                "#F2B16E",
+                "#E4754F",
+                "#A93A42"
+            ],
+            "domain": [
+                0.0,
+                0.2,
+                0.4,
+                0.6,
+                0.8,
+                1.0
+            ]
+        },
+        "legend_type": "threshold",
+        "created_at": "2026-01-20T16:35:41.006955Z",
+        "updated_at": "2026-01-20T16:35:47.091667Z"
+    },
+    {
+        "id": 414,
+        "account": 3,
+        "name": "Déficit de PIB par habitant",
+        "category": "Autres indicateurs",
+        "description": "Écart du PIB par habitant en 2024 par rapport à l’objectif de 4,000 USD",
+        "source": "Gov DRC",
+        "units": "USD",
+        "unit_symbol": "USD",
+        "comments": "",
+        "legend_config": {
+            "range": [
+                "#A2CAEA",
+                "#6BD39D",
+                "#ACDF9B",
+                "#F5F1A0",
+                "#F2B16E",
+                "#E4754F",
+                "#A93A42"
+            ],
+            "domain": [
+                300.0,
+                3000.0,
+                3200.0,
+                3400.0,
+                3600.0,
+                3800.0
+            ]
+        },
+        "legend_type": "threshold",
+        "created_at": "2026-01-20T16:35:41.008599Z",
+        "updated_at": "2026-01-20T16:35:47.093652Z"
+    },
+    {
+        "id": 415,
+        "account": 3,
+        "name": "Insëcurité",
+        "category": "Autres indicateurs",
+        "description": "Nombre moyen de conflits signalés en 2023 et 2024",
+        "source": "ACLED",
+        "units": "Numbre de conflits",
+        "unit_symbol": "",
+        "comments": "",
+        "legend_config": {
+            "range": [
+                "#A2CAEA",
+                "#80B3DC",
+                "#6BD39D",
+                "#ACDF9B",
+                "#F5F1A0",
+                "#F2D683",
+                "#F2B16E",
+                "#E4754F",
+                "#C54A53",
+                "#A93A42"
+            ],
+            "domain": [
+                0.0,
+                5.0,
+                10.0,
+                25.0,
+                50.0,
+                100.0,
+                200.0,
+                500.0,
+                1000.0
+            ]
+        },
+        "legend_type": "threshold",
+        "created_at": "2026-01-20T16:35:41.010048Z",
+        "updated_at": "2026-01-20T16:35:47.095420Z"
+    },
+    {
+        "id": 416,
+        "account": 3,
+        "name": "Utilisation des MILDA",
+        "category": "Historique des interventions",
+        "description": "Utilisation des moustiquaires imprégnées d'insecticide à longue durée d'action (MILDA)",
+        "source": "PNLP, DHS, AMF",
+        "units": "Proportion",
+        "unit_symbol": "",
+        "comments": "",
+        "legend_config": {
+            "range": [
+                "#A2CAEA",
+                "#6BD39D",
+                "#ACDF9B",
+                "#F5F1A0",
+                "#F2B16E",
+                "#E4754F",
+                "#A93A42"
+            ],
+            "domain": [
+                1.0,
+                0.8,
+                0.6,
+                0.4,
+                0.2,
+                0.0
+            ]
+        },
+        "legend_type": "threshold",
+        "created_at": "2026-01-20T16:35:41.011538Z",
+        "updated_at": "2026-01-20T16:35:47.097157Z"
+    },
+    {
+        "id": 417,
+        "account": 3,
+        "name": "Taux d'attaque clinique",
+        "category": "Indicateurs épidémiologiques",
+        "description": "Nombre d'épisodes de paludisme confirmés par enfant de moins de 5 ans par an",
+        "source": "DHS/MIS surveys",
+        "units": "Épisodes par enfant par an",
+        "unit_symbol": "",
+        "comments": "",
+        "legend_config": {
+            "range": [
+                "#A2CAEA",
+                "#6BD39D",
+                "#ACDF9B",
+                "#F5F1A0",
+                "#F2B16E",
+                "#E4754F",
+                "#A93A42"
+            ],
+            "domain": [
+                0.0,
+                0.05,
+                0.1,
+                0.15,
+                0.2,
+                0.3
+            ]
+        },
+        "legend_type": "threshold",
+        "created_at": "2026-01-20T16:35:41.015000Z",
+        "updated_at": "2026-01-20T16:35:47.100000Z"
+    },
+    {
+        "id": 418,
+        "account": 3,
+        "name": "Piqûres de vecteurs à l'extérieur",
+        "category": "Indicateurs Entomologiques",
+        "description": "Proportion des piqûres de vecteurs se produisant à l'extérieur (par opposition à l'intérieur)",
+        "source": "Enquêtes entomologiques",
+        "units": "Proportion",
+        "unit_symbol": "%",
+        "comments": "",
+        "legend_config": {
+            "range": [
+                "#A2CAEA",
+                "#6BD39D",
+                "#ACDF9B",
+                "#F5F1A0",
+                "#F2B16E",
+                "#E4754F",
+                "#A93A42"
+            ],
+            "domain": [
+                0.0,
+                0.2,
+                0.4,
+                0.6,
+                0.8,
+                1.0
+            ]
+        },
+        "legend_type": "threshold",
+        "created_at": "2026-01-20T16:35:41.018000Z",
+        "updated_at": "2026-01-20T16:35:47.103000Z"
+    },
+    {
+        "id": 419,
+        "account": 3,
+        "name": "Vecteurs au repos à l'intérieur",
+        "category": "Indicateurs Entomologiques",
+        "description": "Proportion de vecteurs qui se reposent à l'intérieur après s'être nourris",
+        "source": "Enquêtes entomologiques",
+        "units": "Proportion",
+        "unit_symbol": "%",
+        "comments": "",
+        "legend_config": {
+            "range": [
+                "#A2CAEA",
+                "#6BD39D",
+                "#ACDF9B",
+                "#F5F1A0",
+                "#F2B16E",
+                "#E4754F",
+                "#A93A42"
+            ],
+            "domain": [
+                0.0,
+                0.2,
+                0.4,
+                0.6,
+                0.8,
+                1.0
+            ]
+        },
+        "legend_type": "threshold",
+        "created_at": "2026-01-20T16:35:41.021000Z",
+        "updated_at": "2026-01-20T16:35:47.106000Z"
+    },
+    {
+        "id": 420,
+        "account": 3,
+        "name": "Classification urbaine",
+        "category": "Variables de population",
+        "description": "Classification urbaine (1) vs rurale (0)",
+        "source": "Données de recensement",
+        "units": "Binaire",
+        "unit_symbol": "",
+        "comments": "",
+        "legend_config": {
+            "range": [
+                "#6BD39D",
+                "#E4754F"
+            ],
+            "domain": [
+                0.0,
+                1.0
+            ]
+        },
+        "legend_type": "threshold",
+        "created_at": "2026-01-20T16:35:41.024000Z",
+        "updated_at": "2026-01-20T16:35:47.109000Z"
+    }
+]

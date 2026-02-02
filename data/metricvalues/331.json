@@ -1,0 +1,4154 @@
+[
+    {
+        "id": 93208,
+        "metric_type": 331,
+        "org_unit": 616,
+        "year": null,
+        "value": 375.3,
+        "string_value": ""
+    },
+    {
+        "id": 90472,
+        "metric_type": 331,
+        "org_unit": 582,
+        "year": null,
+        "value": 275.83,
+        "string_value": ""
+    },
+    {
+        "id": 90487,
+        "metric_type": 331,
+        "org_unit": 581,
+        "year": null,
+        "value": 217.03,
+        "string_value": ""
+    },
+    {
+        "id": 90502,
+        "metric_type": 331,
+        "org_unit": 580,
+        "year": null,
+        "value": 149.36,
+        "string_value": ""
+    },
+    {
+        "id": 90517,
+        "metric_type": 331,
+        "org_unit": 579,
+        "year": null,
+        "value": 330.96,
+        "string_value": ""
+    },
+    {
+        "id": 90532,
+        "metric_type": 331,
+        "org_unit": 578,
+        "year": null,
+        "value": 183.0,
+        "string_value": ""
+    },
+    {
+        "id": 90547,
+        "metric_type": 331,
+        "org_unit": 577,
+        "year": null,
+        "value": 264.49,
+        "string_value": ""
+    },
+    {
+        "id": 90562,
+        "metric_type": 331,
+        "org_unit": 576,
+        "year": null,
+        "value": 231.64,
+        "string_value": ""
+    },
+    {
+        "id": 90577,
+        "metric_type": 331,
+        "org_unit": 575,
+        "year": null,
+        "value": 245.63,
+        "string_value": ""
+    },
+    {
+        "id": 93223,
+        "metric_type": 331,
+        "org_unit": 615,
+        "year": null,
+        "value": 303.36,
+        "string_value": ""
+    },
+    {
+        "id": 93238,
+        "metric_type": 331,
+        "org_unit": 614,
+        "year": null,
+        "value": 308.74,
+        "string_value": ""
+    },
+    {
+        "id": 93253,
+        "metric_type": 331,
+        "org_unit": 613,
+        "year": null,
+        "value": 313.01,
+        "string_value": ""
+    },
+    {
+        "id": 93268,
+        "metric_type": 331,
+        "org_unit": 612,
+        "year": null,
+        "value": 268.3,
+        "string_value": ""
+    },
+    {
+        "id": 93283,
+        "metric_type": 331,
+        "org_unit": 516,
+        "year": null,
+        "value": 194.9,
+        "string_value": ""
+    },
+    {
+        "id": 93298,
+        "metric_type": 331,
+        "org_unit": 514,
+        "year": null,
+        "value": 460.78,
+        "string_value": ""
+    },
+    {
+        "id": 93313,
+        "metric_type": 331,
+        "org_unit": 513,
+        "year": null,
+        "value": 153.61,
+        "string_value": ""
+    },
+    {
+        "id": 93328,
+        "metric_type": 331,
+        "org_unit": 515,
+        "year": null,
+        "value": 176.28,
+        "string_value": ""
+    },
+    {
+        "id": 93343,
+        "metric_type": 331,
+        "org_unit": 512,
+        "year": null,
+        "value": 181.11,
+        "string_value": ""
+    },
+    {
+        "id": 93357,
+        "metric_type": 331,
+        "org_unit": 511,
+        "year": null,
+        "value": 168.62,
+        "string_value": ""
+    },
+    {
+        "id": 93372,
+        "metric_type": 331,
+        "org_unit": 510,
+        "year": null,
+        "value": 170.87,
+        "string_value": ""
+    },
+    {
+        "id": 93387,
+        "metric_type": 331,
+        "org_unit": 509,
+        "year": null,
+        "value": 144.68,
+        "string_value": ""
+    },
+    {
+        "id": 93402,
+        "metric_type": 331,
+        "org_unit": 508,
+        "year": null,
+        "value": 338.15,
+        "string_value": ""
+    },
+    {
+        "id": 93417,
+        "metric_type": 331,
+        "org_unit": 507,
+        "year": null,
+        "value": 277.77,
+        "string_value": ""
+    },
+    {
+        "id": 93431,
+        "metric_type": 331,
+        "org_unit": 506,
+        "year": null,
+        "value": 214.08,
+        "string_value": ""
+    },
+    {
+        "id": 93446,
+        "metric_type": 331,
+        "org_unit": 503,
+        "year": null,
+        "value": 334.97,
+        "string_value": ""
+    },
+    {
+        "id": 93461,
+        "metric_type": 331,
+        "org_unit": 498,
+        "year": null,
+        "value": 171.1,
+        "string_value": ""
+    },
+    {
+        "id": 93476,
+        "metric_type": 331,
+        "org_unit": 505,
+        "year": null,
+        "value": 243.59,
+        "string_value": ""
+    },
+    {
+        "id": 93491,
+        "metric_type": 331,
+        "org_unit": 504,
+        "year": null,
+        "value": 205.51,
+        "string_value": ""
+    },
+    {
+        "id": 93506,
+        "metric_type": 331,
+        "org_unit": 502,
+        "year": null,
+        "value": 223.06,
+        "string_value": ""
+    },
+    {
+        "id": 93521,
+        "metric_type": 331,
+        "org_unit": 501,
+        "year": null,
+        "value": 239.07,
+        "string_value": ""
+    },
+    {
+        "id": 93536,
+        "metric_type": 331,
+        "org_unit": 500,
+        "year": null,
+        "value": 279.63,
+        "string_value": ""
+    },
+    {
+        "id": 93550,
+        "metric_type": 331,
+        "org_unit": 499,
+        "year": null,
+        "value": 224.34,
+        "string_value": ""
+    },
+    {
+        "id": 93565,
+        "metric_type": 331,
+        "org_unit": 496,
+        "year": null,
+        "value": 371.23,
+        "string_value": ""
+    },
+    {
+        "id": 93580,
+        "metric_type": 331,
+        "org_unit": 495,
+        "year": null,
+        "value": 274.67,
+        "string_value": ""
+    },
+    {
+        "id": 93595,
+        "metric_type": 331,
+        "org_unit": 494,
+        "year": null,
+        "value": 154.26,
+        "string_value": ""
+    },
+    {
+        "id": 93610,
+        "metric_type": 331,
+        "org_unit": 493,
+        "year": null,
+        "value": 150.61,
+        "string_value": ""
+    },
+    {
+        "id": 93625,
+        "metric_type": 331,
+        "org_unit": 492,
+        "year": null,
+        "value": 325.27,
+        "string_value": ""
+    },
+    {
+        "id": 93640,
+        "metric_type": 331,
+        "org_unit": 491,
+        "year": null,
+        "value": 249.4,
+        "string_value": ""
+    },
+    {
+        "id": 93655,
+        "metric_type": 331,
+        "org_unit": 490,
+        "year": null,
+        "value": 381.84,
+        "string_value": ""
+    },
+    {
+        "id": 93670,
+        "metric_type": 331,
+        "org_unit": 489,
+        "year": null,
+        "value": 319.84,
+        "string_value": ""
+    },
+    {
+        "id": 93685,
+        "metric_type": 331,
+        "org_unit": 487,
+        "year": null,
+        "value": 356.83,
+        "string_value": ""
+    },
+    {
+        "id": 93700,
+        "metric_type": 331,
+        "org_unit": 488,
+        "year": null,
+        "value": 317.12,
+        "string_value": ""
+    },
+    {
+        "id": 93715,
+        "metric_type": 331,
+        "org_unit": 486,
+        "year": null,
+        "value": 218.26,
+        "string_value": ""
+    },
+    {
+        "id": 93730,
+        "metric_type": 331,
+        "org_unit": 485,
+        "year": null,
+        "value": 354.6,
+        "string_value": ""
+    },
+    {
+        "id": 93745,
+        "metric_type": 331,
+        "org_unit": 484,
+        "year": null,
+        "value": 269.75,
+        "string_value": ""
+    },
+    {
+        "id": 93760,
+        "metric_type": 331,
+        "org_unit": 482,
+        "year": null,
+        "value": 160.65,
+        "string_value": ""
+    },
+    {
+        "id": 93775,
+        "metric_type": 331,
+        "org_unit": 481,
+        "year": null,
+        "value": 208.54,
+        "string_value": ""
+    },
+    {
+        "id": 93790,
+        "metric_type": 331,
+        "org_unit": 480,
+        "year": null,
+        "value": 273.61,
+        "string_value": ""
+    },
+    {
+        "id": 93805,
+        "metric_type": 331,
+        "org_unit": 479,
+        "year": null,
+        "value": 260.06,
+        "string_value": ""
+    },
+    {
+        "id": 93820,
+        "metric_type": 331,
+        "org_unit": 477,
+        "year": null,
+        "value": 186.28,
+        "string_value": ""
+    },
+    {
+        "id": 93835,
+        "metric_type": 331,
+        "org_unit": 476,
+        "year": null,
+        "value": 195.46,
+        "string_value": ""
+    },
+    {
+        "id": 93850,
+        "metric_type": 331,
+        "org_unit": 475,
+        "year": null,
+        "value": 206.59,
+        "string_value": ""
+    },
+    {
+        "id": 93865,
+        "metric_type": 331,
+        "org_unit": 469,
+        "year": null,
+        "value": 398.51,
+        "string_value": ""
+    },
+    {
+        "id": 93880,
+        "metric_type": 331,
+        "org_unit": 465,
+        "year": null,
+        "value": 275.65,
+        "string_value": ""
+    },
+    {
+        "id": 93895,
+        "metric_type": 331,
+        "org_unit": 473,
+        "year": null,
+        "value": 268.45,
+        "string_value": ""
+    },
+    {
+        "id": 93910,
+        "metric_type": 331,
+        "org_unit": 474,
+        "year": null,
+        "value": 173.06,
+        "string_value": ""
+    },
+    {
+        "id": 93925,
+        "metric_type": 331,
+        "org_unit": 472,
+        "year": null,
+        "value": 215.27,
+        "string_value": ""
+    },
+    {
+        "id": 93940,
+        "metric_type": 331,
+        "org_unit": 471,
+        "year": null,
+        "value": 156.88,
+        "string_value": ""
+    },
+    {
+        "id": 93955,
+        "metric_type": 331,
+        "org_unit": 470,
+        "year": null,
+        "value": 315.7,
+        "string_value": ""
+    },
+    {
+        "id": 93970,
+        "metric_type": 331,
+        "org_unit": 468,
+        "year": null,
+        "value": 110.65,
+        "string_value": ""
+    },
+    {
+        "id": 93985,
+        "metric_type": 331,
+        "org_unit": 467,
+        "year": null,
+        "value": 217.09,
+        "string_value": ""
+    },
+    {
+        "id": 94000,
+        "metric_type": 331,
+        "org_unit": 466,
+        "year": null,
+        "value": 173.33,
+        "string_value": ""
+    },
+    {
+        "id": 94015,
+        "metric_type": 331,
+        "org_unit": 464,
+        "year": null,
+        "value": 302.61,
+        "string_value": ""
+    },
+    {
+        "id": 94030,
+        "metric_type": 331,
+        "org_unit": 463,
+        "year": null,
+        "value": 199.67,
+        "string_value": ""
+    },
+    {
+        "id": 94045,
+        "metric_type": 331,
+        "org_unit": 462,
+        "year": null,
+        "value": 289.09,
+        "string_value": ""
+    },
+    {
+        "id": 94060,
+        "metric_type": 331,
+        "org_unit": 461,
+        "year": null,
+        "value": 307.04,
+        "string_value": ""
+    },
+    {
+        "id": 94075,
+        "metric_type": 331,
+        "org_unit": 460,
+        "year": null,
+        "value": 305.98,
+        "string_value": ""
+    },
+    {
+        "id": 94090,
+        "metric_type": 331,
+        "org_unit": 455,
+        "year": null,
+        "value": 455.55,
+        "string_value": ""
+    },
+    {
+        "id": 94105,
+        "metric_type": 331,
+        "org_unit": 453,
+        "year": null,
+        "value": 348.27,
+        "string_value": ""
+    },
+    {
+        "id": 94120,
+        "metric_type": 331,
+        "org_unit": 459,
+        "year": null,
+        "value": 1061.88,
+        "string_value": ""
+    },
+    {
+        "id": 94135,
+        "metric_type": 331,
+        "org_unit": 444,
+        "year": null,
+        "value": 346.08,
+        "string_value": ""
+    },
+    {
+        "id": 94149,
+        "metric_type": 331,
+        "org_unit": 456,
+        "year": null,
+        "value": 40.28,
+        "string_value": ""
+    },
+    {
+        "id": 94164,
+        "metric_type": 331,
+        "org_unit": 440,
+        "year": null,
+        "value": 352.62,
+        "string_value": ""
+    },
+    {
+        "id": 94179,
+        "metric_type": 331,
+        "org_unit": 443,
+        "year": null,
+        "value": 178.57,
+        "string_value": ""
+    },
+    {
+        "id": 94194,
+        "metric_type": 331,
+        "org_unit": 441,
+        "year": null,
+        "value": 288.11,
+        "string_value": ""
+    },
+    {
+        "id": 94208,
+        "metric_type": 331,
+        "org_unit": 449,
+        "year": null,
+        "value": 214.32,
+        "string_value": ""
+    },
+    {
+        "id": 94223,
+        "metric_type": 331,
+        "org_unit": 447,
+        "year": null,
+        "value": 285.57,
+        "string_value": ""
+    },
+    {
+        "id": 94238,
+        "metric_type": 331,
+        "org_unit": 445,
+        "year": null,
+        "value": 255.38,
+        "string_value": ""
+    },
+    {
+        "id": 94253,
+        "metric_type": 331,
+        "org_unit": 442,
+        "year": null,
+        "value": 126.02,
+        "string_value": ""
+    },
+    {
+        "id": 94268,
+        "metric_type": 331,
+        "org_unit": 438,
+        "year": null,
+        "value": 116.13,
+        "string_value": ""
+    },
+    {
+        "id": 94283,
+        "metric_type": 331,
+        "org_unit": 437,
+        "year": null,
+        "value": 203.98,
+        "string_value": ""
+    },
+    {
+        "id": 94298,
+        "metric_type": 331,
+        "org_unit": 436,
+        "year": null,
+        "value": 141.03,
+        "string_value": ""
+    },
+    {
+        "id": 94313,
+        "metric_type": 331,
+        "org_unit": 434,
+        "year": null,
+        "value": 117.88,
+        "string_value": ""
+    },
+    {
+        "id": 94328,
+        "metric_type": 331,
+        "org_unit": 432,
+        "year": null,
+        "value": 162.7,
+        "string_value": ""
+    },
+    {
+        "id": 94342,
+        "metric_type": 331,
+        "org_unit": 435,
+        "year": null,
+        "value": 118.37,
+        "string_value": ""
+    },
+    {
+        "id": 94357,
+        "metric_type": 331,
+        "org_unit": 457,
+        "year": null,
+        "value": 279.61,
+        "string_value": ""
+    },
+    {
+        "id": 94372,
+        "metric_type": 331,
+        "org_unit": 430,
+        "year": null,
+        "value": 285.26,
+        "string_value": ""
+    },
+    {
+        "id": 94387,
+        "metric_type": 331,
+        "org_unit": 429,
+        "year": null,
+        "value": 255.16,
+        "string_value": ""
+    },
+    {
+        "id": 94402,
+        "metric_type": 331,
+        "org_unit": 446,
+        "year": null,
+        "value": 161.34,
+        "string_value": ""
+    },
+    {
+        "id": 94417,
+        "metric_type": 331,
+        "org_unit": 454,
+        "year": null,
+        "value": 140.8,
+        "string_value": ""
+    },
+    {
+        "id": 94431,
+        "metric_type": 331,
+        "org_unit": 427,
+        "year": null,
+        "value": 233.35,
+        "string_value": ""
+    },
+    {
+        "id": 94446,
+        "metric_type": 331,
+        "org_unit": 458,
+        "year": null,
+        "value": 125.8,
+        "string_value": ""
+    },
+    {
+        "id": 94461,
+        "metric_type": 331,
+        "org_unit": 426,
+        "year": null,
+        "value": 286.05,
+        "string_value": ""
+    },
+    {
+        "id": 94475,
+        "metric_type": 331,
+        "org_unit": 425,
+        "year": null,
+        "value": 167.24,
+        "string_value": ""
+    },
+    {
+        "id": 94490,
+        "metric_type": 331,
+        "org_unit": 422,
+        "year": null,
+        "value": 465.93,
+        "string_value": ""
+    },
+    {
+        "id": 94505,
+        "metric_type": 331,
+        "org_unit": 421,
+        "year": null,
+        "value": 451.12,
+        "string_value": ""
+    },
+    {
+        "id": 94520,
+        "metric_type": 331,
+        "org_unit": 424,
+        "year": null,
+        "value": 303.03,
+        "string_value": ""
+    },
+    {
+        "id": 94535,
+        "metric_type": 331,
+        "org_unit": 417,
+        "year": null,
+        "value": 375.63,
+        "string_value": ""
+    },
+    {
+        "id": 94550,
+        "metric_type": 331,
+        "org_unit": 416,
+        "year": null,
+        "value": 355.13,
+        "string_value": ""
+    },
+    {
+        "id": 94565,
+        "metric_type": 331,
+        "org_unit": 414,
+        "year": null,
+        "value": 252.84,
+        "string_value": ""
+    },
+    {
+        "id": 94580,
+        "metric_type": 331,
+        "org_unit": 415,
+        "year": null,
+        "value": 353.37,
+        "string_value": ""
+    },
+    {
+        "id": 94595,
+        "metric_type": 331,
+        "org_unit": 413,
+        "year": null,
+        "value": 335.9,
+        "string_value": ""
+    },
+    {
+        "id": 94610,
+        "metric_type": 331,
+        "org_unit": 412,
+        "year": null,
+        "value": 411.02,
+        "string_value": ""
+    },
+    {
+        "id": 94625,
+        "metric_type": 331,
+        "org_unit": 411,
+        "year": null,
+        "value": 275.52,
+        "string_value": ""
+    },
+    {
+        "id": 94640,
+        "metric_type": 331,
+        "org_unit": 410,
+        "year": null,
+        "value": 320.86,
+        "string_value": ""
+    },
+    {
+        "id": 94655,
+        "metric_type": 331,
+        "org_unit": 408,
+        "year": null,
+        "value": 256.7,
+        "string_value": ""
+    },
+    {
+        "id": 94670,
+        "metric_type": 331,
+        "org_unit": 409,
+        "year": null,
+        "value": 309.89,
+        "string_value": ""
+    },
+    {
+        "id": 94685,
+        "metric_type": 331,
+        "org_unit": 406,
+        "year": null,
+        "value": 460.27,
+        "string_value": ""
+    },
+    {
+        "id": 94700,
+        "metric_type": 331,
+        "org_unit": 405,
+        "year": null,
+        "value": 282.3,
+        "string_value": ""
+    },
+    {
+        "id": 94715,
+        "metric_type": 331,
+        "org_unit": 401,
+        "year": null,
+        "value": 384.07,
+        "string_value": ""
+    },
+    {
+        "id": 94730,
+        "metric_type": 331,
+        "org_unit": 400,
+        "year": null,
+        "value": 462.08,
+        "string_value": ""
+    },
+    {
+        "id": 94745,
+        "metric_type": 331,
+        "org_unit": 399,
+        "year": null,
+        "value": 403.57,
+        "string_value": ""
+    },
+    {
+        "id": 94760,
+        "metric_type": 331,
+        "org_unit": 384,
+        "year": null,
+        "value": 473.0,
+        "string_value": ""
+    },
+    {
+        "id": 94775,
+        "metric_type": 331,
+        "org_unit": 398,
+        "year": null,
+        "value": 163.7,
+        "string_value": ""
+    },
+    {
+        "id": 94790,
+        "metric_type": 331,
+        "org_unit": 397,
+        "year": null,
+        "value": 319.75,
+        "string_value": ""
+    },
+    {
+        "id": 94805,
+        "metric_type": 331,
+        "org_unit": 391,
+        "year": null,
+        "value": 198.8,
+        "string_value": ""
+    },
+    {
+        "id": 94820,
+        "metric_type": 331,
+        "org_unit": 393,
+        "year": null,
+        "value": 136.64,
+        "string_value": ""
+    },
+    {
+        "id": 94835,
+        "metric_type": 331,
+        "org_unit": 395,
+        "year": null,
+        "value": 227.06,
+        "string_value": ""
+    },
+    {
+        "id": 94850,
+        "metric_type": 331,
+        "org_unit": 396,
+        "year": null,
+        "value": 215.0,
+        "string_value": ""
+    },
+    {
+        "id": 94865,
+        "metric_type": 331,
+        "org_unit": 390,
+        "year": null,
+        "value": 191.39,
+        "string_value": ""
+    },
+    {
+        "id": 94880,
+        "metric_type": 331,
+        "org_unit": 389,
+        "year": null,
+        "value": 228.14,
+        "string_value": ""
+    },
+    {
+        "id": 94895,
+        "metric_type": 331,
+        "org_unit": 388,
+        "year": null,
+        "value": 236.58,
+        "string_value": ""
+    },
+    {
+        "id": 94910,
+        "metric_type": 331,
+        "org_unit": 387,
+        "year": null,
+        "value": 342.77,
+        "string_value": ""
+    },
+    {
+        "id": 94925,
+        "metric_type": 331,
+        "org_unit": 386,
+        "year": null,
+        "value": 293.49,
+        "string_value": ""
+    },
+    {
+        "id": 94940,
+        "metric_type": 331,
+        "org_unit": 385,
+        "year": null,
+        "value": 374.5,
+        "string_value": ""
+    },
+    {
+        "id": 94955,
+        "metric_type": 331,
+        "org_unit": 383,
+        "year": null,
+        "value": 277.76,
+        "string_value": ""
+    },
+    {
+        "id": 94970,
+        "metric_type": 331,
+        "org_unit": 382,
+        "year": null,
+        "value": 255.69,
+        "string_value": ""
+    },
+    {
+        "id": 94985,
+        "metric_type": 331,
+        "org_unit": 381,
+        "year": null,
+        "value": 323.89,
+        "string_value": ""
+    },
+    {
+        "id": 95000,
+        "metric_type": 331,
+        "org_unit": 574,
+        "year": null,
+        "value": 243.51,
+        "string_value": ""
+    },
+    {
+        "id": 95015,
+        "metric_type": 331,
+        "org_unit": 573,
+        "year": null,
+        "value": 371.75,
+        "string_value": ""
+    },
+    {
+        "id": 95030,
+        "metric_type": 331,
+        "org_unit": 572,
+        "year": null,
+        "value": 277.67,
+        "string_value": ""
+    },
+    {
+        "id": 95045,
+        "metric_type": 331,
+        "org_unit": 571,
+        "year": null,
+        "value": 183.96,
+        "string_value": ""
+    },
+    {
+        "id": 95060,
+        "metric_type": 331,
+        "org_unit": 570,
+        "year": null,
+        "value": 215.49,
+        "string_value": ""
+    },
+    {
+        "id": 95075,
+        "metric_type": 331,
+        "org_unit": 569,
+        "year": null,
+        "value": 202.68,
+        "string_value": ""
+    },
+    {
+        "id": 95090,
+        "metric_type": 331,
+        "org_unit": 565,
+        "year": null,
+        "value": 347.82,
+        "string_value": ""
+    },
+    {
+        "id": 95105,
+        "metric_type": 331,
+        "org_unit": 562,
+        "year": null,
+        "value": 217.94,
+        "string_value": ""
+    },
+    {
+        "id": 95120,
+        "metric_type": 331,
+        "org_unit": 564,
+        "year": null,
+        "value": 150.24,
+        "string_value": ""
+    },
+    {
+        "id": 95135,
+        "metric_type": 331,
+        "org_unit": 563,
+        "year": null,
+        "value": 226.09,
+        "string_value": ""
+    },
+    {
+        "id": 95150,
+        "metric_type": 331,
+        "org_unit": 561,
+        "year": null,
+        "value": 280.35,
+        "string_value": ""
+    },
+    {
+        "id": 95165,
+        "metric_type": 331,
+        "org_unit": 560,
+        "year": null,
+        "value": 220.65,
+        "string_value": ""
+    },
+    {
+        "id": 95180,
+        "metric_type": 331,
+        "org_unit": 559,
+        "year": null,
+        "value": 329.79,
+        "string_value": ""
+    },
+    {
+        "id": 95195,
+        "metric_type": 331,
+        "org_unit": 558,
+        "year": null,
+        "value": 285.6,
+        "string_value": ""
+    },
+    {
+        "id": 95210,
+        "metric_type": 331,
+        "org_unit": 557,
+        "year": null,
+        "value": 222.77,
+        "string_value": ""
+    },
+    {
+        "id": 95225,
+        "metric_type": 331,
+        "org_unit": 556,
+        "year": null,
+        "value": 174.89,
+        "string_value": ""
+    },
+    {
+        "id": 95240,
+        "metric_type": 331,
+        "org_unit": 555,
+        "year": null,
+        "value": 237.06,
+        "string_value": ""
+    },
+    {
+        "id": 95255,
+        "metric_type": 331,
+        "org_unit": 554,
+        "year": null,
+        "value": 177.47,
+        "string_value": ""
+    },
+    {
+        "id": 95270,
+        "metric_type": 331,
+        "org_unit": 368,
+        "year": null,
+        "value": 131.86,
+        "string_value": ""
+    },
+    {
+        "id": 95285,
+        "metric_type": 331,
+        "org_unit": 365,
+        "year": null,
+        "value": 334.27,
+        "string_value": ""
+    },
+    {
+        "id": 95300,
+        "metric_type": 331,
+        "org_unit": 367,
+        "year": null,
+        "value": 332.42,
+        "string_value": ""
+    },
+    {
+        "id": 95315,
+        "metric_type": 331,
+        "org_unit": 366,
+        "year": null,
+        "value": 289.8,
+        "string_value": ""
+    },
+    {
+        "id": 95330,
+        "metric_type": 331,
+        "org_unit": 364,
+        "year": null,
+        "value": 311.89,
+        "string_value": ""
+    },
+    {
+        "id": 95345,
+        "metric_type": 331,
+        "org_unit": 363,
+        "year": null,
+        "value": 341.15,
+        "string_value": ""
+    },
+    {
+        "id": 95360,
+        "metric_type": 331,
+        "org_unit": 362,
+        "year": null,
+        "value": 338.97,
+        "string_value": ""
+    },
+    {
+        "id": 95375,
+        "metric_type": 331,
+        "org_unit": 361,
+        "year": null,
+        "value": 324.99,
+        "string_value": ""
+    },
+    {
+        "id": 95390,
+        "metric_type": 331,
+        "org_unit": 360,
+        "year": null,
+        "value": 437.19,
+        "string_value": ""
+    },
+    {
+        "id": 95405,
+        "metric_type": 331,
+        "org_unit": 359,
+        "year": null,
+        "value": 338.2,
+        "string_value": ""
+    },
+    {
+        "id": 95420,
+        "metric_type": 331,
+        "org_unit": 358,
+        "year": null,
+        "value": 209.02,
+        "string_value": ""
+    },
+    {
+        "id": 95435,
+        "metric_type": 331,
+        "org_unit": 357,
+        "year": null,
+        "value": 471.41,
+        "string_value": ""
+    },
+    {
+        "id": 95450,
+        "metric_type": 331,
+        "org_unit": 356,
+        "year": null,
+        "value": 248.34,
+        "string_value": ""
+    },
+    {
+        "id": 95465,
+        "metric_type": 331,
+        "org_unit": 355,
+        "year": null,
+        "value": 379.87,
+        "string_value": ""
+    },
+    {
+        "id": 95480,
+        "metric_type": 331,
+        "org_unit": 354,
+        "year": null,
+        "value": 374.24,
+        "string_value": ""
+    },
+    {
+        "id": 95495,
+        "metric_type": 331,
+        "org_unit": 353,
+        "year": null,
+        "value": 406.01,
+        "string_value": ""
+    },
+    {
+        "id": 95510,
+        "metric_type": 331,
+        "org_unit": 352,
+        "year": null,
+        "value": 335.82,
+        "string_value": ""
+    },
+    {
+        "id": 95525,
+        "metric_type": 331,
+        "org_unit": 351,
+        "year": null,
+        "value": 527.88,
+        "string_value": ""
+    },
+    {
+        "id": 95540,
+        "metric_type": 331,
+        "org_unit": 350,
+        "year": null,
+        "value": 388.84,
+        "string_value": ""
+    },
+    {
+        "id": 95555,
+        "metric_type": 331,
+        "org_unit": 349,
+        "year": null,
+        "value": 320.38,
+        "string_value": ""
+    },
+    {
+        "id": 95570,
+        "metric_type": 331,
+        "org_unit": 348,
+        "year": null,
+        "value": 339.1,
+        "string_value": ""
+    },
+    {
+        "id": 95585,
+        "metric_type": 331,
+        "org_unit": 347,
+        "year": null,
+        "value": 479.44,
+        "string_value": ""
+    },
+    {
+        "id": 95600,
+        "metric_type": 331,
+        "org_unit": 346,
+        "year": null,
+        "value": 318.07,
+        "string_value": ""
+    },
+    {
+        "id": 95615,
+        "metric_type": 331,
+        "org_unit": 345,
+        "year": null,
+        "value": 347.78,
+        "string_value": ""
+    },
+    {
+        "id": 95630,
+        "metric_type": 331,
+        "org_unit": 344,
+        "year": null,
+        "value": 438.49,
+        "string_value": ""
+    },
+    {
+        "id": 95645,
+        "metric_type": 331,
+        "org_unit": 343,
+        "year": null,
+        "value": 318.62,
+        "string_value": ""
+    },
+    {
+        "id": 95660,
+        "metric_type": 331,
+        "org_unit": 341,
+        "year": null,
+        "value": 131.03,
+        "string_value": ""
+    },
+    {
+        "id": 95675,
+        "metric_type": 331,
+        "org_unit": 342,
+        "year": null,
+        "value": 384.79,
+        "string_value": ""
+    },
+    {
+        "id": 95690,
+        "metric_type": 331,
+        "org_unit": 340,
+        "year": null,
+        "value": 243.09,
+        "string_value": ""
+    },
+    {
+        "id": 95705,
+        "metric_type": 331,
+        "org_unit": 339,
+        "year": null,
+        "value": 224.74,
+        "string_value": ""
+    },
+    {
+        "id": 95720,
+        "metric_type": 331,
+        "org_unit": 338,
+        "year": null,
+        "value": 140.11,
+        "string_value": ""
+    },
+    {
+        "id": 95735,
+        "metric_type": 331,
+        "org_unit": 337,
+        "year": null,
+        "value": 426.98,
+        "string_value": ""
+    },
+    {
+        "id": 95750,
+        "metric_type": 331,
+        "org_unit": 336,
+        "year": null,
+        "value": 176.71,
+        "string_value": ""
+    },
+    {
+        "id": 95765,
+        "metric_type": 331,
+        "org_unit": 335,
+        "year": null,
+        "value": 332.94,
+        "string_value": ""
+    },
+    {
+        "id": 95780,
+        "metric_type": 331,
+        "org_unit": 334,
+        "year": null,
+        "value": 371.37,
+        "string_value": ""
+    },
+    {
+        "id": 95795,
+        "metric_type": 331,
+        "org_unit": 333,
+        "year": null,
+        "value": 733.49,
+        "string_value": ""
+    },
+    {
+        "id": 95810,
+        "metric_type": 331,
+        "org_unit": 332,
+        "year": null,
+        "value": 228.49,
+        "string_value": ""
+    },
+    {
+        "id": 95825,
+        "metric_type": 331,
+        "org_unit": 328,
+        "year": null,
+        "value": 243.34,
+        "string_value": ""
+    },
+    {
+        "id": 95840,
+        "metric_type": 331,
+        "org_unit": 330,
+        "year": null,
+        "value": 285.36,
+        "string_value": ""
+    },
+    {
+        "id": 95855,
+        "metric_type": 331,
+        "org_unit": 331,
+        "year": null,
+        "value": 390.02,
+        "string_value": ""
+    },
+    {
+        "id": 95870,
+        "metric_type": 331,
+        "org_unit": 329,
+        "year": null,
+        "value": 298.38,
+        "string_value": ""
+    },
+    {
+        "id": 95885,
+        "metric_type": 331,
+        "org_unit": 327,
+        "year": null,
+        "value": 264.26,
+        "string_value": ""
+    },
+    {
+        "id": 95900,
+        "metric_type": 331,
+        "org_unit": 326,
+        "year": null,
+        "value": 303.34,
+        "string_value": ""
+    },
+    {
+        "id": 95915,
+        "metric_type": 331,
+        "org_unit": 325,
+        "year": null,
+        "value": 380.07,
+        "string_value": ""
+    },
+    {
+        "id": 95930,
+        "metric_type": 331,
+        "org_unit": 324,
+        "year": null,
+        "value": 661.54,
+        "string_value": ""
+    },
+    {
+        "id": 95945,
+        "metric_type": 331,
+        "org_unit": 322,
+        "year": null,
+        "value": 310.83,
+        "string_value": ""
+    },
+    {
+        "id": 95960,
+        "metric_type": 331,
+        "org_unit": 323,
+        "year": null,
+        "value": 88.36,
+        "string_value": ""
+    },
+    {
+        "id": 95975,
+        "metric_type": 331,
+        "org_unit": 321,
+        "year": null,
+        "value": 47.44,
+        "string_value": ""
+    },
+    {
+        "id": 95990,
+        "metric_type": 331,
+        "org_unit": 320,
+        "year": null,
+        "value": 46.19,
+        "string_value": ""
+    },
+    {
+        "id": 96005,
+        "metric_type": 331,
+        "org_unit": 319,
+        "year": null,
+        "value": 170.93,
+        "string_value": ""
+    },
+    {
+        "id": 96020,
+        "metric_type": 331,
+        "org_unit": 314,
+        "year": null,
+        "value": 52.35,
+        "string_value": ""
+    },
+    {
+        "id": 96035,
+        "metric_type": 331,
+        "org_unit": 318,
+        "year": null,
+        "value": 124.45,
+        "string_value": ""
+    },
+    {
+        "id": 96050,
+        "metric_type": 331,
+        "org_unit": 317,
+        "year": null,
+        "value": 305.6,
+        "string_value": ""
+    },
+    {
+        "id": 96065,
+        "metric_type": 331,
+        "org_unit": 316,
+        "year": null,
+        "value": 241.02,
+        "string_value": ""
+    },
+    {
+        "id": 96080,
+        "metric_type": 331,
+        "org_unit": 306,
+        "year": null,
+        "value": 152.41,
+        "string_value": ""
+    },
+    {
+        "id": 96095,
+        "metric_type": 331,
+        "org_unit": 315,
+        "year": null,
+        "value": 168.87,
+        "string_value": ""
+    },
+    {
+        "id": 96110,
+        "metric_type": 331,
+        "org_unit": 313,
+        "year": null,
+        "value": 189.98,
+        "string_value": ""
+    },
+    {
+        "id": 96125,
+        "metric_type": 331,
+        "org_unit": 312,
+        "year": null,
+        "value": 543.27,
+        "string_value": ""
+    },
+    {
+        "id": 96140,
+        "metric_type": 331,
+        "org_unit": 311,
+        "year": null,
+        "value": 141.51,
+        "string_value": ""
+    },
+    {
+        "id": 96155,
+        "metric_type": 331,
+        "org_unit": 310,
+        "year": null,
+        "value": 446.54,
+        "string_value": ""
+    },
+    {
+        "id": 96170,
+        "metric_type": 331,
+        "org_unit": 309,
+        "year": null,
+        "value": 317.02,
+        "string_value": ""
+    },
+    {
+        "id": 96185,
+        "metric_type": 331,
+        "org_unit": 308,
+        "year": null,
+        "value": 555.37,
+        "string_value": ""
+    },
+    {
+        "id": 96200,
+        "metric_type": 331,
+        "org_unit": 307,
+        "year": null,
+        "value": 580.02,
+        "string_value": ""
+    },
+    {
+        "id": 96215,
+        "metric_type": 331,
+        "org_unit": 305,
+        "year": null,
+        "value": 162.09,
+        "string_value": ""
+    },
+    {
+        "id": 96230,
+        "metric_type": 331,
+        "org_unit": 303,
+        "year": null,
+        "value": 325.05,
+        "string_value": ""
+    },
+    {
+        "id": 96245,
+        "metric_type": 331,
+        "org_unit": 302,
+        "year": null,
+        "value": 483.55,
+        "string_value": ""
+    },
+    {
+        "id": 96260,
+        "metric_type": 331,
+        "org_unit": 301,
+        "year": null,
+        "value": 329.47,
+        "string_value": ""
+    },
+    {
+        "id": 96275,
+        "metric_type": 331,
+        "org_unit": 300,
+        "year": null,
+        "value": 546.33,
+        "string_value": ""
+    },
+    {
+        "id": 96290,
+        "metric_type": 331,
+        "org_unit": 299,
+        "year": null,
+        "value": 101.65,
+        "string_value": ""
+    },
+    {
+        "id": 96305,
+        "metric_type": 331,
+        "org_unit": 298,
+        "year": null,
+        "value": 298.82,
+        "string_value": ""
+    },
+    {
+        "id": 96320,
+        "metric_type": 331,
+        "org_unit": 304,
+        "year": null,
+        "value": 434.56,
+        "string_value": ""
+    },
+    {
+        "id": 96335,
+        "metric_type": 331,
+        "org_unit": 297,
+        "year": null,
+        "value": 243.47,
+        "string_value": ""
+    },
+    {
+        "id": 96350,
+        "metric_type": 331,
+        "org_unit": 296,
+        "year": null,
+        "value": 129.13,
+        "string_value": ""
+    },
+    {
+        "id": 96365,
+        "metric_type": 331,
+        "org_unit": 295,
+        "year": null,
+        "value": 59.05,
+        "string_value": ""
+    },
+    {
+        "id": 96380,
+        "metric_type": 331,
+        "org_unit": 294,
+        "year": null,
+        "value": 43.34,
+        "string_value": ""
+    },
+    {
+        "id": 96395,
+        "metric_type": 331,
+        "org_unit": 293,
+        "year": null,
+        "value": 158.66,
+        "string_value": ""
+    },
+    {
+        "id": 96410,
+        "metric_type": 331,
+        "org_unit": 292,
+        "year": null,
+        "value": 190.79,
+        "string_value": ""
+    },
+    {
+        "id": 96425,
+        "metric_type": 331,
+        "org_unit": 291,
+        "year": null,
+        "value": 110.37,
+        "string_value": ""
+    },
+    {
+        "id": 96440,
+        "metric_type": 331,
+        "org_unit": 290,
+        "year": null,
+        "value": 293.52,
+        "string_value": ""
+    },
+    {
+        "id": 96455,
+        "metric_type": 331,
+        "org_unit": 287,
+        "year": null,
+        "value": 345.21,
+        "string_value": ""
+    },
+    {
+        "id": 96470,
+        "metric_type": 331,
+        "org_unit": 289,
+        "year": null,
+        "value": 374.86,
+        "string_value": ""
+    },
+    {
+        "id": 96485,
+        "metric_type": 331,
+        "org_unit": 288,
+        "year": null,
+        "value": 307.92,
+        "string_value": ""
+    },
+    {
+        "id": 96500,
+        "metric_type": 331,
+        "org_unit": 286,
+        "year": null,
+        "value": 288.67,
+        "string_value": ""
+    },
+    {
+        "id": 96515,
+        "metric_type": 331,
+        "org_unit": 285,
+        "year": null,
+        "value": 294.56,
+        "string_value": ""
+    },
+    {
+        "id": 96530,
+        "metric_type": 331,
+        "org_unit": 284,
+        "year": null,
+        "value": 321.0,
+        "string_value": ""
+    },
+    {
+        "id": 96545,
+        "metric_type": 331,
+        "org_unit": 283,
+        "year": null,
+        "value": 271.87,
+        "string_value": ""
+    },
+    {
+        "id": 96560,
+        "metric_type": 331,
+        "org_unit": 282,
+        "year": null,
+        "value": 377.41,
+        "string_value": ""
+    },
+    {
+        "id": 96575,
+        "metric_type": 331,
+        "org_unit": 281,
+        "year": null,
+        "value": 391.94,
+        "string_value": ""
+    },
+    {
+        "id": 96590,
+        "metric_type": 331,
+        "org_unit": 280,
+        "year": null,
+        "value": 302.19,
+        "string_value": ""
+    },
+    {
+        "id": 96605,
+        "metric_type": 331,
+        "org_unit": 279,
+        "year": null,
+        "value": 320.38,
+        "string_value": ""
+    },
+    {
+        "id": 96620,
+        "metric_type": 331,
+        "org_unit": 278,
+        "year": null,
+        "value": 39.0,
+        "string_value": ""
+    },
+    {
+        "id": 96635,
+        "metric_type": 331,
+        "org_unit": 276,
+        "year": null,
+        "value": 25.71,
+        "string_value": ""
+    },
+    {
+        "id": 96650,
+        "metric_type": 331,
+        "org_unit": 275,
+        "year": null,
+        "value": 666.12,
+        "string_value": ""
+    },
+    {
+        "id": 96665,
+        "metric_type": 331,
+        "org_unit": 274,
+        "year": null,
+        "value": 464.62,
+        "string_value": ""
+    },
+    {
+        "id": 96680,
+        "metric_type": 331,
+        "org_unit": 273,
+        "year": null,
+        "value": 248.23,
+        "string_value": ""
+    },
+    {
+        "id": 96695,
+        "metric_type": 331,
+        "org_unit": 272,
+        "year": null,
+        "value": 161.59,
+        "string_value": ""
+    },
+    {
+        "id": 96710,
+        "metric_type": 331,
+        "org_unit": 271,
+        "year": null,
+        "value": 49.57,
+        "string_value": ""
+    },
+    {
+        "id": 96725,
+        "metric_type": 331,
+        "org_unit": 270,
+        "year": null,
+        "value": 473.34,
+        "string_value": ""
+    },
+    {
+        "id": 96740,
+        "metric_type": 331,
+        "org_unit": 269,
+        "year": null,
+        "value": 124.36,
+        "string_value": ""
+    },
+    {
+        "id": 96755,
+        "metric_type": 331,
+        "org_unit": 268,
+        "year": null,
+        "value": 301.08,
+        "string_value": ""
+    },
+    {
+        "id": 96770,
+        "metric_type": 331,
+        "org_unit": 267,
+        "year": null,
+        "value": 142.04,
+        "string_value": ""
+    },
+    {
+        "id": 96785,
+        "metric_type": 331,
+        "org_unit": 266,
+        "year": null,
+        "value": 341.09,
+        "string_value": ""
+    },
+    {
+        "id": 96800,
+        "metric_type": 331,
+        "org_unit": 265,
+        "year": null,
+        "value": 295.03,
+        "string_value": ""
+    },
+    {
+        "id": 96815,
+        "metric_type": 331,
+        "org_unit": 264,
+        "year": null,
+        "value": 103.48,
+        "string_value": ""
+    },
+    {
+        "id": 96830,
+        "metric_type": 331,
+        "org_unit": 263,
+        "year": null,
+        "value": 266.72,
+        "string_value": ""
+    },
+    {
+        "id": 96845,
+        "metric_type": 331,
+        "org_unit": 262,
+        "year": null,
+        "value": 147.55,
+        "string_value": ""
+    },
+    {
+        "id": 96859,
+        "metric_type": 331,
+        "org_unit": 261,
+        "year": null,
+        "value": 77.76,
+        "string_value": ""
+    },
+    {
+        "id": 96874,
+        "metric_type": 331,
+        "org_unit": 260,
+        "year": null,
+        "value": 368.99,
+        "string_value": ""
+    },
+    {
+        "id": 96889,
+        "metric_type": 331,
+        "org_unit": 259,
+        "year": null,
+        "value": 85.66,
+        "string_value": ""
+    },
+    {
+        "id": 96904,
+        "metric_type": 331,
+        "org_unit": 258,
+        "year": null,
+        "value": 257.69,
+        "string_value": ""
+    },
+    {
+        "id": 96919,
+        "metric_type": 331,
+        "org_unit": 257,
+        "year": null,
+        "value": 292.09,
+        "string_value": ""
+    },
+    {
+        "id": 96934,
+        "metric_type": 331,
+        "org_unit": 256,
+        "year": null,
+        "value": 280.6,
+        "string_value": ""
+    },
+    {
+        "id": 96949,
+        "metric_type": 331,
+        "org_unit": 255,
+        "year": null,
+        "value": 150.39,
+        "string_value": ""
+    },
+    {
+        "id": 96964,
+        "metric_type": 331,
+        "org_unit": 254,
+        "year": null,
+        "value": 111.09,
+        "string_value": ""
+    },
+    {
+        "id": 96979,
+        "metric_type": 331,
+        "org_unit": 253,
+        "year": null,
+        "value": 181.02,
+        "string_value": ""
+    },
+    {
+        "id": 96994,
+        "metric_type": 331,
+        "org_unit": 252,
+        "year": null,
+        "value": 223.12,
+        "string_value": ""
+    },
+    {
+        "id": 97009,
+        "metric_type": 331,
+        "org_unit": 251,
+        "year": null,
+        "value": 364.13,
+        "string_value": ""
+    },
+    {
+        "id": 97024,
+        "metric_type": 331,
+        "org_unit": 250,
+        "year": null,
+        "value": 66.57,
+        "string_value": ""
+    },
+    {
+        "id": 97039,
+        "metric_type": 331,
+        "org_unit": 249,
+        "year": null,
+        "value": 293.62,
+        "string_value": ""
+    },
+    {
+        "id": 97054,
+        "metric_type": 331,
+        "org_unit": 248,
+        "year": null,
+        "value": 242.0,
+        "string_value": ""
+    },
+    {
+        "id": 97069,
+        "metric_type": 331,
+        "org_unit": 247,
+        "year": null,
+        "value": 185.28,
+        "string_value": ""
+    },
+    {
+        "id": 97084,
+        "metric_type": 331,
+        "org_unit": 246,
+        "year": null,
+        "value": 78.43,
+        "string_value": ""
+    },
+    {
+        "id": 97099,
+        "metric_type": 331,
+        "org_unit": 245,
+        "year": null,
+        "value": 236.85,
+        "string_value": ""
+    },
+    {
+        "id": 97114,
+        "metric_type": 331,
+        "org_unit": 243,
+        "year": null,
+        "value": 183.43,
+        "string_value": ""
+    },
+    {
+        "id": 97129,
+        "metric_type": 331,
+        "org_unit": 244,
+        "year": null,
+        "value": 401.13,
+        "string_value": ""
+    },
+    {
+        "id": 97144,
+        "metric_type": 331,
+        "org_unit": 242,
+        "year": null,
+        "value": 271.39,
+        "string_value": ""
+    },
+    {
+        "id": 97159,
+        "metric_type": 331,
+        "org_unit": 241,
+        "year": null,
+        "value": 238.52,
+        "string_value": ""
+    },
+    {
+        "id": 97174,
+        "metric_type": 331,
+        "org_unit": 240,
+        "year": null,
+        "value": 326.3,
+        "string_value": ""
+    },
+    {
+        "id": 97189,
+        "metric_type": 331,
+        "org_unit": 239,
+        "year": null,
+        "value": 286.45,
+        "string_value": ""
+    },
+    {
+        "id": 97204,
+        "metric_type": 331,
+        "org_unit": 238,
+        "year": null,
+        "value": 415.59,
+        "string_value": ""
+    },
+    {
+        "id": 97219,
+        "metric_type": 331,
+        "org_unit": 237,
+        "year": null,
+        "value": 241.32,
+        "string_value": ""
+    },
+    {
+        "id": 97234,
+        "metric_type": 331,
+        "org_unit": 236,
+        "year": null,
+        "value": 241.77,
+        "string_value": ""
+    },
+    {
+        "id": 97249,
+        "metric_type": 331,
+        "org_unit": 235,
+        "year": null,
+        "value": 135.5,
+        "string_value": ""
+    },
+    {
+        "id": 97264,
+        "metric_type": 331,
+        "org_unit": 234,
+        "year": null,
+        "value": 193.14,
+        "string_value": ""
+    },
+    {
+        "id": 97279,
+        "metric_type": 331,
+        "org_unit": 233,
+        "year": null,
+        "value": 119.99,
+        "string_value": ""
+    },
+    {
+        "id": 97294,
+        "metric_type": 331,
+        "org_unit": 232,
+        "year": null,
+        "value": 276.24,
+        "string_value": ""
+    },
+    {
+        "id": 97309,
+        "metric_type": 331,
+        "org_unit": 231,
+        "year": null,
+        "value": 233.25,
+        "string_value": ""
+    },
+    {
+        "id": 97324,
+        "metric_type": 331,
+        "org_unit": 230,
+        "year": null,
+        "value": 278.36,
+        "string_value": ""
+    },
+    {
+        "id": 97339,
+        "metric_type": 331,
+        "org_unit": 229,
+        "year": null,
+        "value": 355.62,
+        "string_value": ""
+    },
+    {
+        "id": 97354,
+        "metric_type": 331,
+        "org_unit": 222,
+        "year": null,
+        "value": 414.32,
+        "string_value": ""
+    },
+    {
+        "id": 97369,
+        "metric_type": 331,
+        "org_unit": 225,
+        "year": null,
+        "value": 403.34,
+        "string_value": ""
+    },
+    {
+        "id": 97384,
+        "metric_type": 331,
+        "org_unit": 226,
+        "year": null,
+        "value": 605.27,
+        "string_value": ""
+    },
+    {
+        "id": 97399,
+        "metric_type": 331,
+        "org_unit": 228,
+        "year": null,
+        "value": 450.6,
+        "string_value": ""
+    },
+    {
+        "id": 97414,
+        "metric_type": 331,
+        "org_unit": 227,
+        "year": null,
+        "value": 494.43,
+        "string_value": ""
+    },
+    {
+        "id": 97429,
+        "metric_type": 331,
+        "org_unit": 224,
+        "year": null,
+        "value": 424.91,
+        "string_value": ""
+    },
+    {
+        "id": 97444,
+        "metric_type": 331,
+        "org_unit": 223,
+        "year": null,
+        "value": 653.97,
+        "string_value": ""
+    },
+    {
+        "id": 97459,
+        "metric_type": 331,
+        "org_unit": 221,
+        "year": null,
+        "value": 558.92,
+        "string_value": ""
+    },
+    {
+        "id": 97474,
+        "metric_type": 331,
+        "org_unit": 220,
+        "year": null,
+        "value": 381.7,
+        "string_value": ""
+    },
+    {
+        "id": 97489,
+        "metric_type": 331,
+        "org_unit": 219,
+        "year": null,
+        "value": 561.41,
+        "string_value": ""
+    },
+    {
+        "id": 97504,
+        "metric_type": 331,
+        "org_unit": 215,
+        "year": null,
+        "value": 742.74,
+        "string_value": ""
+    },
+    {
+        "id": 97519,
+        "metric_type": 331,
+        "org_unit": 217,
+        "year": null,
+        "value": 505.77,
+        "string_value": ""
+    },
+    {
+        "id": 97534,
+        "metric_type": 331,
+        "org_unit": 216,
+        "year": null,
+        "value": 475.62,
+        "string_value": ""
+    },
+    {
+        "id": 97549,
+        "metric_type": 331,
+        "org_unit": 213,
+        "year": null,
+        "value": 182.27,
+        "string_value": ""
+    },
+    {
+        "id": 97564,
+        "metric_type": 331,
+        "org_unit": 212,
+        "year": null,
+        "value": 314.11,
+        "string_value": ""
+    },
+    {
+        "id": 97579,
+        "metric_type": 331,
+        "org_unit": 209,
+        "year": null,
+        "value": 428.42,
+        "string_value": ""
+    },
+    {
+        "id": 97594,
+        "metric_type": 331,
+        "org_unit": 211,
+        "year": null,
+        "value": 260.51,
+        "string_value": ""
+    },
+    {
+        "id": 97609,
+        "metric_type": 331,
+        "org_unit": 206,
+        "year": null,
+        "value": 146.59,
+        "string_value": ""
+    },
+    {
+        "id": 97624,
+        "metric_type": 331,
+        "org_unit": 210,
+        "year": null,
+        "value": 193.62,
+        "string_value": ""
+    },
+    {
+        "id": 97639,
+        "metric_type": 331,
+        "org_unit": 208,
+        "year": null,
+        "value": 300.32,
+        "string_value": ""
+    },
+    {
+        "id": 97654,
+        "metric_type": 331,
+        "org_unit": 207,
+        "year": null,
+        "value": 293.69,
+        "string_value": ""
+    },
+    {
+        "id": 97669,
+        "metric_type": 331,
+        "org_unit": 205,
+        "year": null,
+        "value": 88.45,
+        "string_value": ""
+    },
+    {
+        "id": 97684,
+        "metric_type": 331,
+        "org_unit": 204,
+        "year": null,
+        "value": 153.75,
+        "string_value": ""
+    },
+    {
+        "id": 97699,
+        "metric_type": 331,
+        "org_unit": 203,
+        "year": null,
+        "value": 213.96,
+        "string_value": ""
+    },
+    {
+        "id": 97714,
+        "metric_type": 331,
+        "org_unit": 201,
+        "year": null,
+        "value": 273.53,
+        "string_value": ""
+    },
+    {
+        "id": 97729,
+        "metric_type": 331,
+        "org_unit": 202,
+        "year": null,
+        "value": 169.64,
+        "string_value": ""
+    },
+    {
+        "id": 97743,
+        "metric_type": 331,
+        "org_unit": 200,
+        "year": null,
+        "value": 251.91,
+        "string_value": ""
+    },
+    {
+        "id": 97758,
+        "metric_type": 331,
+        "org_unit": 199,
+        "year": null,
+        "value": 344.57,
+        "string_value": ""
+    },
+    {
+        "id": 97773,
+        "metric_type": 331,
+        "org_unit": 198,
+        "year": null,
+        "value": 396.58,
+        "string_value": ""
+    },
+    {
+        "id": 97787,
+        "metric_type": 331,
+        "org_unit": 197,
+        "year": null,
+        "value": 185.28,
+        "string_value": ""
+    },
+    {
+        "id": 97802,
+        "metric_type": 331,
+        "org_unit": 195,
+        "year": null,
+        "value": 212.1,
+        "string_value": ""
+    },
+    {
+        "id": 97817,
+        "metric_type": 331,
+        "org_unit": 194,
+        "year": null,
+        "value": 134.44,
+        "string_value": ""
+    },
+    {
+        "id": 97832,
+        "metric_type": 331,
+        "org_unit": 193,
+        "year": null,
+        "value": 247.75,
+        "string_value": ""
+    },
+    {
+        "id": 97847,
+        "metric_type": 331,
+        "org_unit": 192,
+        "year": null,
+        "value": 262.66,
+        "string_value": ""
+    },
+    {
+        "id": 97862,
+        "metric_type": 331,
+        "org_unit": 196,
+        "year": null,
+        "value": 398.68,
+        "string_value": ""
+    },
+    {
+        "id": 97877,
+        "metric_type": 331,
+        "org_unit": 191,
+        "year": null,
+        "value": 193.03,
+        "string_value": ""
+    },
+    {
+        "id": 97892,
+        "metric_type": 331,
+        "org_unit": 190,
+        "year": null,
+        "value": 259.09,
+        "string_value": ""
+    },
+    {
+        "id": 97907,
+        "metric_type": 331,
+        "org_unit": 189,
+        "year": null,
+        "value": 203.01,
+        "string_value": ""
+    },
+    {
+        "id": 97922,
+        "metric_type": 331,
+        "org_unit": 188,
+        "year": null,
+        "value": 351.6,
+        "string_value": ""
+    },
+    {
+        "id": 97937,
+        "metric_type": 331,
+        "org_unit": 187,
+        "year": null,
+        "value": 131.98,
+        "string_value": ""
+    },
+    {
+        "id": 97952,
+        "metric_type": 331,
+        "org_unit": 186,
+        "year": null,
+        "value": 193.31,
+        "string_value": ""
+    },
+    {
+        "id": 97967,
+        "metric_type": 331,
+        "org_unit": 185,
+        "year": null,
+        "value": 361.6,
+        "string_value": ""
+    },
+    {
+        "id": 97982,
+        "metric_type": 331,
+        "org_unit": 184,
+        "year": null,
+        "value": 353.32,
+        "string_value": ""
+    },
+    {
+        "id": 97997,
+        "metric_type": 331,
+        "org_unit": 183,
+        "year": null,
+        "value": 440.93,
+        "string_value": ""
+    },
+    {
+        "id": 98012,
+        "metric_type": 331,
+        "org_unit": 182,
+        "year": null,
+        "value": 200.66,
+        "string_value": ""
+    },
+    {
+        "id": 98027,
+        "metric_type": 331,
+        "org_unit": 181,
+        "year": null,
+        "value": 502.53,
+        "string_value": ""
+    },
+    {
+        "id": 98042,
+        "metric_type": 331,
+        "org_unit": 180,
+        "year": null,
+        "value": 272.61,
+        "string_value": ""
+    },
+    {
+        "id": 98057,
+        "metric_type": 331,
+        "org_unit": 379,
+        "year": null,
+        "value": 184.14,
+        "string_value": ""
+    },
+    {
+        "id": 98072,
+        "metric_type": 331,
+        "org_unit": 378,
+        "year": null,
+        "value": 105.09,
+        "string_value": ""
+    },
+    {
+        "id": 98087,
+        "metric_type": 331,
+        "org_unit": 377,
+        "year": null,
+        "value": 346.32,
+        "string_value": ""
+    },
+    {
+        "id": 98102,
+        "metric_type": 331,
+        "org_unit": 376,
+        "year": null,
+        "value": 218.61,
+        "string_value": ""
+    },
+    {
+        "id": 98117,
+        "metric_type": 331,
+        "org_unit": 380,
+        "year": null,
+        "value": 332.5,
+        "string_value": ""
+    },
+    {
+        "id": 98132,
+        "metric_type": 331,
+        "org_unit": 375,
+        "year": null,
+        "value": 232.61,
+        "string_value": ""
+    },
+    {
+        "id": 98147,
+        "metric_type": 331,
+        "org_unit": 374,
+        "year": null,
+        "value": 196.66,
+        "string_value": ""
+    },
+    {
+        "id": 98162,
+        "metric_type": 331,
+        "org_unit": 373,
+        "year": null,
+        "value": 258.07,
+        "string_value": ""
+    },
+    {
+        "id": 98177,
+        "metric_type": 331,
+        "org_unit": 372,
+        "year": null,
+        "value": 158.64,
+        "string_value": ""
+    },
+    {
+        "id": 98192,
+        "metric_type": 331,
+        "org_unit": 371,
+        "year": null,
+        "value": 230.89,
+        "string_value": ""
+    },
+    {
+        "id": 98207,
+        "metric_type": 331,
+        "org_unit": 370,
+        "year": null,
+        "value": 249.46,
+        "string_value": ""
+    },
+    {
+        "id": 98222,
+        "metric_type": 331,
+        "org_unit": 369,
+        "year": null,
+        "value": 126.9,
+        "string_value": ""
+    },
+    {
+        "id": 90592,
+        "metric_type": 331,
+        "org_unit": 553,
+        "year": null,
+        "value": 251.88,
+        "string_value": ""
+    },
+    {
+        "id": 90607,
+        "metric_type": 331,
+        "org_unit": 568,
+        "year": null,
+        "value": 208.5,
+        "string_value": ""
+    },
+    {
+        "id": 90622,
+        "metric_type": 331,
+        "org_unit": 567,
+        "year": null,
+        "value": 191.29,
+        "string_value": ""
+    },
+    {
+        "id": 90637,
+        "metric_type": 331,
+        "org_unit": 566,
+        "year": null,
+        "value": 226.44,
+        "string_value": ""
+    },
+    {
+        "id": 90652,
+        "metric_type": 331,
+        "org_unit": 551,
+        "year": null,
+        "value": 239.17,
+        "string_value": ""
+    },
+    {
+        "id": 90667,
+        "metric_type": 331,
+        "org_unit": 543,
+        "year": null,
+        "value": 320.5,
+        "string_value": ""
+    },
+    {
+        "id": 90682,
+        "metric_type": 331,
+        "org_unit": 634,
+        "year": null,
+        "value": 362.73,
+        "string_value": ""
+    },
+    {
+        "id": 90697,
+        "metric_type": 331,
+        "org_unit": 617,
+        "year": null,
+        "value": 390.04,
+        "string_value": ""
+    },
+    {
+        "id": 90712,
+        "metric_type": 331,
+        "org_unit": 636,
+        "year": null,
+        "value": 297.28,
+        "string_value": ""
+    },
+    {
+        "id": 90727,
+        "metric_type": 331,
+        "org_unit": 642,
+        "year": null,
+        "value": 256.36,
+        "string_value": ""
+    },
+    {
+        "id": 90742,
+        "metric_type": 331,
+        "org_unit": 633,
+        "year": null,
+        "value": 285.9,
+        "string_value": ""
+    },
+    {
+        "id": 90757,
+        "metric_type": 331,
+        "org_unit": 629,
+        "year": null,
+        "value": 318.98,
+        "string_value": ""
+    },
+    {
+        "id": 90772,
+        "metric_type": 331,
+        "org_unit": 630,
+        "year": null,
+        "value": 176.71,
+        "string_value": ""
+    },
+    {
+        "id": 90787,
+        "metric_type": 331,
+        "org_unit": 628,
+        "year": null,
+        "value": 268.73,
+        "string_value": ""
+    },
+    {
+        "id": 90802,
+        "metric_type": 331,
+        "org_unit": 497,
+        "year": null,
+        "value": 333.38,
+        "string_value": ""
+    },
+    {
+        "id": 90817,
+        "metric_type": 331,
+        "org_unit": 478,
+        "year": null,
+        "value": 180.15,
+        "string_value": ""
+    },
+    {
+        "id": 90831,
+        "metric_type": 331,
+        "org_unit": 451,
+        "year": null,
+        "value": 376.76,
+        "string_value": ""
+    },
+    {
+        "id": 90845,
+        "metric_type": 331,
+        "org_unit": 433,
+        "year": null,
+        "value": 250.78,
+        "string_value": ""
+    },
+    {
+        "id": 90860,
+        "metric_type": 331,
+        "org_unit": 448,
+        "year": null,
+        "value": 325.07,
+        "string_value": ""
+    },
+    {
+        "id": 90875,
+        "metric_type": 331,
+        "org_unit": 452,
+        "year": null,
+        "value": 428.8,
+        "string_value": ""
+    },
+    {
+        "id": 90890,
+        "metric_type": 331,
+        "org_unit": 428,
+        "year": null,
+        "value": 315.57,
+        "string_value": ""
+    },
+    {
+        "id": 90905,
+        "metric_type": 331,
+        "org_unit": 431,
+        "year": null,
+        "value": 126.48,
+        "string_value": ""
+    },
+    {
+        "id": 90920,
+        "metric_type": 331,
+        "org_unit": 450,
+        "year": null,
+        "value": 158.7,
+        "string_value": ""
+    },
+    {
+        "id": 90935,
+        "metric_type": 331,
+        "org_unit": 439,
+        "year": null,
+        "value": 179.31,
+        "string_value": ""
+    },
+    {
+        "id": 90950,
+        "metric_type": 331,
+        "org_unit": 423,
+        "year": null,
+        "value": 265.18,
+        "string_value": ""
+    },
+    {
+        "id": 90965,
+        "metric_type": 331,
+        "org_unit": 418,
+        "year": null,
+        "value": 248.16,
+        "string_value": ""
+    },
+    {
+        "id": 90980,
+        "metric_type": 331,
+        "org_unit": 419,
+        "year": null,
+        "value": 385.51,
+        "string_value": ""
+    },
+    {
+        "id": 90995,
+        "metric_type": 331,
+        "org_unit": 403,
+        "year": null,
+        "value": 339.99,
+        "string_value": ""
+    },
+    {
+        "id": 91010,
+        "metric_type": 331,
+        "org_unit": 404,
+        "year": null,
+        "value": 232.11,
+        "string_value": ""
+    },
+    {
+        "id": 91025,
+        "metric_type": 331,
+        "org_unit": 420,
+        "year": null,
+        "value": 300.31,
+        "string_value": ""
+    },
+    {
+        "id": 91040,
+        "metric_type": 331,
+        "org_unit": 402,
+        "year": null,
+        "value": 271.12,
+        "string_value": ""
+    },
+    {
+        "id": 91055,
+        "metric_type": 331,
+        "org_unit": 407,
+        "year": null,
+        "value": 326.79,
+        "string_value": ""
+    },
+    {
+        "id": 91070,
+        "metric_type": 331,
+        "org_unit": 394,
+        "year": null,
+        "value": 317.9,
+        "string_value": ""
+    },
+    {
+        "id": 91085,
+        "metric_type": 331,
+        "org_unit": 392,
+        "year": null,
+        "value": 448.65,
+        "string_value": ""
+    },
+    {
+        "id": 91100,
+        "metric_type": 331,
+        "org_unit": 670,
+        "year": null,
+        "value": 213.1,
+        "string_value": ""
+    },
+    {
+        "id": 91115,
+        "metric_type": 331,
+        "org_unit": 277,
+        "year": null,
+        "value": 280.89,
+        "string_value": ""
+    },
+    {
+        "id": 91130,
+        "metric_type": 331,
+        "org_unit": 218,
+        "year": null,
+        "value": 379.86,
+        "string_value": ""
+    },
+    {
+        "id": 91145,
+        "metric_type": 331,
+        "org_unit": 214,
+        "year": null,
+        "value": 559.7,
+        "string_value": ""
+    },
+    {
+        "id": 91160,
+        "metric_type": 331,
+        "org_unit": 698,
+        "year": null,
+        "value": 199.45,
+        "string_value": ""
+    },
+    {
+        "id": 91175,
+        "metric_type": 331,
+        "org_unit": 697,
+        "year": null,
+        "value": 273.16,
+        "string_value": ""
+    },
+    {
+        "id": 91190,
+        "metric_type": 331,
+        "org_unit": 696,
+        "year": null,
+        "value": 155.01,
+        "string_value": ""
+    },
+    {
+        "id": 91205,
+        "metric_type": 331,
+        "org_unit": 694,
+        "year": null,
+        "value": 247.55,
+        "string_value": ""
+    },
+    {
+        "id": 91220,
+        "metric_type": 331,
+        "org_unit": 693,
+        "year": null,
+        "value": 226.58,
+        "string_value": ""
+    },
+    {
+        "id": 91235,
+        "metric_type": 331,
+        "org_unit": 695,
+        "year": null,
+        "value": 369.34,
+        "string_value": ""
+    },
+    {
+        "id": 91250,
+        "metric_type": 331,
+        "org_unit": 692,
+        "year": null,
+        "value": 131.6,
+        "string_value": ""
+    },
+    {
+        "id": 91265,
+        "metric_type": 331,
+        "org_unit": 691,
+        "year": null,
+        "value": 176.59,
+        "string_value": ""
+    },
+    {
+        "id": 91280,
+        "metric_type": 331,
+        "org_unit": 690,
+        "year": null,
+        "value": 266.75,
+        "string_value": ""
+    },
+    {
+        "id": 91295,
+        "metric_type": 331,
+        "org_unit": 689,
+        "year": null,
+        "value": 231.59,
+        "string_value": ""
+    },
+    {
+        "id": 91310,
+        "metric_type": 331,
+        "org_unit": 688,
+        "year": null,
+        "value": 230.23,
+        "string_value": ""
+    },
+    {
+        "id": 91325,
+        "metric_type": 331,
+        "org_unit": 687,
+        "year": null,
+        "value": 346.78,
+        "string_value": ""
+    },
+    {
+        "id": 91340,
+        "metric_type": 331,
+        "org_unit": 686,
+        "year": null,
+        "value": 431.14,
+        "string_value": ""
+    },
+    {
+        "id": 91355,
+        "metric_type": 331,
+        "org_unit": 685,
+        "year": null,
+        "value": 316.08,
+        "string_value": ""
+    },
+    {
+        "id": 91370,
+        "metric_type": 331,
+        "org_unit": 684,
+        "year": null,
+        "value": 269.85,
+        "string_value": ""
+    },
+    {
+        "id": 91385,
+        "metric_type": 331,
+        "org_unit": 682,
+        "year": null,
+        "value": 392.12,
+        "string_value": ""
+    },
+    {
+        "id": 91400,
+        "metric_type": 331,
+        "org_unit": 683,
+        "year": null,
+        "value": 241.44,
+        "string_value": ""
+    },
+    {
+        "id": 91415,
+        "metric_type": 331,
+        "org_unit": 681,
+        "year": null,
+        "value": 160.65,
+        "string_value": ""
+    },
+    {
+        "id": 91430,
+        "metric_type": 331,
+        "org_unit": 680,
+        "year": null,
+        "value": 410.23,
+        "string_value": ""
+    },
+    {
+        "id": 91445,
+        "metric_type": 331,
+        "org_unit": 679,
+        "year": null,
+        "value": 193.56,
+        "string_value": ""
+    },
+    {
+        "id": 91460,
+        "metric_type": 331,
+        "org_unit": 678,
+        "year": null,
+        "value": 307.46,
+        "string_value": ""
+    },
+    {
+        "id": 91475,
+        "metric_type": 331,
+        "org_unit": 677,
+        "year": null,
+        "value": 327.5,
+        "string_value": ""
+    },
+    {
+        "id": 91490,
+        "metric_type": 331,
+        "org_unit": 676,
+        "year": null,
+        "value": 349.75,
+        "string_value": ""
+    },
+    {
+        "id": 91505,
+        "metric_type": 331,
+        "org_unit": 675,
+        "year": null,
+        "value": 192.34,
+        "string_value": ""
+    },
+    {
+        "id": 91520,
+        "metric_type": 331,
+        "org_unit": 674,
+        "year": null,
+        "value": 229.25,
+        "string_value": ""
+    },
+    {
+        "id": 91535,
+        "metric_type": 331,
+        "org_unit": 673,
+        "year": null,
+        "value": 387.75,
+        "string_value": ""
+    },
+    {
+        "id": 91550,
+        "metric_type": 331,
+        "org_unit": 672,
+        "year": null,
+        "value": 282.84,
+        "string_value": ""
+    },
+    {
+        "id": 91565,
+        "metric_type": 331,
+        "org_unit": 671,
+        "year": null,
+        "value": 247.18,
+        "string_value": ""
+    },
+    {
+        "id": 91580,
+        "metric_type": 331,
+        "org_unit": 668,
+        "year": null,
+        "value": 128.81,
+        "string_value": ""
+    },
+    {
+        "id": 91595,
+        "metric_type": 331,
+        "org_unit": 669,
+        "year": null,
+        "value": 70.06,
+        "string_value": ""
+    },
+    {
+        "id": 91610,
+        "metric_type": 331,
+        "org_unit": 665,
+        "year": null,
+        "value": 356.8,
+        "string_value": ""
+    },
+    {
+        "id": 91625,
+        "metric_type": 331,
+        "org_unit": 664,
+        "year": null,
+        "value": 104.77,
+        "string_value": ""
+    },
+    {
+        "id": 91640,
+        "metric_type": 331,
+        "org_unit": 659,
+        "year": null,
+        "value": 330.33,
+        "string_value": ""
+    },
+    {
+        "id": 91655,
+        "metric_type": 331,
+        "org_unit": 666,
+        "year": null,
+        "value": 102.84,
+        "string_value": ""
+    },
+    {
+        "id": 91669,
+        "metric_type": 331,
+        "org_unit": 655,
+        "year": null,
+        "value": 208.54,
+        "string_value": ""
+    },
+    {
+        "id": 91684,
+        "metric_type": 331,
+        "org_unit": 667,
+        "year": null,
+        "value": 79.75,
+        "string_value": ""
+    },
+    {
+        "id": 91699,
+        "metric_type": 331,
+        "org_unit": 663,
+        "year": null,
+        "value": 158.25,
+        "string_value": ""
+    },
+    {
+        "id": 91714,
+        "metric_type": 331,
+        "org_unit": 662,
+        "year": null,
+        "value": 137.86,
+        "string_value": ""
+    },
+    {
+        "id": 91729,
+        "metric_type": 331,
+        "org_unit": 661,
+        "year": null,
+        "value": 175.43,
+        "string_value": ""
+    },
+    {
+        "id": 91744,
+        "metric_type": 331,
+        "org_unit": 660,
+        "year": null,
+        "value": 190.13,
+        "string_value": ""
+    },
+    {
+        "id": 91759,
+        "metric_type": 331,
+        "org_unit": 658,
+        "year": null,
+        "value": 123.62,
+        "string_value": ""
+    },
+    {
+        "id": 91774,
+        "metric_type": 331,
+        "org_unit": 657,
+        "year": null,
+        "value": 64.55,
+        "string_value": ""
+    },
+    {
+        "id": 91789,
+        "metric_type": 331,
+        "org_unit": 656,
+        "year": null,
+        "value": 124.37,
+        "string_value": ""
+    },
+    {
+        "id": 91804,
+        "metric_type": 331,
+        "org_unit": 654,
+        "year": null,
+        "value": 184.63,
+        "string_value": ""
+    },
+    {
+        "id": 91819,
+        "metric_type": 331,
+        "org_unit": 653,
+        "year": null,
+        "value": 166.78,
+        "string_value": ""
+    },
+    {
+        "id": 91833,
+        "metric_type": 331,
+        "org_unit": 652,
+        "year": null,
+        "value": 74.7,
+        "string_value": ""
+    },
+    {
+        "id": 91848,
+        "metric_type": 331,
+        "org_unit": 651,
+        "year": null,
+        "value": 224.31,
+        "string_value": ""
+    },
+    {
+        "id": 91863,
+        "metric_type": 331,
+        "org_unit": 650,
+        "year": null,
+        "value": 66.48,
+        "string_value": ""
+    },
+    {
+        "id": 91877,
+        "metric_type": 331,
+        "org_unit": 649,
+        "year": null,
+        "value": 44.19,
+        "string_value": ""
+    },
+    {
+        "id": 91892,
+        "metric_type": 331,
+        "org_unit": 648,
+        "year": null,
+        "value": 131.99,
+        "string_value": ""
+    },
+    {
+        "id": 91907,
+        "metric_type": 331,
+        "org_unit": 647,
+        "year": null,
+        "value": 179.05,
+        "string_value": ""
+    },
+    {
+        "id": 91922,
+        "metric_type": 331,
+        "org_unit": 645,
+        "year": null,
+        "value": 104.97,
+        "string_value": ""
+    },
+    {
+        "id": 91937,
+        "metric_type": 331,
+        "org_unit": 644,
+        "year": null,
+        "value": 222.36,
+        "string_value": ""
+    },
+    {
+        "id": 91952,
+        "metric_type": 331,
+        "org_unit": 643,
+        "year": null,
+        "value": 222.4,
+        "string_value": ""
+    },
+    {
+        "id": 91967,
+        "metric_type": 331,
+        "org_unit": 646,
+        "year": null,
+        "value": 133.71,
+        "string_value": ""
+    },
+    {
+        "id": 91982,
+        "metric_type": 331,
+        "org_unit": 611,
+        "year": null,
+        "value": 226.98,
+        "string_value": ""
+    },
+    {
+        "id": 91997,
+        "metric_type": 331,
+        "org_unit": 610,
+        "year": null,
+        "value": 200.54,
+        "string_value": ""
+    },
+    {
+        "id": 92012,
+        "metric_type": 331,
+        "org_unit": 609,
+        "year": null,
+        "value": 242.99,
+        "string_value": ""
+    },
+    {
+        "id": 92027,
+        "metric_type": 331,
+        "org_unit": 608,
+        "year": null,
+        "value": 169.54,
+        "string_value": ""
+    },
+    {
+        "id": 92042,
+        "metric_type": 331,
+        "org_unit": 607,
+        "year": null,
+        "value": 246.52,
+        "string_value": ""
+    },
+    {
+        "id": 92057,
+        "metric_type": 331,
+        "org_unit": 606,
+        "year": null,
+        "value": 995.99,
+        "string_value": ""
+    },
+    {
+        "id": 92072,
+        "metric_type": 331,
+        "org_unit": 605,
+        "year": null,
+        "value": 260.64,
+        "string_value": ""
+    },
+    {
+        "id": 92087,
+        "metric_type": 331,
+        "org_unit": 604,
+        "year": null,
+        "value": 276.18,
+        "string_value": ""
+    },
+    {
+        "id": 92102,
+        "metric_type": 331,
+        "org_unit": 603,
+        "year": null,
+        "value": 243.7,
+        "string_value": ""
+    },
+    {
+        "id": 92117,
+        "metric_type": 331,
+        "org_unit": 602,
+        "year": null,
+        "value": 237.3,
+        "string_value": ""
+    },
+    {
+        "id": 92132,
+        "metric_type": 331,
+        "org_unit": 601,
+        "year": null,
+        "value": 239.85,
+        "string_value": ""
+    },
+    {
+        "id": 92147,
+        "metric_type": 331,
+        "org_unit": 600,
+        "year": null,
+        "value": 210.59,
+        "string_value": ""
+    },
+    {
+        "id": 92162,
+        "metric_type": 331,
+        "org_unit": 599,
+        "year": null,
+        "value": 196.23,
+        "string_value": ""
+    },
+    {
+        "id": 92177,
+        "metric_type": 331,
+        "org_unit": 598,
+        "year": null,
+        "value": 270.3,
+        "string_value": ""
+    },
+    {
+        "id": 92192,
+        "metric_type": 331,
+        "org_unit": 597,
+        "year": null,
+        "value": 192.07,
+        "string_value": ""
+    },
+    {
+        "id": 92207,
+        "metric_type": 331,
+        "org_unit": 596,
+        "year": null,
+        "value": 382.95,
+        "string_value": ""
+    },
+    {
+        "id": 92222,
+        "metric_type": 331,
+        "org_unit": 595,
+        "year": null,
+        "value": 370.37,
+        "string_value": ""
+    },
+    {
+        "id": 92237,
+        "metric_type": 331,
+        "org_unit": 594,
+        "year": null,
+        "value": 385.25,
+        "string_value": ""
+    },
+    {
+        "id": 92252,
+        "metric_type": 331,
+        "org_unit": 593,
+        "year": null,
+        "value": 443.56,
+        "string_value": ""
+    },
+    {
+        "id": 92267,
+        "metric_type": 331,
+        "org_unit": 592,
+        "year": null,
+        "value": 439.04,
+        "string_value": ""
+    },
+    {
+        "id": 92282,
+        "metric_type": 331,
+        "org_unit": 591,
+        "year": null,
+        "value": 360.05,
+        "string_value": ""
+    },
+    {
+        "id": 92297,
+        "metric_type": 331,
+        "org_unit": 590,
+        "year": null,
+        "value": 369.91,
+        "string_value": ""
+    },
+    {
+        "id": 92312,
+        "metric_type": 331,
+        "org_unit": 589,
+        "year": null,
+        "value": 391.05,
+        "string_value": ""
+    },
+    {
+        "id": 92327,
+        "metric_type": 331,
+        "org_unit": 588,
+        "year": null,
+        "value": 314.0,
+        "string_value": ""
+    },
+    {
+        "id": 92342,
+        "metric_type": 331,
+        "org_unit": 587,
+        "year": null,
+        "value": 419.46,
+        "string_value": ""
+    },
+    {
+        "id": 92357,
+        "metric_type": 331,
+        "org_unit": 586,
+        "year": null,
+        "value": 174.48,
+        "string_value": ""
+    },
+    {
+        "id": 92372,
+        "metric_type": 331,
+        "org_unit": 585,
+        "year": null,
+        "value": 303.2,
+        "string_value": ""
+    },
+    {
+        "id": 92387,
+        "metric_type": 331,
+        "org_unit": 584,
+        "year": null,
+        "value": 289.26,
+        "string_value": ""
+    },
+    {
+        "id": 92402,
+        "metric_type": 331,
+        "org_unit": 583,
+        "year": null,
+        "value": 469.51,
+        "string_value": ""
+    },
+    {
+        "id": 92417,
+        "metric_type": 331,
+        "org_unit": 541,
+        "year": null,
+        "value": 263.4,
+        "string_value": ""
+    },
+    {
+        "id": 92432,
+        "metric_type": 331,
+        "org_unit": 552,
+        "year": null,
+        "value": 230.16,
+        "string_value": ""
+    },
+    {
+        "id": 92447,
+        "metric_type": 331,
+        "org_unit": 550,
+        "year": null,
+        "value": 135.49,
+        "string_value": ""
+    },
+    {
+        "id": 92462,
+        "metric_type": 331,
+        "org_unit": 549,
+        "year": null,
+        "value": 198.78,
+        "string_value": ""
+    },
+    {
+        "id": 92477,
+        "metric_type": 331,
+        "org_unit": 548,
+        "year": null,
+        "value": 247.49,
+        "string_value": ""
+    },
+    {
+        "id": 92492,
+        "metric_type": 331,
+        "org_unit": 547,
+        "year": null,
+        "value": 246.07,
+        "string_value": ""
+    },
+    {
+        "id": 92507,
+        "metric_type": 331,
+        "org_unit": 546,
+        "year": null,
+        "value": 213.75,
+        "string_value": ""
+    },
+    {
+        "id": 92521,
+        "metric_type": 331,
+        "org_unit": 545,
+        "year": null,
+        "value": 149.06,
+        "string_value": ""
+    },
+    {
+        "id": 92536,
+        "metric_type": 331,
+        "org_unit": 544,
+        "year": null,
+        "value": 354.36,
+        "string_value": ""
+    },
+    {
+        "id": 92551,
+        "metric_type": 331,
+        "org_unit": 542,
+        "year": null,
+        "value": 252.57,
+        "string_value": ""
+    },
+    {
+        "id": 92566,
+        "metric_type": 331,
+        "org_unit": 540,
+        "year": null,
+        "value": 484.08,
+        "string_value": ""
+    },
+    {
+        "id": 92581,
+        "metric_type": 331,
+        "org_unit": 538,
+        "year": null,
+        "value": 391.26,
+        "string_value": ""
+    },
+    {
+        "id": 92596,
+        "metric_type": 331,
+        "org_unit": 539,
+        "year": null,
+        "value": 241.18,
+        "string_value": ""
+    },
+    {
+        "id": 92611,
+        "metric_type": 331,
+        "org_unit": 537,
+        "year": null,
+        "value": 309.17,
+        "string_value": ""
+    },
+    {
+        "id": 92626,
+        "metric_type": 331,
+        "org_unit": 536,
+        "year": null,
+        "value": 425.33,
+        "string_value": ""
+    },
+    {
+        "id": 92640,
+        "metric_type": 331,
+        "org_unit": 535,
+        "year": null,
+        "value": 265.97,
+        "string_value": ""
+    },
+    {
+        "id": 92655,
+        "metric_type": 331,
+        "org_unit": 534,
+        "year": null,
+        "value": 199.18,
+        "string_value": ""
+    },
+    {
+        "id": 92670,
+        "metric_type": 331,
+        "org_unit": 533,
+        "year": null,
+        "value": 213.0,
+        "string_value": ""
+    },
+    {
+        "id": 92685,
+        "metric_type": 331,
+        "org_unit": 532,
+        "year": null,
+        "value": 104.67,
+        "string_value": ""
+    },
+    {
+        "id": 92700,
+        "metric_type": 331,
+        "org_unit": 531,
+        "year": null,
+        "value": 281.75,
+        "string_value": ""
+    },
+    {
+        "id": 92715,
+        "metric_type": 331,
+        "org_unit": 530,
+        "year": null,
+        "value": 123.76,
+        "string_value": ""
+    },
+    {
+        "id": 92730,
+        "metric_type": 331,
+        "org_unit": 529,
+        "year": null,
+        "value": 177.62,
+        "string_value": ""
+    },
+    {
+        "id": 92745,
+        "metric_type": 331,
+        "org_unit": 528,
+        "year": null,
+        "value": 292.21,
+        "string_value": ""
+    },
+    {
+        "id": 92760,
+        "metric_type": 331,
+        "org_unit": 527,
+        "year": null,
+        "value": 195.15,
+        "string_value": ""
+    },
+    {
+        "id": 92775,
+        "metric_type": 331,
+        "org_unit": 526,
+        "year": null,
+        "value": 798.2,
+        "string_value": ""
+    },
+    {
+        "id": 92790,
+        "metric_type": 331,
+        "org_unit": 525,
+        "year": null,
+        "value": 159.82,
+        "string_value": ""
+    },
+    {
+        "id": 92804,
+        "metric_type": 331,
+        "org_unit": 522,
+        "year": null,
+        "value": 156.12,
+        "string_value": ""
+    },
+    {
+        "id": 92819,
+        "metric_type": 331,
+        "org_unit": 524,
+        "year": null,
+        "value": 438.4,
+        "string_value": ""
+    },
+    {
+        "id": 92834,
+        "metric_type": 331,
+        "org_unit": 523,
+        "year": null,
+        "value": 330.83,
+        "string_value": ""
+    },
+    {
+        "id": 92849,
+        "metric_type": 331,
+        "org_unit": 521,
+        "year": null,
+        "value": 209.65,
+        "string_value": ""
+    },
+    {
+        "id": 92864,
+        "metric_type": 331,
+        "org_unit": 520,
+        "year": null,
+        "value": 221.68,
+        "string_value": ""
+    },
+    {
+        "id": 92878,
+        "metric_type": 331,
+        "org_unit": 519,
+        "year": null,
+        "value": 216.91,
+        "string_value": ""
+    },
+    {
+        "id": 92893,
+        "metric_type": 331,
+        "org_unit": 518,
+        "year": null,
+        "value": 288.33,
+        "string_value": ""
+    },
+    {
+        "id": 92908,
+        "metric_type": 331,
+        "org_unit": 517,
+        "year": null,
+        "value": 250.47,
+        "string_value": ""
+    },
+    {
+        "id": 92923,
+        "metric_type": 331,
+        "org_unit": 483,
+        "year": null,
+        "value": 295.57,
+        "string_value": ""
+    },
+    {
+        "id": 92938,
+        "metric_type": 331,
+        "org_unit": 641,
+        "year": null,
+        "value": 486.61,
+        "string_value": ""
+    },
+    {
+        "id": 92953,
+        "metric_type": 331,
+        "org_unit": 640,
+        "year": null,
+        "value": 688.38,
+        "string_value": ""
+    },
+    {
+        "id": 92968,
+        "metric_type": 331,
+        "org_unit": 638,
+        "year": null,
+        "value": 295.48,
+        "string_value": ""
+    },
+    {
+        "id": 92983,
+        "metric_type": 331,
+        "org_unit": 637,
+        "year": null,
+        "value": 436.55,
+        "string_value": ""
+    },
+    {
+        "id": 92998,
+        "metric_type": 331,
+        "org_unit": 635,
+        "year": null,
+        "value": 276.77,
+        "string_value": ""
+    },
+    {
+        "id": 93013,
+        "metric_type": 331,
+        "org_unit": 631,
+        "year": null,
+        "value": 281.32,
+        "string_value": ""
+    },
+    {
+        "id": 93028,
+        "metric_type": 331,
+        "org_unit": 639,
+        "year": null,
+        "value": 827.83,
+        "string_value": ""
+    },
+    {
+        "id": 93043,
+        "metric_type": 331,
+        "org_unit": 627,
+        "year": null,
+        "value": 485.56,
+        "string_value": ""
+    },
+    {
+        "id": 93058,
+        "metric_type": 331,
+        "org_unit": 632,
+        "year": null,
+        "value": 269.69,
+        "string_value": ""
+    },
+    {
+        "id": 93073,
+        "metric_type": 331,
+        "org_unit": 626,
+        "year": null,
+        "value": 498.03,
+        "string_value": ""
+    },
+    {
+        "id": 93088,
+        "metric_type": 331,
+        "org_unit": 625,
+        "year": null,
+        "value": 264.61,
+        "string_value": ""
+    },
+    {
+        "id": 93103,
+        "metric_type": 331,
+        "org_unit": 624,
+        "year": null,
+        "value": 487.15,
+        "string_value": ""
+    },
+    {
+        "id": 93118,
+        "metric_type": 331,
+        "org_unit": 623,
+        "year": null,
+        "value": 192.71,
+        "string_value": ""
+    },
+    {
+        "id": 93133,
+        "metric_type": 331,
+        "org_unit": 621,
+        "year": null,
+        "value": 354.42,
+        "string_value": ""
+    },
+    {
+        "id": 93148,
+        "metric_type": 331,
+        "org_unit": 620,
+        "year": null,
+        "value": 294.03,
+        "string_value": ""
+    },
+    {
+        "id": 93163,
+        "metric_type": 331,
+        "org_unit": 619,
+        "year": null,
+        "value": 379.44,
+        "string_value": ""
+    },
+    {
+        "id": 93178,
+        "metric_type": 331,
+        "org_unit": 622,
+        "year": null,
+        "value": 299.15,
+        "string_value": ""
+    },
+    {
+        "id": 93193,
+        "metric_type": 331,
+        "org_unit": 618,
+        "year": null,
+        "value": 226.82,
+        "string_value": ""
+    }
+]

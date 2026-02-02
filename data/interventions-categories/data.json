@@ -1,0 +1,209 @@
+[
+    {
+        "id": 37,
+        "account": 3,
+        "name": "Case Management",
+        "description": "",
+        "interventions": [
+            {
+                "id": 78,
+                "name": "CM",
+                "short_name": "CM",
+                "code": "cm_public",
+                "description": "",
+                "intervention_category": 37,
+                "created_at": "2025-12-18T14:15:52.837559Z",
+                "updated_at": "2025-12-18T14:15:52.837670Z"
+            },
+            {
+                "id": 79,
+                "name": "CM Subsidy",
+                "short_name": "CM Subsidy",
+                "code": "cm_subsidy",
+                "description": "",
+                "intervention_category": 37,
+                "created_at": "2025-12-18T14:15:52.843654Z",
+                "updated_at": "2025-12-18T14:15:52.843667Z"
+            }
+        ],
+        "created_by": 4,
+        "created_at": "2025-12-18T14:15:52.830817Z",
+        "updated_at": "2025-12-18T14:15:52.830831Z"
+    },
+    {
+        "id": 38,
+        "account": 3,
+        "name": "IPTp",
+        "description": "",
+        "interventions": [
+            {
+                "id": 80,
+                "name": "IPTp (SP)",
+                "short_name": "IPTp",
+                "code": "iptp",
+                "description": "",
+                "intervention_category": 38,
+                "created_at": "2025-12-18T14:15:52.854928Z",
+                "updated_at": "2025-12-18T14:15:52.854941Z"
+            }
+        ],
+        "created_by": 4,
+        "created_at": "2025-12-18T14:15:52.849664Z",
+        "updated_at": "2025-12-18T14:15:52.849677Z"
+    },
+    {
+        "id": 40,
+        "account": 3,
+        "name": "ITN Campaign",
+        "description": "",
+        "interventions": [
+            {
+                "id": 83,
+                "name": "Dual AI",
+                "short_name": "Dual AI (Campaign)",
+                "code": "itn_campaign",
+                "description": "",
+                "intervention_category": 40,
+                "created_at": "2025-12-18T14:15:52.895468Z",
+                "updated_at": "2025-12-18T14:15:52.895482Z"
+            },
+            {
+                "id": 84,
+                "name": "PBO",
+                "short_name": "PBO (Campaign)",
+                "code": "itn_campaign",
+                "description": "",
+                "intervention_category": 40,
+                "created_at": "2025-12-18T14:15:52.909397Z",
+                "updated_at": "2025-12-18T14:15:52.909418Z"
+            },
+            {
+                "id": 85,
+                "name": "Standard Pyrethroid",
+                "short_name": "PYR (Campaign)",
+                "code": "itn_campaign",
+                "description": "",
+                "intervention_category": 40,
+                "created_at": "2025-12-18T14:15:52.919920Z",
+                "updated_at": "2025-12-18T14:15:52.919936Z"
+            }
+        ],
+        "created_by": 4,
+        "created_at": "2025-12-18T14:15:52.889249Z",
+        "updated_at": "2025-12-18T14:15:52.889263Z"
+    },
+    {
+        "id": 41,
+        "account": 3,
+        "name": "ITN Routine",
+        "description": "",
+        "interventions": [
+            {
+                "id": 86,
+                "name": "Dual AI",
+                "short_name": "Dual AI (Routine)",
+                "code": "itn_routine",
+                "description": "",
+                "intervention_category": 41,
+                "created_at": "2025-12-18T14:15:52.938075Z",
+                "updated_at": "2025-12-18T14:15:52.938095Z"
+            },
+            {
+                "id": 87,
+                "name": "PBO",
+                "short_name": "PBO (Routine)",
+                "code": "itn_routine",
+                "description": "",
+                "intervention_category": 41,
+                "created_at": "2025-12-18T14:15:52.948410Z",
+                "updated_at": "2025-12-18T14:15:52.948423Z"
+            },
+            {
+                "id": 88,
+                "name": "Standard Pyrethroid",
+                "short_name": "PYR (Routine)",
+                "code": "itn_routine",
+                "description": "",
+                "intervention_category": 41,
+                "created_at": "2025-12-18T14:15:52.961740Z",
+                "updated_at": "2025-12-18T14:15:52.961754Z"
+            }
+        ],
+        "created_by": 4,
+        "created_at": "2025-12-18T14:15:52.931297Z",
+        "updated_at": "2025-12-18T14:15:52.931310Z"
+    },
+    {
+        "id": 39,
+        "account": 3,
+        "name": "PMC & SMC",
+        "description": "",
+        "interventions": [
+            {
+                "id": 81,
+                "name": "PMC (SP)",
+                "short_name": "PMC",
+                "code": "pmc",
+                "description": "",
+                "intervention_category": 39,
+                "created_at": "2025-12-18T14:15:52.868960Z",
+                "updated_at": "2025-12-18T14:15:52.868972Z"
+            },
+            {
+                "id": 82,
+                "name": "SMC (SP+AQ)",
+                "short_name": "SMC",
+                "code": "smc",
+                "description": "",
+                "intervention_category": 39,
+                "created_at": "2025-12-18T14:15:52.878213Z",
+                "updated_at": "2025-12-18T14:15:52.878227Z"
+            }
+        ],
+        "created_by": 4,
+        "created_at": "2025-12-18T14:15:52.864156Z",
+        "updated_at": "2025-12-18T14:15:52.864167Z"
+    },
+    {
+        "id": 42,
+        "account": 3,
+        "name": "Vaccination",
+        "description": "",
+        "interventions": [
+            {
+                "id": 89,
+                "name": "R21",
+                "short_name": "R21",
+                "code": "vacc",
+                "description": "",
+                "intervention_category": 42,
+                "created_at": "2025-12-18T14:15:52.979142Z",
+                "updated_at": "2025-12-18T14:15:52.979156Z"
+            }
+        ],
+        "created_by": 4,
+        "created_at": "2025-12-18T14:15:52.972849Z",
+        "updated_at": "2025-12-18T14:15:52.972863Z"
+    },
+    {
+        "id": 43,
+        "account": 3,
+        "name": "Vector Control",
+        "description": "",
+        "interventions": [
+            {
+                "id": 90,
+                "name": "LSM",
+                "short_name": "LSM",
+                "code": "lsm",
+                "description": "",
+                "intervention_category": 43,
+                "created_at": "2025-12-18T14:15:52.997604Z",
+                "updated_at": "2025-12-18T14:15:52.997620Z"
+            }
+        ],
+        "created_by": 4,
+        "created_at": "2025-12-18T14:15:52.989785Z",
+        "updated_at": "2025-12-18T14:15:52.989799Z"
+    }
+]

@@ -65,8 +65,7 @@ export async function GET(request: Request) {
     if (EXISTING_METRIC_DATA.includes(id)) {
       const dataPath = path.join(
         process.cwd(),
-        "..",
-        "api",
+        "data",
         "metricvalues",
         `${id}.json`
       );
@@ -79,8 +78,7 @@ export async function GET(request: Request) {
     // First, load the org units to get all org unit IDs
     const orgunitsPath = path.join(
       process.cwd(),
-      "..",
-      "api",
+      "data",
       "orgunits",
       "data.json"
     );
