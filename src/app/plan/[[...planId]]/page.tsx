@@ -517,7 +517,7 @@ export default function PlanPage() {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden">
       {/* Header - Row 1: Country Name + Export */}
       <header className="px-6 py-4 border-b flex items-center justify-between">
         <div className="flex items-center gap-2">

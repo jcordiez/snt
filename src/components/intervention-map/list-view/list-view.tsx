@@ -53,8 +53,8 @@ export function ListView({
   }
 
   return (
-    <div className="relative h-full">
-      <div className="absolute inset-0">
+    <div className="relative h-full overflow-hidden">
+      <div className="absolute inset-0 overflow-y-auto">
         <InterventionTable
           districts={filteredDistricts}
           interventionCategories={interventionCategories}

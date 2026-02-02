@@ -119,11 +119,6 @@ export type UpdateDistrictsFn = (
   options?: { replace?: boolean; ruleColor?: string }
 ) => void;
 
-// Default CM intervention: all districts have Case Management by default
-const DEFAULT_CM_CATEGORY_ID = 37;
-const DEFAULT_CM_INTERVENTION_ID = 78;
-const DEFAULT_CM_LABEL = "CM";
-
 function transformOrgUnitsToGeoJSON(
   orgUnits: OrgUnit[]
 ): GeoJSON.FeatureCollection<GeoJSON.MultiPolygon | GeoJSON.Polygon, DistrictProperties> {
@@ -135,8 +130,6 @@ function transformOrgUnitsToGeoJSON(
     const geometry = unit.geo_json.features[0]?.geometry;
     if (!geometry) continue;
 
-    // Initialize all districts with CM (Case Management) by default
-    // This reflects the baseline standard of care across all health zones
     features.push({
       type: "Feature",
       properties: {
@@ -144,12 +137,11 @@ function transformOrgUnitsToGeoJSON(
         districtName: unit.name,
         regionId: String(unit.parent_id),
         regionName: unit.parent_name,
-        interventionStatus: "ongoing" as InterventionStatus,
-        interventionCount: 1,
-        interventions: [DEFAULT_CM_LABEL],
-        interventionMixLabel: DEFAULT_CM_LABEL, // Flat property for MapLibre expressions
-        // Initialize with default CM intervention so BudgetView can calculate costs
-        interventionCategoryAssignments: { [DEFAULT_CM_CATEGORY_ID]: DEFAULT_CM_INTERVENTION_ID },
+        interventionStatus: "none" as InterventionStatus,
+        interventionCount: 0,
+        interventions: [],
+        interventionMixLabel: "None",
+        interventionCategoryAssignments: {},
       },
       geometry: geometry as GeoJSON.MultiPolygon | GeoJSON.Polygon,
     });
@@ -245,15 +237,13 @@ export function useOrgUnits() {
           finalMix = interventionMix;
         } else {
           // Merge mode: preserve existing interventions from other categories
-          // Get existing mix from serialized format, or create default CM mix if none exists
-          // This ensures CM is always preserved as the baseline intervention
           const existingAssignments = feature.properties.interventionCategoryAssignments
             ? new Map(Object.entries(feature.properties.interventionCategoryAssignments).map(([k, v]) => [Number(k), v as number]))
-            : new Map([[DEFAULT_CM_CATEGORY_ID, DEFAULT_CM_INTERVENTION_ID]]);
+            : new Map<number, number>();
 
           const existingMix: InterventionMix = {
             categoryAssignments: existingAssignments,
-            displayLabel: feature.properties.interventionMixLabel ?? DEFAULT_CM_LABEL,
+            displayLabel: feature.properties.interventionMixLabel ?? "None",
           };
           finalMix = mergeInterventionMixes(existingMix, interventionMix, interventionCategories);
         }

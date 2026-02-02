@@ -27,6 +27,8 @@ interface AddExceptionPopoverProps {
   excludedDistrictIds: string[];
   /** Callback when a district is selected to add as exception */
   onAddException: (districtId: string) => void;
+  /** Optional custom trigger element */
+  trigger?: React.ReactNode;
 }
 
 /**
@@ -115,6 +117,7 @@ export function AddExceptionPopover({
   matchingDistricts,
   excludedDistrictIds,
   onAddException,
+  trigger,
 }: AddExceptionPopoverProps) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -250,16 +253,18 @@ export function AddExceptionPopover({
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
-        <Button
-          ref={triggerRef}
-          variant="outline"
-          size="sm"
-          className="mt-3"
-          disabled={availableDistricts.length === 0}
-        >
-          <Plus className="h-4 w-4 mr-1" />
-          Add Exception
-        </Button>
+        {trigger ?? (
+          <Button
+            ref={triggerRef}
+            variant="outline"
+            size="sm"
+            className="mt-3"
+            disabled={availableDistricts.length === 0}
+          >
+            <Plus className="h-4 w-4 mr-1" />
+            Add Exception
+          </Button>
+        )}
       </PopoverTrigger>
       <PopoverContent
         className="w-[280px] p-0"

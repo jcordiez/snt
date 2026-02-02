@@ -10,23 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { Switch } from "@/components/ui/switch";
-import { SortableRuleCard } from "./sortable-rule-card";
+import { RuleCard } from "./rule-card";
 import type { SavedRule } from "@/types/rule";
 import type { MetricType, InterventionCategory } from "@/types/intervention";
 import { GUIDELINE_VARIATIONS } from "@/data/intervention-guidelines-variations";
@@ -58,43 +42,15 @@ export function RulesSidebar({
   onEditRule,
   onDeleteRule,
   onToggleVisibility,
-  onReorderRules,
   getDistrictName,
   onGenerateFromGuidelines,
-  isCumulativeMode,
-  onToggleCumulativeMode,
 }: RulesSidebarProps) {
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-
-    if (over && active.id !== over.id) {
-      const oldIndex = rules.findIndex((r) => r.id === active.id);
-      const newIndex = rules.findIndex((r) => r.id === over.id);
-
-      const newOrder = arrayMove(rules, oldIndex, newIndex);
-      onReorderRules?.(newOrder);
-    }
-  }
-
   return (
     <div className="w-96 border-l flex flex-col h-full min-h-0 overflow-hidden shrink-0">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b bg-white shrink-0">
         <h2 className="text-sm font-semibold">Rules</h2>
         <div className="flex items-center gap-1">
-          {/* Cumulative mode toggle (hidden — always on) */}
-
           {/* Magic wand dropdown for generating rules from guidelines */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -139,35 +95,24 @@ export function RulesSidebar({
 
       {/* Scrollable list of rules */}
       <div className="flex-1 overflow-y-auto min-h-0">
-        <div className="p-4 space-y-3">
+        <div className="divide-y">
           {rules.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-4">
               No rules yet. Click + to add a rule.
             </p>
           ) : (
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-            >
-              <SortableContext
-                items={rules.map((r) => r.id)}
-                strategy={verticalListSortingStrategy}
-              >
-                {rules.map((rule) => (
-                  <SortableRuleCard
-                    key={rule.id}
-                    rule={rule}
-                    metricTypes={metricTypes}
-                    interventionCategories={interventionCategories}
-                    onEdit={onEditRule}
-                    onDelete={onDeleteRule}
-                    onToggleVisibility={onToggleVisibility}
-                    getDistrictName={getDistrictName}
-                  />
-                ))}
-              </SortableContext>
-            </DndContext>
+            rules.map((rule) => (
+              <RuleCard
+                key={rule.id}
+                rule={rule}
+                metricTypes={metricTypes}
+                interventionCategories={interventionCategories}
+                onEdit={onEditRule}
+                onDelete={onDeleteRule}
+                onToggleVisibility={onToggleVisibility}
+                getDistrictName={getDistrictName}
+              />
+            ))
           )}
         </div>
       </div>

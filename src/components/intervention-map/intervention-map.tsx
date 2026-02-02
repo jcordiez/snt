@@ -7,6 +7,7 @@ import { DistrictLayer } from "./district-layer";
 import { SelectionWidget } from "./selection-widget";
 import { countryConfig, Province, DistrictProperties } from "@/data/districts";
 import { useDistrictSelection } from "@/hooks/use-district-selection";
+import { MapLegend } from "./map-legend";
 
 /** Metric values by org unit ID for tooltip display */
 export interface MetricValuesByOrgUnit {
@@ -139,9 +140,9 @@ export function InterventionMap({ selectedProvince, highlightedDistrictIds = [],
         hasRules={hasRules}
       />
 
-      {/* Map Legend
+      {/* Map Legend */}
       <MapLegend districts={districts} onSelectMix={onSelectMix} />
-      */}
+      
     </div>
   );
 }

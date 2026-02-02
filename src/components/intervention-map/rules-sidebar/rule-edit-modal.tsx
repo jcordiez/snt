@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { ExceptionList } from "./exception-list";
 import { AddExceptionPopover } from "./add-exception-popover";
@@ -25,7 +25,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useMetricValues } from "@/hooks/use-metric-values";
 import type { MetricType, RuleOperator, InterventionCategory } from "@/types/intervention";
 import type { SavedRule, RuleCriterion } from "@/types/rule";
@@ -57,89 +64,64 @@ function createEmptyCriterion(): RuleCriterion {
 
 interface CriterionRowProps {
   criterion: RuleCriterion;
-  groupedMetricTypes: Record<string, MetricType[]>;
+  metricTypes: MetricType[];
   onUpdate: (id: string, updates: Partial<RuleCriterion>) => void;
   onDelete: (id: string) => void;
-  canDelete: boolean;
 }
 
 function CriterionRow({
   criterion,
-  groupedMetricTypes,
+  metricTypes,
   onUpdate,
   onDelete,
-  canDelete,
 }: CriterionRowProps) {
   const { min, max, isLoading } = useMetricValues(criterion.metricTypeId);
+  const metricName = metricTypes.find((m) => m.id === criterion.metricTypeId)?.name ?? "Unknown";
 
   return (
-    <div className="space-y-1">
-      <div className="flex items-center gap-2 group">
-        <Select
-          value={criterion.metricTypeId?.toString() ?? ""}
-          onValueChange={(value) => onUpdate(criterion.id, { metricTypeId: parseInt(value, 10) })}
-        >
-          <SelectTrigger className="flex-1 min-w-[180px]">
-            <SelectValue placeholder="Select variable..." />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.entries(groupedMetricTypes).map(([category, metrics]) => (
-              <SelectGroup key={category}>
-                <SelectLabel>{category}</SelectLabel>
-                {metrics.map((metric) => (
-                  <SelectItem key={metric.id} value={metric.id.toString()}>
-                    {metric.name}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            ))}
-          </SelectContent>
-        </Select>
+    <div className="flex items-center gap-2 group">
+      <span className="text-sm font-medium text-muted-foreground w-[240px] shrink-0 truncate" title={metricName}>
+        {metricName}
+      </span>
 
-        <Select
-          value={criterion.operator}
-          onValueChange={(value) => onUpdate(criterion.id, { operator: value as RuleOperator })}
-        >
-          <SelectTrigger className="w-[70px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {OPERATORS.map((op) => (
-              <SelectItem key={op.value} value={op.value}>
-                {op.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <Select
+        value={criterion.operator}
+        onValueChange={(value) => onUpdate(criterion.id, { operator: value as RuleOperator })}
+      >
+        <SelectTrigger className="w-[70px]">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {OPERATORS.map((op) => (
+            <SelectItem key={op.value} value={op.value}>
+              {op.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
-        <Input
-          type="number"
-          value={criterion.value}
-          onChange={(e) => onUpdate(criterion.id, { value: e.target.value })}
-          placeholder="Value"
-          className="w-[100px]"
-        />
+      <Input
+        type="number"
+        value={criterion.value}
+        onChange={(e) => onUpdate(criterion.id, { value: e.target.value })}
+        placeholder="Value"
+        className="w-[100px]"
+      />
 
-        {canDelete && (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onDelete(criterion.id)}
-            className="opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        )}
-      </div>
-      {criterion.metricTypeId !== null && (
-        <p className="text-xs text-muted-foreground pl-1">
-          {isLoading ? (
-            "Loading range..."
-          ) : min !== null && max !== null ? (
-            <>Min: {formatNumber(min)} – Max: {formatNumber(max)}</>
-          ) : null}
-        </p>
-      )}
+      <span className="text-xs text-muted-foreground whitespace-nowrap shrink-0 w-[120px] text-right">
+        {criterion.metricTypeId !== null
+          ? isLoading ? "..." : min !== null && max !== null ? `${formatNumber(min)} – ${formatNumber(max)}` : ""
+          : ""}
+      </span>
+
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => onDelete(criterion.id)}
+        className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+      >
+        <Trash2 className="h-4 w-4" />
+      </Button>
     </div>
   );
 }
@@ -258,15 +240,9 @@ export function RuleEditModal({
         const defaultColor = DEFAULT_COLORS[rulesCount % DEFAULT_COLORS.length];
         setTitle(defaultTitle);
         setColor(defaultColor);
-        setCriteria([createEmptyCriterion()]);
-        // Pre-select default interventions for new rules (PRD Phase 7.1)
-        setInterventionsByCategory(new Map(DEFAULT_INTERVENTIONS));
-        // Initialize default coverage for default interventions
-        const defaultCoverage = new Map<number, number>();
-        Array.from(DEFAULT_INTERVENTIONS.keys()).forEach((categoryId) => {
-          defaultCoverage.set(categoryId, DEFAULT_COVERAGE);
-        });
-        setCoverageByCategory(defaultCoverage);
+        setCriteria([]);
+        setInterventionsByCategory(new Map());
+        setCoverageByCategory(new Map());
         setExcludedDistrictIds([]);
       }
     }
@@ -282,8 +258,8 @@ export function RuleEditModal({
     setCriteria((prev) => prev.filter((c) => c.id !== id));
   }, []);
 
-  const handleAddCriterion = useCallback(() => {
-    setCriteria((prev) => [...prev, createEmptyCriterion()]);
+  const handleAddCriterion = useCallback((metricTypeId: number) => {
+    setCriteria((prev) => [...prev, { ...createEmptyCriterion(), metricTypeId }]);
   }, []);
 
   const handleSelectIntervention = useCallback((categoryId: number, interventionId: number | null) => {
@@ -354,7 +330,7 @@ export function RuleEditModal({
 
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto space-y-6 py-4">
+        <div className="flex-1 overflow-y-auto space-y-8 py-4">
           {/* Title input with color picker */}
           <div>
             <label htmlFor="rule-title" className="text-sm font-medium mb-2 block">
@@ -378,32 +354,132 @@ export function RuleEditModal({
           </div>
 
           {/* Criteria section */}
-          <CollapsibleSection title="Selection Criteria">
+          <CollapsibleSection step={1} title="Selection Criteria">
             <div className="space-y-3">
               {criteria.map((criterion) => (
                 <CriterionRow
                   key={criterion.id}
                   criterion={criterion}
-                  groupedMetricTypes={groupedMetricTypes}
+                  metricTypes={_metricTypes}
                   onUpdate={handleUpdateCriterion}
                   onDelete={handleDeleteCriterion}
-                  canDelete={criteria.length > 1}
                 />
               ))}
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleAddCriterion}
-              className="mt-3"
-            >
-              <Plus className="h-4 w-4 mr-1" />
-              Add Criterion
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="mt-2">
+                  Add Criterion
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                {Object.entries(groupedMetricTypes).map(([category, metrics]) => (
+                  <React.Fragment key={category}>
+                    <DropdownMenuLabel>{category}</DropdownMenuLabel>
+                    {metrics.map((metric) => (
+                      <DropdownMenuItem
+                        key={metric.id}
+                        onClick={() => handleAddCriterion(metric.id)}
+                      >
+                        {metric.name}
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator />
+                  </React.Fragment>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </CollapsibleSection>
+
+          {/* Interventions section */}
+          <CollapsibleSection step={2} title="Interventions">
+            <div className="space-y-2">
+              {Array.from(interventionsByCategory.entries()).map(([categoryId, interventionId]) => {
+                const category = interventionCategories.find((c) => c.id === categoryId);
+                const categoryName = category?.name ?? "Unknown";
+                const categoryInterventions = category?.interventions ?? [];
+
+                return (
+                  <div key={categoryId} className="flex items-center gap-2 group">
+                    <span className="text-sm font-medium text-muted-foreground w-[240px] shrink-0 truncate" title={categoryName}>
+                      {categoryName}
+                    </span>
+
+                    <Select
+                      value={interventionId.toString()}
+                      onValueChange={(value) => {
+                        handleSelectIntervention(categoryId, parseInt(value, 10));
+                      }}
+                    >
+                      <SelectTrigger className="flex-1">
+                        <SelectValue placeholder="Select intervention..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categoryInterventions.map((intv) => (
+                          <SelectItem key={intv.id} value={intv.id.toString()}>
+                            {intv.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    <Select
+                      value={(coverageByCategory.get(categoryId) ?? DEFAULT_COVERAGE).toString()}
+                      onValueChange={(value) => handleCoverageChange(categoryId, parseInt(value, 10))}
+                    >
+                      <SelectTrigger className="w-[80px]" aria-label="Coverage percentage">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {COVERAGE_OPTIONS.map((option) => (
+                          <SelectItem key={option} value={option.toString()}>
+                            {option}%
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleSelectIntervention(categoryId, null)}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                );
+              })}
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="mt-2"
+                  disabled={interventionsByCategory.size >= interventionCategories.length}
+                >
+    
+                  Add Intervention
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                {interventionCategories
+                  .filter((cat) => !interventionsByCategory.has(cat.id) && cat.interventions.length > 0)
+                  .map((cat) => (
+                    <DropdownMenuItem
+                      key={cat.id}
+                      onClick={() => handleSelectIntervention(cat.id, cat.interventions[0].id)}
+                    >
+                      {cat.name}
+                    </DropdownMenuItem>
+                  ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </CollapsibleSection>
 
           {/* Exceptions section */}
-          <CollapsibleSection title="Exceptions">
+          <CollapsibleSection step={3} title="Exceptions">
             <ExceptionList
               excludedDistrictIds={excludedDistrictIds}
               getDistrictName={getDistrictName}
@@ -413,90 +489,13 @@ export function RuleEditModal({
               matchingDistricts={matchingDistrictOptions}
               excludedDistrictIds={excludedDistrictIds}
               onAddException={handleAddException}
+              trigger={
+                <Button variant="ghost" size="sm" className="mt-2">
+    
+                  Add Exception
+                </Button>
+              }
             />
-          </CollapsibleSection>
-
-          {/* Interventions section */}
-          <CollapsibleSection title="Assign Interventions">
-            <div className="space-y-4">
-              {interventionCategories.map((category) => {
-                const selectedValue = interventionsByCategory.get(category.id);
-                return (
-                  <div key={category.id}>
-                    <h4 className="text-sm font-medium text-muted-foreground mb-2">
-                      {category.name}
-                    </h4>
-                    <RadioGroup
-                      value={selectedValue?.toString() ?? ""}
-                      onValueChange={(value) => {
-                        if (value === "") {
-                          handleSelectIntervention(category.id, null);
-                        } else {
-                          handleSelectIntervention(category.id, parseInt(value, 10));
-                        }
-                      }}
-                      className="pl-2"
-                    >
-                      {category.interventions.map((intervention) => {
-                        const isSelected = selectedValue === intervention.id;
-                        return (
-                          <div
-                            key={intervention.id}
-                            className="flex items-start gap-2"
-                          >
-                            <RadioGroupItem
-                              value={intervention.id.toString()}
-                              id={`modal-intervention-${intervention.id}`}
-                            />
-                            <label
-                              htmlFor={`modal-intervention-${intervention.id}`}
-                              className="cursor-pointer flex-1"
-                            >
-                              <div className="text-sm">{intervention.name}</div>
-                              {intervention.description && (
-                                <div className="text-xs text-muted-foreground">
-                                  {intervention.description}
-                                </div>
-                              )}
-                            </label>
-                            {isSelected && (
-                              <div className="flex items-center gap-2">
-                                <Select
-                                  value={(coverageByCategory.get(category.id) ?? DEFAULT_COVERAGE).toString()}
-                                  onValueChange={(value) => handleCoverageChange(category.id, parseInt(value, 10))}
-                                >
-                                  <SelectTrigger className="h-6 w-[75px] text-xs" aria-label="Coverage percentage">
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {COVERAGE_OPTIONS.map((option) => (
-                                      <SelectItem key={option} value={option.toString()}>
-                                        {option}%
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="h-6 px-2 text-xs text-muted-foreground hover:text-destructive"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    handleSelectIntervention(category.id, null);
-                                  }}
-                                >
-                                  Remove
-                                </Button>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </RadioGroup>
-                  </div>
-                );
-              })}
-            </div>
           </CollapsibleSection>
         </div>
 

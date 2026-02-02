@@ -311,7 +311,7 @@ const WHO_GUIDELINES_PLAN: PlanDefinition = {
       interventionsByCategory: new Map([
         [CATEGORY_NETS_CAMPAIGN, INTERVENTION_STANDARD_PYRETHROID_CAMPAIGN],
         [CATEGORY_NETS_ROUTINE, INTERVENTION_STANDARD_PYRETHROID_ROUTINE],
-        [CATEGORY_CM, INTERVENTION_CM],
+
       ]),
       isAllDistricts: true,
     },
@@ -345,7 +345,7 @@ const WHO_GUIDELINES_PLAN: PlanDefinition = {
       interventionsByCategory: new Map([
         [CATEGORY_NETS_CAMPAIGN, INTERVENTION_PBO_CAMPAIGN], // PBO nets for better protection
         [CATEGORY_NETS_ROUTINE, INTERVENTION_PBO_ROUTINE],
-        [CATEGORY_CM, INTERVENTION_CM],
+
       ]),
     },
 
@@ -392,7 +392,7 @@ const WHO_GUIDELINES_PLAN: PlanDefinition = {
         [CATEGORY_IRS, INTERVENTION_IRS_ORGANOPHOSPHATE], // Use non-pyrethroid for resistance
         [CATEGORY_NETS_CAMPAIGN, INTERVENTION_PBO_CAMPAIGN],
         [CATEGORY_NETS_ROUTINE, INTERVENTION_PBO_ROUTINE],
-        [CATEGORY_CM, INTERVENTION_CM],
+
       ]),
     },
 
@@ -426,7 +426,7 @@ const WHO_GUIDELINES_PLAN: PlanDefinition = {
         [CATEGORY_CHEMOPREVENTION, INTERVENTION_SMC], // SMC (SP+AQ)
         [CATEGORY_NETS_CAMPAIGN, INTERVENTION_PBO_CAMPAIGN],
         [CATEGORY_NETS_ROUTINE, INTERVENTION_PBO_ROUTINE],
-        [CATEGORY_CM, INTERVENTION_CM],
+
       ]),
     },
 
@@ -460,7 +460,7 @@ const WHO_GUIDELINES_PLAN: PlanDefinition = {
         [CATEGORY_CHEMOPREVENTION, INTERVENTION_PMC], // PMC (SP)
         [CATEGORY_NETS_CAMPAIGN, INTERVENTION_PBO_CAMPAIGN],
         [CATEGORY_NETS_ROUTINE, INTERVENTION_PBO_ROUTINE],
-        [CATEGORY_CM, INTERVENTION_CM],
+
       ]),
     },
 
@@ -488,7 +488,7 @@ const WHO_GUIDELINES_PLAN: PlanDefinition = {
         [CATEGORY_IPTP, INTERVENTION_IPTP], // IPTp (SP)
         [CATEGORY_NETS_CAMPAIGN, INTERVENTION_PBO_CAMPAIGN],
         [CATEGORY_NETS_ROUTINE, INTERVENTION_PBO_ROUTINE],
-        [CATEGORY_CM, INTERVENTION_CM],
+
       ]),
     },
 
@@ -516,7 +516,7 @@ const WHO_GUIDELINES_PLAN: PlanDefinition = {
         [CATEGORY_MDA, INTERVENTION_MDA_MULTIPLE], // Multiple rounds for high burden
         [CATEGORY_NETS_CAMPAIGN, INTERVENTION_DUAL_AI_CAMPAIGN], // Dual AI for high burden
         [CATEGORY_NETS_ROUTINE, INTERVENTION_DUAL_AI_ROUTINE],
-        [CATEGORY_CM, INTERVENTION_CM],
+
       ]),
     },
 
@@ -538,7 +538,7 @@ const WHO_GUIDELINES_PLAN: PlanDefinition = {
         [CATEGORY_VACCINATION, INTERVENTION_R21], // R21 vaccine (proxy for RTS,S)
         [CATEGORY_NETS_CAMPAIGN, INTERVENTION_PBO_CAMPAIGN],
         [CATEGORY_NETS_ROUTINE, INTERVENTION_PBO_ROUTINE],
-        [CATEGORY_CM, INTERVENTION_CM],
+
       ]),
     },
   ],
@@ -579,7 +579,7 @@ const WHO_GUIDELINES_CUMULATIVE_PLAN: PlanDefinition = {
       interventionsByCategory: new Map([
         [CATEGORY_NETS_CAMPAIGN, INTERVENTION_STANDARD_PYRETHROID_CAMPAIGN],
         [CATEGORY_NETS_ROUTINE, INTERVENTION_STANDARD_PYRETHROID_ROUTINE],
-        [CATEGORY_CM, INTERVENTION_CM],
+
       ]),
       isAllDistricts: true,
     },
@@ -612,7 +612,7 @@ const WHO_GUIDELINES_CUMULATIVE_PLAN: PlanDefinition = {
       interventionsByCategory: new Map([
         [CATEGORY_NETS_CAMPAIGN, INTERVENTION_PBO_CAMPAIGN],
         [CATEGORY_NETS_ROUTINE, INTERVENTION_PBO_ROUTINE],
-        [CATEGORY_CM, INTERVENTION_CM],
+
       ]),
     },
 
@@ -633,7 +633,7 @@ const WHO_GUIDELINES_CUMULATIVE_PLAN: PlanDefinition = {
         [CATEGORY_VACCINATION, INTERVENTION_R21], // Add R21
         [CATEGORY_NETS_CAMPAIGN, INTERVENTION_PBO_CAMPAIGN], // Maintain PBO nets
         [CATEGORY_NETS_ROUTINE, INTERVENTION_PBO_ROUTINE],
-        [CATEGORY_CM, INTERVENTION_CM],
+
       ]),
     },
 
@@ -673,7 +673,7 @@ const WHO_GUIDELINES_CUMULATIVE_PLAN: PlanDefinition = {
         [CATEGORY_VACCINATION, INTERVENTION_R21], // Cumulative: Keep R21
         [CATEGORY_NETS_CAMPAIGN, INTERVENTION_PBO_CAMPAIGN],
         [CATEGORY_NETS_ROUTINE, INTERVENTION_PBO_ROUTINE],
-        [CATEGORY_CM, INTERVENTION_CM],
+
       ]),
     },
 
@@ -707,7 +707,7 @@ const WHO_GUIDELINES_CUMULATIVE_PLAN: PlanDefinition = {
         [CATEGORY_VACCINATION, INTERVENTION_R21], // Cumulative: Keep R21 (if incidence >250)
         [CATEGORY_NETS_CAMPAIGN, INTERVENTION_PBO_CAMPAIGN],
         [CATEGORY_NETS_ROUTINE, INTERVENTION_PBO_ROUTINE],
-        [CATEGORY_CM, INTERVENTION_CM],
+
       ]),
     },
 
@@ -742,7 +742,7 @@ const WHO_GUIDELINES_CUMULATIVE_PLAN: PlanDefinition = {
         [CATEGORY_VACCINATION, INTERVENTION_R21], // Cumulative: Keep R21
         [CATEGORY_NETS_CAMPAIGN, INTERVENTION_PBO_CAMPAIGN],
         [CATEGORY_NETS_ROUTINE, INTERVENTION_PBO_ROUTINE],
-        [CATEGORY_CM, INTERVENTION_CM],
+
       ]),
     },
 
@@ -770,7 +770,7 @@ const WHO_GUIDELINES_CUMULATIVE_PLAN: PlanDefinition = {
         [CATEGORY_VACCINATION, INTERVENTION_R21], // Cumulative: Keep R21 (incidence >450 also >250)
         [CATEGORY_NETS_CAMPAIGN, INTERVENTION_DUAL_AI_CAMPAIGN], // Upgrade to Dual AI for highest burden
         [CATEGORY_NETS_ROUTINE, INTERVENTION_DUAL_AI_ROUTINE],
-        [CATEGORY_CM, INTERVENTION_CM],
+
       ]),
     },
   ],
@@ -836,21 +836,8 @@ export function getPlanById(planId: string): PlanDefinition | undefined {
 
 /**
  * Get default rules for a new plan
- * Returns a single default rule with CM + Standard Pyrethroid interventions
+ * Returns an empty rule set — no default interventions
  */
 export function getDefaultRulesForNewPlan(): SavedRule[] {
-  return [
-    {
-      id: "default-rule",
-      title: "Default",
-      color: RULE_COLORS[4],
-      criteria: [],
-      interventionsByCategory: new Map([
-        [CATEGORY_CM, INTERVENTION_CM],
-        [CATEGORY_NETS_CAMPAIGN, INTERVENTION_STANDARD_PYRETHROID_CAMPAIGN],
-        [CATEGORY_NETS_ROUTINE, INTERVENTION_STANDARD_PYRETHROID_ROUTINE],
-      ]),
-      isAllDistricts: true,
-    },
-  ];
+  return [];
 }

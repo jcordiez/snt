@@ -37,7 +37,7 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
   return (
     <SidebarProvider open={open} onOpenChange={handleOpenChange}>
       <AppSidebar />
-      <SidebarInset className="overflow-hidden">
+      <SidebarInset className="h-screen max-h-screen overflow-hidden">
         <div className="h-full overflow-hidden">
           {children}
         </div>
