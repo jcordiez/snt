@@ -6,7 +6,6 @@ import type { DistrictProperties, Province } from "@/data/districts";
 import type { InterventionCategory, Intervention } from "@/types/intervention";
 import { CostSummary } from "./cost-summary";
 import { CategoryPieChart } from "./category-pie-chart";
-import { InterventionBarChart } from "./intervention-bar-chart";
 import {
   INTERVENTION_COSTS,
   DEFAULT_COST,
@@ -161,19 +160,10 @@ export function BudgetView({
     <div className="flex flex-col h-full overflow-auto p-6 gap-6">
       {/* Total Cost Summary */}
       <CostSummary totalCost={totalCost} />
-
-      {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 min-h-[400px]">
-        {/* Pie Chart - Left */}
-        <div className="bg-card border rounded-lg p-4 min-h-[350px]">
+      <div className="rounded-lg p-4">
           <CategoryPieChart categoryCosts={categoryCosts} />
         </div>
 
-        {/* Bar Chart - Right */}
-        <div className="bg-card border rounded-lg p-4 min-h-[350px]">
-          <InterventionBarChart interventionCosts={interventionCosts} />
-        </div>
-      </div>
     </div>
   );
 }

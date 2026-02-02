@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useSidebarKeyboardNav } from "@/hooks/use-sidebar-keyboard-nav"
 import {
+  BookOpen,
   Calculator,
   CircleDollarSign,
   CircleHelp,
@@ -63,7 +64,7 @@ export function AppSidebar() {
   const activePlanId = pathname.startsWith("/plan/") ? pathname.split("/")[2] : null
 
   return (
-    <Sidebar ref={sidebarRef} variant="inset" collapsible="icon">
+    <Sidebar ref={sidebarRef} collapsible="offcanvas" variant="inset">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -127,6 +128,14 @@ export function AppSidebar() {
                   <Link href="/layers">
                     <Layers className="size-4" />
                     <span>Metric layers</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Intervention guidelines" isActive={pathname === "/guidelines"}>
+                  <Link href="/guidelines">
+                    <BookOpen className="size-4" />
+                    <span>Intervention guidelines</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

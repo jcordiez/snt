@@ -28,4 +28,6 @@ export interface SavedRule {
   isAllDistricts?: boolean;
   /** Array of district IDs to exclude from this rule's selection criteria */
   excludedDistrictIds?: string[];
+  /** When false, the rule is hidden and not applied to the map or list view */
+  isVisible?: boolean;
 }

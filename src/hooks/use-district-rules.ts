@@ -360,6 +360,76 @@ export function getLastMatchingRuleColor(
   return lastMatchingColor;
 }
 
+/**
+ * Parse a hex color string to RGB components.
+ */
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace("#", "");
+  return [
+    parseInt(h.substring(0, 2), 16),
+    parseInt(h.substring(2, 4), 16),
+    parseInt(h.substring(4, 6), 16),
+  ];
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  return "#" + [r, g, b].map((v) => Math.round(v).toString(16).padStart(2, "0")).join("");
+}
+
+/**
+ * Returns a blended color from all matching non-default rules for a district.
+ * If only one rule matches, returns that rule's color.
+ * If no non-default rules match, returns the default rule's color.
+ */
+export function getBlendedMatchingRuleColor(
+  districtId: string,
+  rules: SavedRule[],
+  metricValues: Record<string, Record<number, number>>
+): string | null {
+  let defaultColor: string | null = null;
+  const matchingColors: string[] = [];
+  const districtMetrics = metricValues[districtId];
+
+  for (const rule of rules) {
+    if (rule.isVisible === false) continue;
+    if (rule.excludedDistrictIds?.includes(districtId)) continue;
+
+    if (rule.isAllDistricts) {
+      defaultColor = rule.color;
+      continue;
+    }
+
+    if (rule.criteria.length === 0) continue;
+
+    const allCriteriaMatch = rule.criteria.every((criterion) => {
+      if (criterion.metricTypeId === null || criterion.value === "") return false;
+      const metricValue = districtMetrics?.[criterion.metricTypeId];
+      if (metricValue === undefined) return false;
+      const threshold = Number(criterion.value);
+      if (isNaN(threshold)) return false;
+      return evaluateRule(metricValue, criterion.operator, threshold);
+    });
+
+    if (allCriteriaMatch) {
+      matchingColors.push(rule.color);
+    }
+  }
+
+  if (matchingColors.length === 0) return defaultColor;
+  if (matchingColors.length === 1) return matchingColors[0];
+
+  // Average the RGB values of all matching rule colors
+  let rSum = 0, gSum = 0, bSum = 0;
+  for (const color of matchingColors) {
+    const [r, g, b] = hexToRgb(color);
+    rSum += r;
+    gSum += g;
+    bSum += b;
+  }
+  const n = matchingColors.length;
+  return rgbToHex(rSum / n, gSum / n, bSum / n);
+}
+
 export interface DistrictWithProperties {
   districtId: string;
   districtName: string;

@@ -22,7 +22,8 @@ interface MapLegendProps {
 
 /**
  * Extracts unique intervention mixes from district data and generates legend items.
- * Uses ruleColor when available for color display.
+ * Groups by combination of interventionMixLabel AND ruleColor to ensure legend
+ * matches the actual colors displayed on the map.
  */
 function computeLegendItems(
   districts: GeoJSON.FeatureCollection<
@@ -34,21 +35,23 @@ function computeLegendItems(
     return [{ color: "#e5e7eb", label: "No data", districtCount: 0, districtIds: [] }];
   }
 
-  // Collect unique intervention mix labels, district IDs, and ruleColor per mix
-  const mixData = new Map<string, { districtIds: string[]; ruleColor?: string }>();
+  // Group by combination of label + color to handle same mix with different rule colors
+  // Key format: "label|color"
+  const mixData = new Map<string, { label: string; color: string; districtIds: string[] }>();
 
   for (const feature of districts.features) {
     const mixLabel = feature.properties.interventionMixLabel;
     const districtId = feature.properties.districtId;
     const ruleColor = feature.properties.ruleColor;
+
     if (mixLabel && districtId) {
-      const existing = mixData.get(mixLabel) ?? { districtIds: [], ruleColor: undefined };
+      // Determine the actual color that will be displayed on the map
+      const displayColor = ruleColor || getColorForInterventionMix(mixLabel);
+      const key = `${mixLabel}|${displayColor}`;
+
+      const existing = mixData.get(key) ?? { label: mixLabel, color: displayColor, districtIds: [] };
       existing.districtIds.push(districtId);
-      // Use the first ruleColor found for this mix (they should be consistent)
-      if (!existing.ruleColor && ruleColor) {
-        existing.ruleColor = ruleColor;
-      }
-      mixData.set(mixLabel, existing);
+      mixData.set(key, existing);
     }
   }
 
@@ -57,29 +60,31 @@ function computeLegendItems(
     return [{ color: "#e5e7eb", label: "No interventions assigned", districtCount: 0, districtIds: [] }];
   }
 
-  // Sort labels for consistent ordering (shorter labels first, then alphabetically)
-  const sortedLabels = Array.from(mixData.keys()).sort((a, b) => {
+  // Convert to array and sort
+  const items = Array.from(mixData.values());
+
+  // Sort: by number of interventions (+ count), then alphabetically by label, then by color
+  items.sort((a, b) => {
     // "None" should always be last
-    if (a === "None") return 1;
-    if (b === "None") return -1;
-    // Sort by number of interventions (+ count), then alphabetically
-    const aCount = (a.match(/\+/g) || []).length;
-    const bCount = (b.match(/\+/g) || []).length;
+    if (a.label === "None") return 1;
+    if (b.label === "None") return -1;
+    // Sort by number of interventions (+ count)
+    const aCount = (a.label.match(/\+/g) || []).length;
+    const bCount = (b.label.match(/\+/g) || []).length;
     if (aCount !== bCount) return aCount - bCount;
-    return a.localeCompare(b);
+    // Then alphabetically by label
+    const labelCompare = a.label.localeCompare(b.label);
+    if (labelCompare !== 0) return labelCompare;
+    // Finally by color for same labels
+    return a.color.localeCompare(b.color);
   });
 
-  return sortedLabels.map((label) => {
-    const data = mixData.get(label) ?? { districtIds: [], ruleColor: undefined };
-    // Use ruleColor if available, otherwise fall back to label-based color
-    const color = data.ruleColor || getColorForInterventionMix(label);
-    return {
-      color,
-      label,
-      districtCount: data.districtIds.length,
-      districtIds: data.districtIds,
-    };
-  });
+  return items.map((data) => ({
+    color: data.color,
+    label: data.label,
+    districtCount: data.districtIds.length,
+    districtIds: data.districtIds,
+  }));
 }
 
 export function MapLegend({ districts, onSelectMix }: MapLegendProps) {

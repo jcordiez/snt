@@ -21,7 +21,7 @@ import { useInterventionCategories } from "@/hooks/use-intervention-categories";
 import { useMetricTypes } from "@/hooks/use-metric-types";
 import { useMetricValues } from "@/hooks/use-metric-values";
 import { useMultipleMetricValues } from "@/hooks/use-multiple-metric-values";
-import { findMatchingDistrictIds, findRulesMatchingDistrict, findRulesWithDistrictAsException, getDistrictInterventions, getLastMatchingRuleColor } from "@/hooks/use-district-rules";
+import { findMatchingDistrictIds, findRulesMatchingDistrict, findRulesWithDistrictAsException, getDistrictInterventions, getLastMatchingRuleColor, getBlendedMatchingRuleColor } from "@/hooks/use-district-rules";
 import { LegendSelectionPayload } from "@/types/intervention";
 import type { SavedRule } from "@/types/rule";
 import type { Rule } from "@/types/intervention";
@@ -89,7 +89,7 @@ export default function PlanPage() {
   const [activeTab, setActiveTab] = useState<ViewTab>("map");
   const [savedRules, setSavedRules] = useState<SavedRule[]>([]);
   const [originalRules, setOriginalRules] = useState<SavedRule[]>([]);
-  const [isCumulativeMode, setIsCumulativeMode] = useState(false);
+  const [isCumulativeMode, setIsCumulativeMode] = useState(true);
 
   // Pre-load all metric values that have data files (eliminates race condition)
   const { metricValuesByType } = useMultipleMetricValues(ALL_METRIC_IDS_WITH_DATA);
@@ -188,6 +188,14 @@ export default function PlanPage() {
     // Filter out hidden rules (isVisible === false)
     const visibleRules = savedRules.filter((r) => r.isVisible !== false);
 
+    // Reset all districts to clean state before re-applying rules
+    const filteredDistrictIds = districts!.features
+      .filter((f) => selectedProvince ? f.properties.regionId === selectedProvince.id : true)
+      .map((f) => f.properties.districtId);
+
+    const emptyMix = { categoryAssignments: new Map(), displayLabel: "None" };
+    updateDistricts(filteredDistrictIds, emptyMix, interventionCategories!, { replace: true, ruleColor: "" });
+
     // Build all updates first, then apply them in a single batch to avoid race conditions
     const updates: Array<{
       districtIds: string[];
@@ -222,8 +230,8 @@ export default function PlanPage() {
             result.interventionsByCategory,
             interventionCategories!
           );
-          // Use last matching rule's color (getDistrictInterventions processes in order)
-          const ruleColor = getLastMatchingRuleColor(districtId, visibleRules, metricValuesByDistrict);
+          // Blend colors from all matching rules for this district
+          const ruleColor = getBlendedMatchingRuleColor(districtId, visibleRules, metricValuesByDistrict);
           updates.push({
             districtIds: [districtId],
             interventionMix,
@@ -302,7 +310,7 @@ export default function PlanPage() {
         update.districtIds,
         update.interventionMix,
         interventionCategories!,
-        { replace: false, ruleColor: update.ruleColor }
+        { replace: isCumulativeMode, ruleColor: update.ruleColor }
       );
     }
 

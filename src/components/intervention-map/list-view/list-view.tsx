@@ -4,18 +4,23 @@ import { useMemo } from "react";
 import type { MultiPolygon, Polygon } from "geojson";
 import type { DistrictProperties, Province } from "@/data/districts";
 import type { InterventionCategory } from "@/types/intervention";
+import type { SavedRule } from "@/types/rule";
 import { InterventionTable } from "./intervention-table";
 
 interface ListViewProps {
   districts: GeoJSON.FeatureCollection<MultiPolygon | Polygon, DistrictProperties> | null;
   selectedProvince: Province | null;
   interventionCategories: InterventionCategory[];
+  rules: SavedRule[];
+  metricValuesByType: Record<number, Record<string, number>>;
 }
 
 export function ListView({
   districts,
   selectedProvince,
   interventionCategories,
+  rules,
+  metricValuesByType,
 }: ListViewProps) {
   // Filter districts by selected province
   const filteredDistricts = useMemo(() => {
@@ -48,11 +53,15 @@ export function ListView({
   }
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <InterventionTable
-        districts={filteredDistricts}
-        interventionCategories={interventionCategories}
-      />
+    <div className="relative h-full">
+      <div className="absolute inset-0">
+        <InterventionTable
+          districts={filteredDistricts}
+          interventionCategories={interventionCategories}
+          rules={rules}
+          metricValuesByType={metricValuesByType}
+        />
+      </div>
     </div>
   );
 }

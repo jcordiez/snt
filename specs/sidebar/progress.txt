@@ -1,0 +1,151 @@
+# Sidebar Implementation Progress
+
+## Tasks
+
+- [x] 1. Install shadcn/ui sidebar component and dependencies
+- [x] 2. Create base sidebar layout structure
+- [x] 3. Implement header with SNT logo
+- [x] 4. Implement Plans group with navigation items (BAU, NSP 2026-30)
+- [x] 5. Add plus button for creating new plans
+- [x] 6. Implement Scenario comparisons link
+- [x] 7. Implement Layers link
+- [x] 8. Implement Cost settings link
+- [x] 9. Implement footer section (Help, Feedback, User account)
+- [x] 10. Add collapse/expand functionality
+- [x] 11. Persist sidebar state to localStorage
+- [x] 12. Integrate with Next.js routing
+- [x] 13. Add keyboard navigation support
+- [x] 14. Testing & QA
+
+## Status
+
+Current task: ALL TASKS COMPLETE
+Last updated: 2026-01-26
+
+## Notes
+
+Reference: https://ui.shadcn.com/blocks/sidebar#sidebar-08
+
+### Task 1 - Install shadcn/ui sidebar component and dependencies
+- Installed sidebar component via `npx shadcn@latest add sidebar tooltip separator`
+- Added dependencies: @radix-ui/react-separator, @radix-ui/react-tooltip
+- Created files: sidebar.tsx, tooltip.tsx, skeleton.tsx, use-mobile.tsx
+- Updated: tailwind.config.ts, globals.css, sheet.tsx
+- Commit: 81f8dff
+
+### Task 2 - Create base sidebar layout structure
+- Created AppSidebar component with header, content, footer sections (variant="inset", collapsible="icon")
+- Created SidebarLayout wrapper with SidebarProvider and SidebarInset
+- Updated root layout.tsx to wrap children with SidebarLayout
+- Updated page.tsx to use h-full instead of h-screen for proper sizing within SidebarInset
+- Commit: 1e84c81
+
+### Task 3 - Implement header with SNT logo
+- Added branded header using SidebarMenu pattern
+- Map icon as logo placeholder (bg-primary)
+- "SNT" as main title, "Subnational Tailoring" as subtitle
+- Header works correctly in both collapsed and expanded states
+- Commit: a72a548
+
+### Task 4 - Implement Plans group with navigation items
+- Added SidebarGroup with "Plans" label
+- BAU and NSP 2026-30 as navigation items with FileText icon
+- Active state management via useState (NSP 2026-30 selected by default)
+- Tooltip support for collapsed sidebar state
+- Commit: 206ea11
+
+### Task 5 - Add plus button for creating new plans
+- Added SidebarGroupAction with Plus icon next to "Plans" label
+- Implemented Dialog with form to enter new plan name
+- Form supports both Enter key and button click for submission
+- New plan is automatically selected after creation
+- Create button disabled when input is empty
+- Plus button hidden in collapsed sidebar state (per shadcn/ui pattern)
+- Commit: 4f56ced
+
+### Task 6 - Implement Scenario comparisons link
+- Added standalone link below Plans group (not a collapsible group per PRD)
+- Used GitCompareArrows icon for visual representation
+- Tooltip support for collapsed sidebar state
+- Links to /scenario-comparisons route
+- Commit: 7f69d40
+
+### Task 7 - Implement Layers link
+- Added standalone Layers link below Scenario comparisons
+- Used Layers icon from lucide-react
+- Tooltip support for collapsed sidebar state
+- Links to /layers route
+- Commit: 72adaf6
+
+### Task 8 - Implement Cost settings link
+- Added standalone Cost settings link below Layers
+- Used CircleDollarSign icon from lucide-react
+- Tooltip support for collapsed sidebar state
+- Links to /cost-settings route
+- Commit: c5695a6
+
+### Task 9 - Implement footer section (Help, Feedback, User account)
+- Added Help link with CircleHelp icon (/help)
+- Added Feedback link with MessageSquareMore icon (/feedback)
+- Added User account link with CircleUser icon (/account)
+- All items include tooltip support for collapsed sidebar state
+- Footer fixed at bottom of sidebar per shadcn/ui SidebarFooter component
+- Commit: ce9aecc
+
+### Task 10 - Add collapse/expand functionality
+- Added header bar in SidebarInset with SidebarTrigger button
+- SidebarTrigger toggles sidebar between expanded and icon-only (collapsed) modes
+- SidebarRail (already present) also provides click-to-toggle on sidebar edge
+- Added Separator component for visual distinction in header
+- Sidebar uses collapsible="icon" mode (collapses to icons only, not fully hidden)
+- Commit: 63ac604
+
+### Task 11 - Persist sidebar state to localStorage
+- Read sidebar state from localStorage on component mount
+- Save state to localStorage via onOpenChange callback
+- Use isLoaded flag to prevent hydration mismatch (render null until loaded)
+- Storage key: "sidebar-state" with boolean string value
+- State persists across page refreshes and browser sessions
+- Commit: ea62520
+
+### Task 12 - Integrate with Next.js routing
+- Replaced all `<a>` tags with Next.js `<Link>` components for client-side navigation
+- Added `usePathname` hook from next/navigation to detect current route
+- Added `isActive` prop to all navigation links based on pathname comparison
+- Enables proper active state highlighting when navigating between pages
+- No full page reloads when clicking sidebar links
+- Commit: 898b5ef
+
+### Task 13 - Add keyboard navigation support
+- Created `useSidebarKeyboardNav` hook for arrow key navigation
+- Arrow Down: Move focus to next menu item
+- Arrow Up: Move focus to previous menu item
+- Home: Jump to first menu item
+- End: Jump to last menu item
+- Tab: Move between focusable elements (native browser behavior)
+- Enter/Space: Activate focused item (native browser behavior)
+- Cmd/Ctrl+B: Toggle sidebar collapse (built into shadcn/ui)
+- Commit: f4daab4
+
+### Task 14 - Testing & QA
+- Fixed orphaned SidebarMenuItem elements (wrapped in proper SidebarGroup/SidebarMenu)
+- Verified build passes: `npm run build` ✓
+- Verified lint passes: `npm run lint` ✓
+
+**Acceptance Criteria Verification:**
+1. ✓ Sidebar displays on left side following shadcn/ui sidebar-08 pattern (variant="inset")
+2. ✓ SNT logo appears in sidebar header (Map icon + "SNT" + "Subnational Tailoring")
+3. ✓ "Plans" group displays with plus (+) button (SidebarGroupAction)
+4. ✓ "BAU" and "NSP 2026-30" appear as navigation items under Plans
+5. ✓ Plus button opens create new plan dialog
+6. ✓ "Scenario comparisons" link is visible and clickable
+7. ✓ "Layers" link is visible and clickable
+8. ✓ "Cost settings" link is visible and clickable
+9. ✓ Footer contains Help, Feedback, and User account links
+10. ✓ Sidebar can be collapsed/expanded (SidebarTrigger + SidebarRail)
+11. ✓ Collapsed state persists (localStorage with key "sidebar-state")
+12. ✓ Current page/selection visually highlighted (isActive prop + usePathname)
+13. ✓ All links have hover states (built into SidebarMenuButton)
+14. ✓ Keyboard navigation works (Tab, Enter, Arrow keys, Cmd/Ctrl+B)
+
+- Commit: 3f9cf8b

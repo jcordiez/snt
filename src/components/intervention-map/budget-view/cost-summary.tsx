@@ -19,7 +19,7 @@ function formatCurrency(amount: number): string {
 
 export function CostSummary({ totalCost }: CostSummaryProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-8 bg-muted/30 rounded-lg">
+    <div className="flex flex-col items-center justify-center py-8 rounded-lg">
       <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
         Total Cost
       </span>

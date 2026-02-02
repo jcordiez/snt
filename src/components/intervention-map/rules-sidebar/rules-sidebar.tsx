@@ -93,15 +93,7 @@ export function RulesSidebar({
       <div className="flex items-center justify-between px-4 py-3 border-b bg-white shrink-0">
         <h2 className="text-sm font-semibold">Rules</h2>
         <div className="flex items-center gap-1">
-          {/* Cumulative mode toggle */}
-          <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer" title="Cumulative mode">
-            <Switch
-              checked={isCumulativeMode ?? false}
-              onCheckedChange={onToggleCumulativeMode}
-              className="scale-75"
-            />
-            Cumul.
-          </label>
+          {/* Cumulative mode toggle (hidden — always on) */}
 
           {/* Magic wand dropdown for generating rules from guidelines */}
           <DropdownMenu>

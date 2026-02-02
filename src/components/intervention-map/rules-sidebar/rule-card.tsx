@@ -1,6 +1,7 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
+import { useState } from "react";
+import { Trash2, Eye, EyeOff, Pencil, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { SavedRule, RuleCriterion } from "@/types/rule";
 import type { MetricType, InterventionCategory } from "@/types/intervention";
@@ -11,20 +12,9 @@ interface RuleCardProps {
   interventionCategories: InterventionCategory[];
   onEdit: (ruleId: string) => void;
   onDelete: (ruleId: string) => void;
+  onToggleVisibility: (ruleId: string) => void;
   /** Function to look up district name by ID */
   getDistrictName: (districtId: string) => string;
-}
-
-function formatCriterion(
-  criterion: RuleCriterion,
-  metricTypes: MetricType[]
-): string {
-  if (criterion.metricTypeId === null) {
-    return "No metric selected";
-  }
-  const metric = metricTypes.find((m) => m.id === criterion.metricTypeId);
-  const metricName = metric?.name ?? "Unknown metric";
-  return `${metricName} ${criterion.operator} ${criterion.value}`;
 }
 
 // Default coverage percentage for display (matches rule-edit-modal.tsx)
@@ -65,11 +55,12 @@ export function RuleCard({
   interventionCategories,
   onEdit,
   onDelete,
+  onToggleVisibility,
   getDistrictName,
 }: RuleCardProps) {
-  const criteriaDescription = rule.isAllDistricts
-    ? "All districts"
-    : rule.criteria.map((c) => formatCriterion(c, metricTypes)).join(" AND ");
+  const isVisible = rule.isVisible !== false; // Default to true if undefined
+
+  const [criteriaExpanded, setCriteriaExpanded] = useState(false);
 
   const interventionMix = formatInterventionMix(
     rule.interventionsByCategory,
@@ -91,7 +82,7 @@ export function RuleCard({
 
   return (
     <div
-      className="group rounded-lg border bg-card text-card-foreground shadow-sm cursor-pointer hover:border-primary/50 transition-colors"
+      className={`group rounded-lg border bg-card text-card-foreground shadow-sm cursor-pointer hover:border-primary/50 transition-colors ${!isVisible ? 'bg-gray-50 opacity-40' : ''}`}
       onClick={handleCardClick}
       role="button"
       tabIndex={0}
@@ -112,41 +103,104 @@ export function RuleCard({
           <h3 className="text-sm font-medium">{rule.title}</h3>
         </div>
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-
+        <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 text-muted-foreground hover:text-destructive"
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit(rule.id);
+            }}
+          >
+            <Pencil className="h-3.5 w-3.5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 text-muted-foreground hover:text-foreground"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleVisibility(rule.id);
+            }}
+            title={isVisible ? "Hide rule" : "Show rule"}
+          >
+            {isVisible ? (
+              <Eye className="h-3.5 w-3.5" />
+            ) : (
+              <EyeOff className="h-3.5 w-3.5" />
+            )}
+          </Button>
           <Button
             variant="ghost"
             size="icon"
             className="h-7 w-7 text-muted-foreground hover:text-destructive"
-            onClick={() => onDelete(rule.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(rule.id);
+            }}
           >
             <Trash2 className="h-3.5 w-3.5" />
           </Button>
         </div>
       </div>
-      {/* Content */}
-      <div className="py-2 px-4 pt-0 space-y-2">
-        <div>
-          <p className="text-xs text-muted-foreground mb-1">Criteria</p>
-          <p className="text-xs">{criteriaDescription || "No criteria"}</p>
-        </div>
-        {exceptions.length > 0 && (
+      {/* Content - Hidden when rule is not visible */}
+      {isVisible && (
+        <div className="py-2 px-4 pt-0 space-y-2">
           <div>
-            <p className="text-xs text-muted-foreground mb-1">Exceptions</p>
-            <p className="text-xs">
-              {visibleExceptions.map((id) => getDistrictName(id)).join(", ")}
-              {remainingCount > 0 && (
-                <span className="text-muted-foreground">
-                  {" "}and {remainingCount} more
-                </span>
-              )}
-            </p>
+            {rule.isAllDistricts ? (
+              <p className="text-xs text-muted-foreground">All districts</p>
+            ) : rule.criteria.length > 0 ? (
+              <>
+                <button
+                  className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCriteriaExpanded(!criteriaExpanded);
+                  }}
+                >
+                  <ChevronRight className={`h-3 w-3 transition-transform ${criteriaExpanded ? "rotate-90" : ""}`} />
+                  {criteriaExpanded ? "Hide" : "Show"} criteria ({rule.criteria.length})
+                </button>
+                {criteriaExpanded && (
+                  <table className="w-full mt-1 text-xs">
+                    <tbody>
+                      {rule.criteria.map((c) => {
+                        const metric = metricTypes.find((m) => m.id === c.metricTypeId);
+                        return (
+                          <tr key={c.id}>
+                            <td className="py-0.5 pr-2">{metric?.name ?? "Unknown"}</td>
+                            <td className="py-0.5 pr-2" style={{ width: 44 }}>{c.operator}</td>
+                            <td className="py-0.5" style={{ width: 44 }}>{c.value}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                )}
+              </>
+            ) : (
+              <p className="text-xs text-muted-foreground">No criteria</p>
+            )}
           </div>
-        )}
-        <div>
-          <p className="text-xs text-muted-foreground mb-1">Interventions</p>
-          <p className="text-xs font-medium">{interventionMix}</p>
+          {exceptions.length > 0 && (
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">Exceptions</p>
+              <p className="text-xs">
+                {visibleExceptions.map((id) => getDistrictName(id)).join(", ")}
+                {remainingCount > 0 && (
+                  <span className="text-muted-foreground">
+                    {" "}and {remainingCount} more
+                  </span>
+                )}
+              </p>
+            </div>
+          )}
+          <div className="hidden">
+            <p className="text-xs text-muted-foreground mb-1">Interventions</p>
+            <p className="text-xs font-medium">{interventionMix}</p>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

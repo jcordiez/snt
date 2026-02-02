@@ -1,14 +1,15 @@
 "use client";
 
 import { useMemo } from "react";
+import { PieChart, Pie, Cell } from "recharts";
 import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+} from "@/components/ui/chart";
 
 interface CategoryCost {
   categoryId: number;
@@ -21,12 +22,12 @@ interface CategoryPieChartProps {
 }
 
 const COLORS = [
-  "hsl(12, 76%, 61%)",   // chart-1
-  "hsl(173, 58%, 39%)",  // chart-2
-  "hsl(197, 37%, 24%)",  // chart-3
-  "hsl(43, 74%, 66%)",   // chart-4
-  "hsl(27, 87%, 67%)",   // chart-5
-  "hsl(220, 70%, 50%)",  // Additional colors
+  "hsl(12, 76%, 61%)",
+  "hsl(173, 58%, 39%)",
+  "hsl(197, 37%, 24%)",
+  "hsl(43, 74%, 66%)",
+  "hsl(27, 87%, 67%)",
+  "hsl(220, 70%, 50%)",
   "hsl(160, 60%, 45%)",
   "hsl(280, 65%, 55%)",
 ];
@@ -48,14 +49,26 @@ export function CategoryPieChart({ categoryCosts }: CategoryPieChartProps) {
   const data = useMemo(() => {
     return categoryCosts
       .filter((c) => c.totalCost > 0)
-      .map((c) => ({
+      .map((c, index) => ({
         name: c.categoryName,
         value: c.totalCost,
+        fill: COLORS[index % COLORS.length],
       }));
   }, [categoryCosts]);
 
   const totalCost = useMemo(() => {
     return data.reduce((sum, d) => sum + d.value, 0);
+  }, [data]);
+
+  const chartConfig = useMemo(() => {
+    const config: ChartConfig = {};
+    data.forEach((d, index) => {
+      config[d.name] = {
+        label: d.name,
+        color: COLORS[index % COLORS.length],
+      };
+    });
+    return config;
   }, [data]);
 
   if (data.length === 0) {
@@ -68,48 +81,48 @@ export function CategoryPieChart({ categoryCosts }: CategoryPieChartProps) {
 
   return (
     <div className="flex flex-col h-full">
-      <h3 className="text-sm font-semibold mb-4">Costs by Category</h3>
-      <div className="flex-1 min-h-0">
-        <ResponsiveContainer width="100%" height="100%">
+       <div className="flex-1 min-h-0">
+        <ChartContainer config={chartConfig} className="h-full w-full">
           <PieChart>
             <Pie
               data={data}
               cx="50%"
               cy="45%"
-              innerRadius={60}
-              outerRadius={100}
+              innerRadius={100}
+              outerRadius={200}
               paddingAngle={2}
               dataKey="value"
+              nameKey="name"
             >
-              {data.map((_, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.fill} />
               ))}
             </Pie>
-            <Tooltip
-              formatter={(value) => {
-                const numValue = typeof value === "number" ? value : 0;
-                return [
-                  `${formatCurrency(numValue)} (${((numValue / totalCost) * 100).toFixed(1)}%)`,
-                  "Cost",
-                ];
-              }}
+            <ChartTooltip
+              content={
+                <ChartTooltipContent
+                  nameKey="name"
+                  formatter={(value, name) => {
+                    const numValue = typeof value === "number" ? value : 0;
+                    const percentage = ((numValue / totalCost) * 100).toFixed(1);
+                    return (
+                      <div className="flex items-center justify-between gap-2 w-full">
+                        <span className="text-muted-foreground">{name}</span>
+                        <span className="font-mono font-medium">
+                          {formatCurrency(numValue)} ({percentage}%)
+                        </span>
+                      </div>
+                    );
+                  }}
+                />
+              }
             />
-            <Legend
+            <ChartLegend
               verticalAlign="bottom"
-              formatter={(value) => {
-                const item = data.find((d) => d.name === value);
-                return (
-                  <span className="text-xs">
-                    {value} - {item ? formatCurrency(item.value) : ""}
-                  </span>
-                );
-              }}
+              content={<ChartLegendContent nameKey="name" />}
             />
           </PieChart>
-        </ResponsiveContainer>
+        </ChartContainer>
       </div>
     </div>
   );

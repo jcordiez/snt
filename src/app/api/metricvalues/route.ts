@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { readFile } from "fs/promises";
 import path from "path";
 
-// Metric types that have existing data files
-const EXISTING_METRIC_DATA = [325, 328, 331];
+// Metric types that have existing data files (matching api/metricvalues/*.json)
+const EXISTING_METRIC_DATA = [404, 406, 407, 331, 325, 328, 410, 411, 412, 413, 417, 418, 419, 420];
 
 // Metric type configurations for generating mock data
 // Based on the legend_config.domain values from metric-types/data.json
@@ -15,15 +15,11 @@ const METRIC_CONFIGS: Record<number, { min: number; max: number }> = {
   329: { min: 0, max: 100 }, // Non-recours aux services curatifs (%)
   330: { min: 0, max: 100 }, // Inaccessibilité aux soins (%)
   331: { min: 50, max: 1200 }, // Incidence brute (DHIS2)
-  332: { min: 50, max: 1200 }, // Incidence ajustée pour le dépistage
-  333: { min: 50, max: 1200 }, // Incidence ajustée pour le taux de rapportage
-  334: { min: 50, max: 1200 }, // Incidence ajustée pour la recherche de soins
-  335: { min: 0, max: 100 }, // Prévalence du paludisme (%)
-  336: { min: 0, max: 1 }, // Résistance aux insecticides
-  337: { min: 0, max: 1 }, // Saisonnalité
-  338: { min: 200, max: 2000 }, // Déficit de PIB par habitant (USD)
-  339: { min: 0, max: 1500 }, // Insécurité (nombre de conflits)
-  340: { min: 0, max: 100 }, // Utilisation des MILDA (%)
+  413: { min: 0, max: 100 }, // Prévalence du paludisme (%)
+  410: { min: 0, max: 1 }, // Résistance aux insecticides
+  406: { min: 0, max: 1 }, // Saisonnalité
+  404: { min: 200, max: 2000 }, // Déficit de PIB par habitant (USD)
+  412: { min: 0, max: 1500 }, // Insécurité (nombre de conflits)
 };
 
 // Simple seeded random number generator for deterministic values

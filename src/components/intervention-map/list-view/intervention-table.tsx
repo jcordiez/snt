@@ -133,10 +133,10 @@ export function InterventionTable({
   };
 
   return (
-    <div className="flex-1 overflow-auto">
+    <div className="h-full overflow-auto">
       <table className="w-full border-collapse text-sm">
         {/* Category header row */}
-        <thead className="sticky top-0 z-20 bg-background">
+        <thead className="sticky top-0 z-20 bg-white">
           <tr className="border-b">
             <th
               rowSpan={2}

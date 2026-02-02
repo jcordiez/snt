@@ -1,0 +1,72 @@
+# Layers Page - Implementation Progress
+
+## Status: In Progress
+
+## Checklist
+
+### Page Structure
+- [x] Create layers page route (`/layers`)
+- [x] Add page title "Available metrics"
+- [x] Add search input field
+- [x] Add "Create layer" button
+
+### Layer List
+- [x] Implement category grouping
+- [x] Create collapsible category headers
+- [x] Display layer rows with correct layout
+
+### Layer Row Components
+- [x] Info icon (left)
+- [x] Layer name
+- [x] "Source" label (right-aligned)
+- [x] MoreHorizontal menu button
+
+### Info Icon Behavior
+- [x] Click opens tooltip/popover/modal
+- [x] Display layer description
+- [x] Display data source details
+- [x] Display last updated date
+- [x] Display units of measurement
+
+### More Menu
+- [x] Dropdown menu on MoreHorizontal click
+- [x] "Edit" action (handler/modal)
+- [x] "Delete" action with confirmation dialog
+
+### Search Functionality
+- [ ] Real-time filtering
+- [ ] Clear button when text present
+- [ ] "No layers found" empty state
+
+### Create Layer
+- [ ] Button triggers create modal/form
+- [ ] Create layer form fields
+- [ ] Save new layer
+
+### Edit Layer
+- [x] Edit modal/form
+- [x] Pre-populate existing values
+- [ ] Save changes
+
+### Delete Layer
+- [ ] Confirmation dialog
+- [ ] Delete on confirm
+- [ ] Cancel option
+
+## Notes
+
+---
+
+## Completed Items
+
+- [x] Create layers page route (`/layers`) - Created `src/app/layers/page.tsx` with basic page structure and "Available metrics" title
+- [x] Add page title "Available metrics" - Already implemented in initial page creation
+- [x] Add search input field - Added search input with Search icon, clear button (X), and state management for filtering
+- [x] Add "Create layer" button - Added Button component with Plus icon, positioned right-aligned in the toolbar row below the title
+- [x] Implement category grouping - Layers now grouped by category from API using useMetricTypes hook, displayed in collapsible sections
+- [x] Create collapsible category headers - Category headers show chevron icon (down/right), category name, and layer count. Click to toggle collapse state. All categories expanded by default.
+- [x] Display layer rows with correct layout - Each row now shows: Info icon (left), layer name (center-left), "Source" label (right-aligned), and MoreHorizontal menu button (far right). Icons imported from lucide-react.
+- [x] Info icon tooltip - Hovering/clicking info icon displays a tooltip showing layer name, description, data source, units (with symbol), and last updated date. Uses shadcn Tooltip component with LayerInfoTooltip helper component.
+- [x] Dropdown menu on MoreHorizontal click - Added DropdownMenu component with Edit and Delete options. Uses Pencil and Trash2 icons from lucide-react. Delete option styled with destructive color.
+- [x] "Edit" action (handler/modal) - Clicking Edit opens a LayerEditModal dialog with form fields for name (required), description, category, source, units, and unit symbol. Form pre-populates with existing metric values using useEffect. Cancel and Save buttons in footer.
+- [x] "Delete" action with confirmation dialog - Clicking Delete opens a DeleteConfirmDialog that displays the layer name and asks for confirmation. Dialog has Cancel and Delete buttons. Delete button uses destructive variant styling.

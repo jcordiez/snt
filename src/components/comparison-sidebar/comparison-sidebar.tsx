@@ -1,100 +1,88 @@
 "use client";
 
 import { memo } from "react";
-import { X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { PREDEFINED_PLANS, type PlanDefinition } from "@/data/predefined-plans";
 import { MiniatureMap } from "./miniature-map";
+import { MiniatureBudget } from "./miniature-budget";
+import type { ViewTab } from "@/components/intervention-map";
+import type { Province } from "@/data/districts";
 
 interface ComparisonSidebarProps {
-  /** Whether the sidebar is visible */
   isOpen: boolean;
-  /** Callback to close the sidebar */
-  onClose: () => void;
-  /** The ID of the currently loaded plan (null for new plans) */
-  currentPlanId: string | null;
-  /** Whether the current plan has been edited from its original state */
-  isEdited: boolean;
+  activeTab: ViewTab;
+  selectedProvince?: Province | null;
 }
 
 export function ComparisonSidebar({
   isOpen,
-  onClose,
-  currentPlanId,
-  isEdited,
+  activeTab,
+  selectedProvince,
 }: ComparisonSidebarProps) {
-  return (
-    <div
-      className={`w-80 border-l flex flex-col h-full bg-background transition-[margin] duration-300 ease-in-out shrink-0 ${
-        isOpen ? "mr-0" : "-mr-80"
-      } max-lg:absolute max-lg:right-0 max-lg:top-0 max-lg:z-10 max-lg:shadow-lg`}
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b">
-        <h2 className="text-sm font-semibold">Compare with</h2>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8"
-          onClick={onClose}
-        >
-          <X className="h-4 w-4" />
-        </Button>
-      </div>
+  // Determine display type based on active tab
+  const displayType = activeTab === "budget" ? "cost" : "intervention";
 
-      {/* Scrollable list of plans — only render maps when sidebar is visible */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="p-4 space-y-3">
-          {PREDEFINED_PLANS.map((plan) => (
-            <PlanComparisonCard
-              key={plan.id}
-              plan={plan}
-              isCurrentPlan={plan.id === currentPlanId}
-              isEdited={plan.id === currentPlanId && isEdited}
-              renderMap={isOpen}
-            />
-          ))}
-        </div>
+  if (!isOpen) {
+    return null;
+  }
+
+  return (
+    <div className="w-[450px] border-l flex flex-col min-h-0 shrink-0">
+      {/* Plans list - fills remaining height, each card takes equal space */}
+      <div className="flex-1 flex flex-col min-h-0 p-3 gap-3 overflow-y-auto">
+        {PREDEFINED_PLANS.map((plan) => (
+          <PlanComparisonCard
+            key={plan.id}
+            plan={plan}
+            renderContent={isOpen}
+            displayType={displayType}
+            selectedProvince={selectedProvince}
+          />
+        ))}
       </div>
     </div>
   );
 }
 
+type DisplayType = "intervention" | "cost";
+
 interface PlanComparisonCardProps {
   plan: PlanDefinition;
-  isCurrentPlan: boolean;
-  isEdited: boolean;
-  renderMap: boolean;
+  renderContent: boolean;
+  displayType: DisplayType;
+  selectedProvince?: Province | null;
 }
 
 const PlanComparisonCard = memo(function PlanComparisonCard({
   plan,
-  isCurrentPlan,
-  isEdited,
-  renderMap,
+  renderContent,
+  displayType,
+  selectedProvince,
 }: PlanComparisonCardProps) {
   return (
-    <div
-      className={`border rounded-lg overflow-hidden bg-card ${
-        isCurrentPlan ? "ring-2 ring-primary" : ""
-      }`}
-    >
-      {/* Card Header */}
-      <div className="px-3 py-2 border-b flex items-center gap-2">
-        <span className="text-sm font-medium">{plan.name}</span>
-        {isEdited && (
-          <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
-            Edited
-          </span>
+    <div className="flex-1 border rounded-lg overflow-hidden bg-card flex flex-col min-h-0">
+     
+
+      {/* Content area - fills remaining space */}
+      <div className="flex-1 min-h-0">
+        {displayType === "intervention" ? (
+          renderContent ? (
+            <MiniatureMap plan={plan} selectedProvince={selectedProvince} />
+          ) : (
+            <div className="h-full bg-muted" />
+          )
+        ) : (
+          renderContent ? (
+            <MiniatureBudget plan={plan} />
+          ) : (
+            <div className="h-full bg-muted" />
+          )
         )}
       </div>
 
-      {/* Only mount MapLibre instances when sidebar is visible */}
-      {renderMap ? (
-        <MiniatureMap plan={plan} />
-      ) : (
-        <div className="aspect-[4/3] bg-muted" />
-      )}
+       {/* Card Header */}
+       <div className="px-3 py-1.5 border-b flex items-center gap-2 shrink-0">
+        <span className="text-xs font-medium">{plan.name}</span>
+      </div>
     </div>
   );
 });

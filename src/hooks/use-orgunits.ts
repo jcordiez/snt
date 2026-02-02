@@ -147,8 +147,9 @@ function transformOrgUnitsToGeoJSON(
         interventionStatus: "ongoing" as InterventionStatus,
         interventionCount: 1,
         interventions: [DEFAULT_CM_LABEL],
-        // Note: interventionMix with Map is set lazily when needed (not here to avoid serialization issues)
         interventionMixLabel: DEFAULT_CM_LABEL, // Flat property for MapLibre expressions
+        // Initialize with default CM intervention so BudgetView can calculate costs
+        interventionCategoryAssignments: { [DEFAULT_CM_CATEGORY_ID]: DEFAULT_CM_INTERVENTION_ID },
       },
       geometry: geometry as GeoJSON.MultiPolygon | GeoJSON.Polygon,
     });
@@ -271,8 +272,8 @@ export function useOrgUnits() {
             interventionStatus: "ongoing" as InterventionStatus, // Mark as ongoing when interventions are applied
             interventions: [finalMix.displayLabel], // Update legacy field
             interventionCount: finalMix.categoryAssignments.size,
-            // Apply rule color if provided (used for map rendering)
-            ...(options?.ruleColor ? { ruleColor: options.ruleColor } : {}),
+            // Apply rule color if provided (used for map rendering); explicitly set empty string to clear
+            ...(options?.ruleColor !== undefined ? { ruleColor: options.ruleColor } : {}),
           },
         };
       });

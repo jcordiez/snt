@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { Map, MapControls, useMap } from "@/components/ui/map";
 import { DistrictLayer } from "./district-layer";
-import { MapLegend } from "./map-legend";
+// import { MapLegend } from "./map-legend";
 import { SelectionWidget } from "./selection-widget";
 import { countryConfig, Province, DistrictProperties } from "@/data/districts";
 import { useDistrictSelection } from "@/hooks/use-district-selection";
@@ -72,6 +72,7 @@ function MapAutoZoom({ selectedProvince }: { selectedProvince?: Province | null 
   return null;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function InterventionMap({ selectedProvince, highlightedDistrictIds = [], districts, onSelectMix, metricValuesByOrgUnit, hasRules = false, onSetAsExceptions, onRemoveFromExceptions }: InterventionMapProps) {
   // Compute active district IDs based on selected province
   // When a province is selected, only districts in that province are active/selectable

@@ -51,52 +51,64 @@ function LayerEditModal({ isOpen, onOpenChange, metric, onSave }: LayerEditModal
   const [units, setUnits] = useState("");
   const [unitSymbol, setUnitSymbol] = useState("");
 
-  // Reset form when modal opens with a metric
+  // Reset form when modal opens
   useEffect(() => {
-    if (isOpen && metric) {
-      setName(metric.name);
-      setDescription(metric.description || "");
-      setCategory(metric.category || "");
-      setSource(metric.source || "");
-      setUnits(metric.units || "");
-      setUnitSymbol(metric.unit_symbol || "");
+    if (isOpen) {
+      if (metric) {
+        setName(metric.name);
+        setDescription(metric.description || "");
+        setCategory(metric.category || "");
+        setSource(metric.source || "");
+        setUnits(metric.units || "");
+        setUnitSymbol(metric.unit_symbol || "");
+      } else {
+        // Create mode - reset to empty values
+        setName("");
+        setDescription("");
+        setCategory("");
+        setSource("");
+        setUnits("");
+        setUnitSymbol("");
+      }
     }
   }, [isOpen, metric]);
 
   const handleSave = () => {
-    if (!metric) return;
+    const metricData: MetricType = metric
+      ? {
+          ...metric,
+          name: name.trim(),
+          description: description.trim(),
+          category: category.trim(),
+          source: source.trim(),
+          units: units.trim(),
+          unit_symbol: unitSymbol.trim(),
+        }
+      : {
+          id: 0, // Will be set by addMetric
+          account: 0,
+          name: name.trim(),
+          description: description.trim(),
+          category: category.trim() || "Other",
+          source: source.trim(),
+          units: units.trim(),
+          unit_symbol: unitSymbol.trim(),
+          comments: "",
+          legend_config: { domain: [0, 100], range: [] },
+          legend_type: "gradient",
+          created_at: "",
+          updated_at: "",
+        };
 
-    const updatedMetric: MetricType = {
-      ...metric,
-      name: name.trim(),
-      description: description.trim(),
-      category: category.trim(),
-      source: source.trim(),
-      units: units.trim(),
-      unit_symbol: unitSymbol.trim(),
-    };
-
-    onSave(updatedMetric);
+    onSave(metricData);
     onOpenChange(false);
-    // Reset form
-    setName("");
-    setDescription("");
-    setCategory("");
-    setSource("");
-    setUnits("");
-    setUnitSymbol("");
   };
 
   const handleClose = () => {
     onOpenChange(false);
-    // Reset form
-    setName("");
-    setDescription("");
-    setCategory("");
-    setSource("");
-    setUnits("");
-    setUnitSymbol("");
   };
+
+  const isCreateMode = !metric;
 
   const canSave = name.trim() !== "";
 
@@ -104,7 +116,7 @@ function LayerEditModal({ isOpen, onOpenChange, metric, onSave }: LayerEditModal
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Edit Layer</DialogTitle>
+          <DialogTitle>{isCreateMode ? "Create Layer" : "Edit Layer"}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
@@ -275,17 +287,39 @@ export default function LayersPage() {
   const [editingMetric, setEditingMetric] = useState<MetricType | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deletingMetric, setDeletingMetric] = useState<MetricType | null>(null);
-  const { groupedByCategory, isLoading } = useMetricTypes();
+  const { groupedByCategory, isLoading, addMetric } = useMetricTypes();
 
   const handleEditLayer = (metric: MetricType) => {
     setEditingMetric(metric);
     setEditModalOpen(true);
   };
 
-  const handleSaveLayer = (updatedMetric: MetricType) => {
-    // TODO: Implement actual save to API
-    console.log("Saving layer:", updatedMetric);
+  const handleSaveLayer = (metricData: MetricType) => {
+    if (editingMetric === null) {
+      // Create mode - add new metric
+      const newMetric = addMetric({
+        account: metricData.account,
+        name: metricData.name,
+        description: metricData.description,
+        category: metricData.category,
+        source: metricData.source,
+        units: metricData.units,
+        unit_symbol: metricData.unit_symbol,
+        comments: metricData.comments,
+        legend_config: metricData.legend_config,
+        legend_type: metricData.legend_type,
+      });
+      console.log("Created layer:", newMetric);
+    } else {
+      // Edit mode - TODO: Implement actual save to API
+      console.log("Saving layer:", metricData);
+    }
     setEditingMetric(null);
+  };
+
+  const handleCreateLayer = () => {
+    setEditingMetric(null);
+    setEditModalOpen(true);
   };
 
   const handleDeleteLayer = (metric: MetricType) => {
@@ -350,7 +384,7 @@ export default function LayersPage() {
             </button>
           )}
         </div>
-        <Button className="ml-auto">
+        <Button className="ml-auto" onClick={handleCreateLayer}>
           <Plus className="h-4 w-4 mr-2" />
           Create layer
         </Button>
@@ -401,7 +435,13 @@ export default function LayersPage() {
                           </TooltipContent>
                         </Tooltip>
                         <span className="flex-1">{metric.name}</span>
-                        <span className="text-sm text-muted-foreground mr-4">Source</span>
+                        <span className="text-sm text-muted-foreground mr-4">
+                          {metric.legend_config?.domain && metric.legend_config.domain.length >= 2 && (
+                            <>
+                              {Math.min(...metric.legend_config.domain)}-{Math.max(...metric.legend_config.domain)}
+                            </>
+                          )}
+                        </span>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <button className="p-1 rounded hover:bg-muted">

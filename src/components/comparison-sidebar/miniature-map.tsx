@@ -2,128 +2,19 @@
 
 import { memo, useEffect, useRef, useMemo } from "react";
 import type MapLibreGL from "maplibre-gl";
+import maplibregl from "maplibre-gl";
 import { Map as MapComponent, useMap } from "@/components/ui/map";
-import { useOrgUnits, createInterventionMix } from "@/hooks/use-orgunits";
-import { useInterventionCategories } from "@/hooks/use-intervention-categories";
-import { useMultipleMetricValues } from "@/hooks/use-multiple-metric-values";
-import { findMatchingDistrictIds } from "@/hooks/use-district-rules";
 import {
   getColorForInterventionMix,
   PREDEFINED_INTERVENTION_COLORS,
 } from "@/lib/intervention-colors";
-import type { DistrictProperties } from "@/data/districts";
+import type { DistrictProperties, Province } from "@/data/districts";
 import type { PlanDefinition } from "@/data/predefined-plans";
-import type { InterventionCategory, Rule } from "@/types/intervention";
-
-// Same metric IDs used by the main plan page
-const ALL_METRIC_IDS_WITH_DATA = [404, 406, 407, 410, 412, 413];
+import { usePlanDistricts } from "./use-plan-districts";
 
 const SOURCE_ID = "miniature-districts";
 const FILL_LAYER_ID = "miniature-fills";
 const BORDER_LAYER_ID = "miniature-borders";
-
-/**
- * Computes a GeoJSON FeatureCollection with rule colors applied for a given plan.
- * This replicates the rule application logic from the plan page but produces
- * a static snapshot rather than mutating state.
- */
-function applyPlanRules(
-  baseDistricts: GeoJSON.FeatureCollection<
-    GeoJSON.MultiPolygon | GeoJSON.Polygon,
-    DistrictProperties
-  >,
-  plan: PlanDefinition,
-  interventionCategories: InterventionCategory[],
-  metricValuesByType: Record<number, Record<number, number>>
-): GeoJSON.FeatureCollection<GeoJSON.MultiPolygon | GeoJSON.Polygon, DistrictProperties> {
-  // Clone features with fresh properties
-  const features = baseDistricts.features.map((f) => ({
-    ...f,
-    properties: { ...f.properties },
-  }));
-
-  const defaultRule = plan.rules.find((r) => r.isAllDistricts);
-  const nonDefaultRules = plan.rules.filter((r) => !r.isAllDistricts);
-
-  // Apply default rule to all districts
-  if (defaultRule && defaultRule.interventionsByCategory.size > 0) {
-    const mix = createInterventionMix(defaultRule.interventionsByCategory, interventionCategories);
-    for (const feature of features) {
-      feature.properties.interventionMixLabel = mix.displayLabel;
-      feature.properties.interventionCategoryAssignments = Object.fromEntries(
-        mix.categoryAssignments
-      );
-      feature.properties.interventionCount = mix.categoryAssignments.size;
-      feature.properties.ruleColor = defaultRule.color;
-    }
-  }
-
-  // Apply non-default rules in order (later rules override)
-  const featureMap = new Map(features.map((f) => [f.properties.districtId, f]));
-
-  for (const rule of nonDefaultRules) {
-    const rulesForEvaluation: Rule[] = rule.criteria.map((criterion) => ({
-      id: criterion.id,
-      metricTypeId: criterion.metricTypeId,
-      operator: criterion.operator,
-      value: criterion.value,
-    }));
-
-    const matchingIds = findMatchingDistrictIds(
-      baseDistricts,
-      rulesForEvaluation,
-      null, // no province filter for miniature maps
-      metricValuesByType
-    );
-
-    // Filter out excluded districts
-    const finalIds = rule.excludedDistrictIds?.length
-      ? matchingIds.filter((id) => !rule.excludedDistrictIds!.includes(id))
-      : matchingIds;
-
-    if (finalIds.length > 0 && rule.interventionsByCategory.size > 0) {
-      const mix = createInterventionMix(rule.interventionsByCategory, interventionCategories);
-      for (const id of finalIds) {
-        const feature = featureMap.get(id);
-        if (feature) {
-          // Merge: preserve existing categories, override with rule's categories
-          const existing: Map<number, number> = feature.properties.interventionCategoryAssignments
-            ? new Map(
-                Object.entries(feature.properties.interventionCategoryAssignments).map(
-                  ([k, v]) => [Number(k), v as number] as [number, number]
-                )
-              )
-            : new Map();
-          mix.categoryAssignments.forEach((v, k) => existing.set(k, v));
-
-          // Rebuild display label from merged assignments
-          const sortedCategoryIds = Array.from(existing.keys()).sort((a, b) => a - b);
-          const names: string[] = [];
-          for (const catId of sortedCategoryIds) {
-            const intId = existing.get(catId);
-            if (intId !== undefined) {
-              for (const cat of interventionCategories) {
-                const intervention = cat.interventions.find((i) => i.id === intId);
-                if (intervention) {
-                  names.push(intervention.short_name);
-                  break;
-                }
-              }
-            }
-          }
-
-          feature.properties.interventionMixLabel =
-            names.length > 0 ? names.join(" + ") : "None";
-          feature.properties.interventionCategoryAssignments = Object.fromEntries(existing);
-          feature.properties.interventionCount = existing.size;
-          feature.properties.ruleColor = rule.color;
-        }
-      }
-    }
-  }
-
-  return { type: "FeatureCollection", features };
-}
 
 /**
  * Builds a MapLibre color expression from districts data.
@@ -247,59 +138,108 @@ function MiniatureDistrictLayer({
   return null;
 }
 
-interface MiniatureMapProps {
-  plan: PlanDefinition;
+/**
+ * Component that handles auto-zoom for the miniature map based on selected province.
+ * Must be a child of <Map> to access the map context.
+ */
+function AutoZoom({
+  districts,
+  selectedProvince,
+}: {
+  districts: GeoJSON.FeatureCollection<
+    GeoJSON.MultiPolygon | GeoJSON.Polygon,
+    DistrictProperties
+  >;
+  selectedProvince?: Province | null;
+}) {
+  const { map, isLoaded } = useMap();
+
+  useEffect(() => {
+    if (!isLoaded || !map) return;
+
+    // If no province selected, reset to default view
+    if (!selectedProvince || districts.features.length === 0) {
+      map.setCenter([23.6, -2.9]);
+      map.setZoom(3.2);
+      return;
+    }
+
+    // Calculate bounds from filtered districts
+    const bounds = new maplibregl.LngLatBounds();
+
+    for (const feature of districts.features) {
+      const geometry = feature.geometry;
+
+      if (geometry.type === "Polygon") {
+        geometry.coordinates[0].forEach((coord) => {
+          bounds.extend(coord as [number, number]);
+        });
+      } else if (geometry.type === "MultiPolygon") {
+        geometry.coordinates.forEach((polygon) => {
+          polygon[0].forEach((coord) => {
+            bounds.extend(coord as [number, number]);
+          });
+        });
+      }
+    }
+
+    // Fit to bounds with padding
+    if (!bounds.isEmpty()) {
+      map.fitBounds(bounds, {
+        padding: 6,
+        maxZoom: 6,
+        duration: 300,
+      });
+    }
+  }, [map, isLoaded, selectedProvince, districts]);
+
+  return null;
 }
 
-export const MiniatureMap = memo(function MiniatureMap({ plan }: MiniatureMapProps) {
-  const { data: baseDistricts } = useOrgUnits();
-  const { data: interventionCategories } = useInterventionCategories();
-  const { metricValuesByType } = useMultipleMetricValues(ALL_METRIC_IDS_WITH_DATA);
+interface MiniatureMapProps {
+  plan: PlanDefinition;
+  selectedProvince?: Province | null;
+}
 
-  const metricValuesLoaded = Object.keys(metricValuesByType).length > 0;
+export const MiniatureMap = memo(function MiniatureMap({
+  plan,
+  selectedProvince,
+}: MiniatureMapProps) {
+  const { planDistricts } = usePlanDistricts(plan);
 
-  // Compute colored districts for this plan
-  const planDistricts = useMemo(() => {
-    if (!baseDistricts || !interventionCategories?.length || !metricValuesLoaded) return null;
+  // Filter districts based on selected province
+  const filteredDistricts = useMemo(() => {
+    if (!planDistricts || !selectedProvince) return planDistricts;
 
-    // Create a fresh copy of base districts with default CM properties
-    const freshDistricts: GeoJSON.FeatureCollection<
-      GeoJSON.MultiPolygon | GeoJSON.Polygon,
-      DistrictProperties
-    > = {
-      type: "FeatureCollection",
-      features: baseDistricts.features.map((f) => ({
-        ...f,
-        properties: {
-          ...f.properties,
-          interventionMixLabel: "CM",
-          ruleColor: undefined as unknown as string,
-          interventionCategoryAssignments: undefined,
-          interventionCount: 1,
-        },
-      })),
+    return {
+      ...planDistricts,
+      features: planDistricts.features.filter(
+        (f) => f.properties.regionId === selectedProvince.id
+      ),
     };
+  }, [planDistricts, selectedProvince]);
 
-    return applyPlanRules(freshDistricts, plan, interventionCategories, metricValuesByType);
-  }, [baseDistricts, interventionCategories, metricValuesLoaded, metricValuesByType, plan]);
-
-  if (!planDistricts) {
+  if (!filteredDistricts) {
     return (
-      <div className="aspect-[4/3] bg-muted flex items-center justify-center">
+      <div className="h-full bg-muted flex items-center justify-center">
         <span className="text-xs text-muted-foreground">Loading...</span>
       </div>
     );
   }
 
   return (
-    <div className="aspect-[4/3]">
+    <div className="h-full">
       <MapComponent
         center={[23.6, -2.9]}
-        zoom={4}
+        zoom={3.2}
         interactive={false}
         attributionControl={false}
       >
-        <MiniatureDistrictLayer districts={planDistricts} />
+        <MiniatureDistrictLayer districts={filteredDistricts} />
+        <AutoZoom
+          districts={filteredDistricts}
+          selectedProvince={selectedProvince}
+        />
       </MapComponent>
     </div>
   );
