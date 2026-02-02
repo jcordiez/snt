@@ -230,6 +230,79 @@ export function findRulesWithDistrictAsException(
  * @param metricValues - Map of districtId -> metricTypeId -> value
  * @returns The color of the last matching rule, or null if no rule matches
  */
+/**
+ * Returns the merged interventionsByCategory (and coverageByCategory) for a district
+ * based on all matching rules.
+ *
+ * - Exclusive mode (isCumulative=false): returns the last matching rule's maps.
+ * - Cumulative mode (isCumulative=true): merges all matching rules' maps in order.
+ *   Per-category last-write-wins: later rules overwrite earlier ones for the same category,
+ *   but categories from earlier rules not present in later rules are preserved.
+ */
+export function getDistrictInterventions(
+  districtId: string,
+  rules: SavedRule[],
+  metricValues: Record<string, Record<number, number>>,
+  isCumulative: boolean
+): {
+  interventionsByCategory: Map<number, number>;
+  coverageByCategory: Map<number, number>;
+} | null {
+  const districtMetrics = metricValues[districtId];
+  let lastMatch: SavedRule | null = null;
+  const mergedInterventions = new Map<number, number>();
+  const mergedCoverage = new Map<number, number>();
+  let hasMatch = false;
+
+  for (const rule of rules) {
+    if (rule.isVisible === false) continue;
+    if (rule.excludedDistrictIds?.includes(districtId)) continue;
+
+    let matches = false;
+
+    if (rule.isAllDistricts) {
+      matches = true;
+    } else if (rule.criteria.length > 0) {
+      matches = rule.criteria.every((criterion) => {
+        if (criterion.metricTypeId === null || criterion.value === "") return false;
+        const metricValue = districtMetrics?.[criterion.metricTypeId];
+        if (metricValue === undefined) return false;
+        const threshold = Number(criterion.value);
+        if (isNaN(threshold)) return false;
+        return evaluateRule(metricValue, criterion.operator, threshold);
+      });
+    }
+
+    if (matches) {
+      hasMatch = true;
+      lastMatch = rule;
+
+      if (isCumulative) {
+        // Merge: later rules overwrite per category key
+        rule.interventionsByCategory.forEach((intId, catId) => {
+          mergedInterventions.set(catId, intId);
+        });
+        if (rule.coverageByCategory) {
+          rule.coverageByCategory.forEach((cov, catId) => {
+            mergedCoverage.set(catId, cov);
+          });
+        }
+      }
+    }
+  }
+
+  if (!hasMatch) return null;
+
+  if (isCumulative) {
+    return { interventionsByCategory: mergedInterventions, coverageByCategory: mergedCoverage };
+  } else {
+    return {
+      interventionsByCategory: new Map(lastMatch!.interventionsByCategory),
+      coverageByCategory: lastMatch!.coverageByCategory ? new Map(lastMatch!.coverageByCategory) : new Map(),
+    };
+  }
+}
+
 export function getLastMatchingRuleColor(
   districtId: string,
   rules: SavedRule[],
@@ -239,6 +312,11 @@ export function getLastMatchingRuleColor(
   const districtMetrics = metricValues[districtId];
 
   for (const rule of rules) {
+    // Skip hidden rules (isVisible === false)
+    if (rule.isVisible === false) {
+      continue;
+    }
+
     // Check if this district is excluded from this rule
     if (rule.excludedDistrictIds?.includes(districtId)) {
       continue;

@@ -3,7 +3,8 @@ Cumulative Rules Mode - Implementation Progress
 
 [x] Add isCumulativeMode state to plan page
 [x] Add Switch toggle to rules-sidebar.tsx (left of magic wand)
-[ ] Implement cumulative merge logic in use-district-rules.ts
+[x] Implement cumulative merge logic in use-district-rules.ts
+[x] Update plan page to use cumulative merge when applying rules
 [ ] Update getLastMatchingRuleColor to support cumulative mode
 [ ] Update intervention-map.tsx to pass cumulative mode down
 [ ] Update list-view / intervention-table to display merged interventions

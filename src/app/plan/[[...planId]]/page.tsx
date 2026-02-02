@@ -21,7 +21,7 @@ import { useInterventionCategories } from "@/hooks/use-intervention-categories";
 import { useMetricTypes } from "@/hooks/use-metric-types";
 import { useMetricValues } from "@/hooks/use-metric-values";
 import { useMultipleMetricValues } from "@/hooks/use-multiple-metric-values";
-import { findMatchingDistrictIds, findRulesMatchingDistrict, findRulesWithDistrictAsException } from "@/hooks/use-district-rules";
+import { findMatchingDistrictIds, findRulesMatchingDistrict, findRulesWithDistrictAsException, getDistrictInterventions, getLastMatchingRuleColor } from "@/hooks/use-district-rules";
 import { LegendSelectionPayload } from "@/types/intervention";
 import type { SavedRule } from "@/types/rule";
 import type { Rule } from "@/types/intervention";
@@ -169,6 +169,7 @@ export default function PlanPage() {
           isVisible: r.isVisible,
         })),
         selectedProvinceId: selectedProvince?.id ?? null,
+        isCumulativeMode,
       })
     : null;
 
@@ -182,14 +183,10 @@ export default function PlanPage() {
     // Mark rules as applied for this configuration
     rulesAppliedKeyRef.current = currentRulesKey;
 
-    console.log("Applying rules:", savedRules.length, "rules");
+    console.log("Applying rules:", savedRules.length, "rules, cumulative:", isCumulativeMode);
 
     // Filter out hidden rules (isVisible === false)
     const visibleRules = savedRules.filter((r) => r.isVisible !== false);
-
-    // Find the default rule (isAllDistricts=true, usually first) to reset all districts first
-    const defaultRule = visibleRules.find((r) => r.isAllDistricts);
-    const nonDefaultRules = visibleRules.filter((r) => !r.isAllDistricts);
 
     // Build all updates first, then apply them in a single batch to avoid race conditions
     const updates: Array<{
@@ -198,64 +195,104 @@ export default function PlanPage() {
       ruleColor: string;
     }> = [];
 
-    // First, prepare default rule update for all districts
-    if (defaultRule && defaultRule.interventionsByCategory.size > 0) {
-      const allDistrictIds = districts!.features
-        .filter((f) =>
-          selectedProvince
-            ? f.properties.regionId === selectedProvince.id
-            : true
-        )
-        .map((f) => f.properties.districtId);
+    if (isCumulativeMode) {
+      // Cumulative mode: compute merged interventions per district using getDistrictInterventions
+      // Transpose metricValuesByType to districtId -> metricTypeId -> value
+      const metricValuesByDistrict: Record<string, Record<number, number>> = {};
+      for (const [metricTypeId, valuesByOrgUnit] of Object.entries(metricValuesByType)) {
+        const typeId = Number(metricTypeId);
+        for (const [orgUnitId, value] of Object.entries(valuesByOrgUnit)) {
+          const districtId = String(orgUnitId);
+          if (!metricValuesByDistrict[districtId]) {
+            metricValuesByDistrict[districtId] = {};
+          }
+          metricValuesByDistrict[districtId][typeId] = value;
+        }
+      }
 
-      const defaultMix = createInterventionMix(
-        defaultRule.interventionsByCategory,
-        interventionCategories!
-      );
+      const filteredFeatures = selectedProvince
+        ? districts!.features.filter((f) => f.properties.regionId === selectedProvince.id)
+        : districts!.features;
 
-      updates.push({
-        districtIds: allDistrictIds,
-        interventionMix: defaultMix,
-        ruleColor: defaultRule.color,
-      });
+      for (const feature of filteredFeatures) {
+        const districtId = feature.properties.districtId;
+        const result = getDistrictInterventions(districtId, visibleRules, metricValuesByDistrict, true);
+        if (result && result.interventionsByCategory.size > 0) {
+          const interventionMix = createInterventionMix(
+            result.interventionsByCategory,
+            interventionCategories!
+          );
+          // Use last matching rule's color (getDistrictInterventions processes in order)
+          const ruleColor = getLastMatchingRuleColor(districtId, visibleRules, metricValuesByDistrict);
+          updates.push({
+            districtIds: [districtId],
+            interventionMix,
+            ruleColor: ruleColor ?? "",
+          });
+        }
+      }
+    } else {
+      // Exclusive mode: apply rules sequentially, last matching rule wins
 
-      console.log("Prepared default rule:", defaultRule.title, "for", allDistrictIds.length, "districts");
-    }
+      // Find the default rule (isAllDistricts=true, usually first) to reset all districts first
+      const defaultRule = visibleRules.find((r) => r.isAllDistricts);
+      const nonDefaultRules = visibleRules.filter((r) => !r.isAllDistricts);
 
-    // Then prepare non-default rules in order (later rules override earlier for overlapping districts)
-    for (const rule of nonDefaultRules) {
-      const rulesForEvaluation: Rule[] = rule.criteria.map((criterion) => ({
-        id: criterion.id,
-        metricTypeId: criterion.metricTypeId,
-        operator: criterion.operator,
-        value: criterion.value,
-      }));
+      // First, prepare default rule update for all districts
+      if (defaultRule && defaultRule.interventionsByCategory.size > 0) {
+        const allDistrictIds = districts!.features
+          .filter((f) =>
+            selectedProvince
+              ? f.properties.regionId === selectedProvince.id
+              : true
+          )
+          .map((f) => f.properties.districtId);
 
-      const matchingDistrictIds = findMatchingDistrictIds(
-        districts!,
-        rulesForEvaluation,
-        selectedProvince?.id ?? null,
-        metricValuesByType
-      );
-
-      // Filter out excluded districts (exceptions)
-      const finalDistrictIds = rule.excludedDistrictIds?.length
-        ? matchingDistrictIds.filter((id) => !rule.excludedDistrictIds!.includes(id))
-        : matchingDistrictIds;
-
-      if (finalDistrictIds.length > 0 && rule.interventionsByCategory.size > 0) {
-        const interventionMix = createInterventionMix(
-          rule.interventionsByCategory,
+        const defaultMix = createInterventionMix(
+          defaultRule.interventionsByCategory,
           interventionCategories!
         );
 
         updates.push({
-          districtIds: finalDistrictIds,
-          interventionMix,
-          ruleColor: rule.color,
+          districtIds: allDistrictIds,
+          interventionMix: defaultMix,
+          ruleColor: defaultRule.color,
         });
+      }
 
-        console.log("Prepared rule:", rule.title, "for", finalDistrictIds.length, "districts");
+      // Then prepare non-default rules in order (later rules override earlier for overlapping districts)
+      for (const rule of nonDefaultRules) {
+        const rulesForEvaluation: Rule[] = rule.criteria.map((criterion) => ({
+          id: criterion.id,
+          metricTypeId: criterion.metricTypeId,
+          operator: criterion.operator,
+          value: criterion.value,
+        }));
+
+        const matchingDistrictIds = findMatchingDistrictIds(
+          districts!,
+          rulesForEvaluation,
+          selectedProvince?.id ?? null,
+          metricValuesByType
+        );
+
+        // Filter out excluded districts (exceptions)
+        const finalDistrictIds = rule.excludedDistrictIds?.length
+          ? matchingDistrictIds.filter((id) => !rule.excludedDistrictIds!.includes(id))
+          : matchingDistrictIds;
+
+        if (finalDistrictIds.length > 0 && rule.interventionsByCategory.size > 0) {
+          const interventionMix = createInterventionMix(
+            rule.interventionsByCategory,
+            interventionCategories!
+          );
+
+          updates.push({
+            districtIds: finalDistrictIds,
+            interventionMix,
+            ruleColor: rule.color,
+          });
+        }
       }
     }
 
@@ -270,7 +307,7 @@ export default function PlanPage() {
     }
 
     console.log("Applied", updates.length, "rule updates");
-  }, [isReadyToApplyRules, currentRulesKey, savedRules, selectedProvince, districts, interventionCategories, updateDistricts, metricValuesByType]);
+  }, [isReadyToApplyRules, currentRulesKey, savedRules, selectedProvince, districts, interventionCategories, updateDistricts, metricValuesByType, isCumulativeMode]);
 
   const handleHighlightDistricts = useCallback((districtIds: string[]) => {
     setHighlightedDistrictIds(districtIds);
