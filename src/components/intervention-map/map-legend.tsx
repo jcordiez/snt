@@ -124,16 +124,7 @@ export function MapLegend({ districts, onSelectMix }: MapLegendProps) {
                 <span className="text-xs text-white flex-1">
                   {item.label} ({item.districtCount})
                 </span>
-                {isSelectable && onSelectMix && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-5 px-1.5 text-xs text-white hover:text-white hover:bg-white/20"
-                    onClick={() => onSelectMix(item.label, item.districtIds)}
-                  >
-                    Select
-                  </Button>
-                )}
+
               </div>
             );
           })}

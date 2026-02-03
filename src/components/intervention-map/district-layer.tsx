@@ -33,6 +33,8 @@ interface DistrictLayerProps {
   metricValuesByOrgUnit?: MetricValuesByOrgUnit;
   /** Callback when a district is clicked. Receives the district ID and whether shift key was held. */
   onDistrictClick?: (districtId: string, shiftKey: boolean) => void;
+  /** Callback to clear the current selection */
+  onClearSelection?: () => void;
 }
 
 // Helper function to build color expression from districts data
@@ -78,7 +80,7 @@ function buildColorExpression(
   ] as unknown as MapLibreGL.ExpressionSpecification;
 }
 
-export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [], selectedDistrictIds, districts, metricValuesByOrgUnit, onDistrictClick }: DistrictLayerProps) {
+export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [], selectedDistrictIds, districts, metricValuesByOrgUnit, onDistrictClick, onClearSelection }: DistrictLayerProps) {
   const { map, isLoaded } = useMap();
   const layersAdded = useRef(false);
   const popupRef = useRef<maplibregl.Popup | null>(null);
@@ -150,7 +152,7 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
       source: SOURCE_ID,
       paint: {
         "fill-color": initialColorExpression,
-        "fill-opacity": 0.7,
+        "fill-opacity": 0.99,
         "fill-opacity-transition": { duration: 300 },
       },
     });
@@ -184,7 +186,7 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
       type: "line",
       source: SOURCE_ID,
       paint: {
-        "line-color": "#3b82f6", // blue-500 (as per PRD)
+        "line-color": "#7C3AED", // accent color (purple)
         "line-width": 3,
       },
       filter: ["in", ["get", "districtId"], ["literal", []]], // Initially empty
@@ -424,6 +426,29 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
     };
   }, [isLoaded, map, onDistrictClick]);
 
+  // Click handler to clear selection when clicking outside districts
+  useEffect(() => {
+    if (!isLoaded || !map || !onClearSelection) return;
+
+    const handleMapClick = (e: MapLibreGL.MapMouseEvent) => {
+      // Query features at the click point on the active fill layer
+      const features = map.queryRenderedFeatures(e.point, {
+        layers: [ACTIVE_FILL_LAYER_ID],
+      });
+
+      // If no features found, the click was outside any active district
+      if (features.length === 0) {
+        onClearSelection();
+      }
+    };
+
+    map.on("click", handleMapClick);
+
+    return () => {
+      map.off("click", handleMapClick);
+    };
+  }, [isLoaded, map, onClearSelection]);
+
   // Tooltip on hover (only for active layer - inactive districts have no interaction)
   useEffect(() => {
     if (!isLoaded || !map) return;
@@ -443,12 +468,19 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
 
       const props = e.features[0].properties;
       const mixLabel = props.interventionMixLabel || "CM";
+      const colorByInterventionName = props.colorByInterventionName ?
+        (typeof props.colorByInterventionName === 'string' ? JSON.parse(props.colorByInterventionName) : props.colorByInterventionName)
+        : {};
+      const defaultColor = props.ruleColor || "#ECEDEE";
 
       // Split the intervention mix label (e.g., "CM + IPTp + Dual AI") into individual interventions
       const interventions = mixLabel.split(" + ");
-      const interventionList = interventions
-        .map((intervention: string) => `• ${intervention}`)
-        .join("<br>");
+      const interventionTags = interventions
+        .map((intervention: string) => {
+          const color = colorByInterventionName[intervention] || defaultColor;
+          return `<span style="display: inline-block; background: ${color}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; margin-right: 4px; margin-bottom: 4px;">${intervention}</span>`;
+        })
+        .join("");
 
       // Get metric values for this district
       const districtId = Number(props.districtId);
@@ -468,7 +500,7 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
         .setLngLat(e.lngLat)
         .setHTML(`
           <strong>${props.districtName}</strong>
-          <table style="margin-top: 6px; font-size: 12px; border-collapse: collapse;">
+          <table style="margin-top: 6px; font-size: 12px; border-collapse: collapse; width:100%;">
             <tr>
               <td style="color: #666; padding-right: 8px;">Mortality:</td>
               <td style="text-align: right;">${mortalityValue}</td>
@@ -486,8 +518,7 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
               <td style="text-align: right;">${seasonalityValue}</td>
             </tr>
           </table>
-          <div style="margin-top: 6px; font-size: 12px; color: #666;">Interventions:</div>
-          <div style="margin-top: 2px; font-size: 12px;">${interventionList}</div>
+          <div style="margin-top: 8px; display: flex; flex-wrap: wrap;">${interventionTags}</div>
         `)
         .addTo(map);
     };

@@ -116,7 +116,7 @@ export type UpdateDistrictsFn = (
   districtIds: string[],
   interventionMix: InterventionMix,
   interventionCategories: InterventionCategory[],
-  options?: { replace?: boolean; ruleColor?: string }
+  options?: { replace?: boolean; ruleColor?: string; colorByCategory?: Record<string, string> }
 ) => void;
 
 function transformOrgUnitsToGeoJSON(
@@ -231,10 +231,12 @@ export function useOrgUnits() {
 
         // Determine the final mix based on replace mode
         let finalMix: InterventionMix;
+        let finalColorByCategory: Record<string, string>;
 
         if (options?.replace) {
           // Replace mode: use the incoming mix directly (for editing from legend)
           finalMix = interventionMix;
+          finalColorByCategory = options?.colorByCategory ?? {};
         } else {
           // Merge mode: preserve existing interventions from other categories
           const existingAssignments = feature.properties.interventionCategoryAssignments
@@ -246,7 +248,28 @@ export function useOrgUnits() {
             displayLabel: feature.properties.interventionMixLabel ?? "None",
           };
           finalMix = mergeInterventionMixes(existingMix, interventionMix, interventionCategories);
+
+          // Merge colorByCategory: existing colors + incoming colors (incoming overwrites)
+          finalColorByCategory = {
+            ...(feature.properties.colorByCategory ?? {}),
+            ...(options?.colorByCategory ?? {}),
+          };
         }
+
+        // Build colorByInterventionName from colorByCategory and finalMix
+        const colorByInterventionName: Record<string, string> = {};
+        finalMix.categoryAssignments.forEach((interventionId, categoryId) => {
+          const category = interventionCategories.find((c) => c.id === categoryId);
+          if (category) {
+            const intervention = category.interventions.find((i) => i.id === interventionId);
+            if (intervention) {
+              const color = finalColorByCategory[String(categoryId)];
+              if (color) {
+                colorByInterventionName[intervention.short_name] = color;
+              }
+            }
+          }
+        });
 
         // Update the district with the final intervention mix
         // NOTE: Do NOT store interventionMix directly in properties - it contains a Map
@@ -264,6 +287,10 @@ export function useOrgUnits() {
             interventionCount: finalMix.categoryAssignments.size,
             // Apply rule color if provided (used for map rendering); explicitly set empty string to clear
             ...(options?.ruleColor !== undefined ? { ruleColor: options.ruleColor } : {}),
+            // Store per-category colors for tooltip display
+            colorByCategory: finalColorByCategory,
+            // Store per-intervention-name colors for easy tooltip access
+            colorByInterventionName,
           },
         };
       });

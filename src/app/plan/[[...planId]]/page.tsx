@@ -33,7 +33,10 @@ import { GUIDELINE_VARIATIONS } from "@/data/intervention-guidelines-variations"
 
 // All metric IDs that have data files available - defined outside component
 // to maintain stable reference and prevent infinite re-fetch loops
-const ALL_METRIC_IDS_WITH_DATA = [404, 406, 407, 410, 411, 412, 413, 417, 418, 419, 420];
+const ALL_METRIC_IDS_WITH_DATA = [325, 404, 406, 407, 410, 411, 412, 413, 417, 418, 419, 420];
+
+// Population metric ID
+const POPULATION_METRIC_ID = 325;
 
 /**
  * Serializes a SavedRule to a comparable string representation.
@@ -97,6 +100,7 @@ export default function PlanPage() {
   const [legendSelectionPayload, setLegendSelectionPayload] = useState<LegendSelectionPayload | null>(null);
   const [editingRuleId, setEditingRuleId] = useState<string | null>(null);
   const [isRuleModalOpen, setIsRuleModalOpen] = useState(false);
+  const [selectedRuleId, setSelectedRuleId] = useState<string | null>(null);
   const { isOpen: isComparisonOpen, toggle: toggleComparison } = useComparisonSidebar();
   const rulesInitialized = useRef(false);
 
@@ -200,6 +204,7 @@ export default function PlanPage() {
       districtIds: string[];
       interventionMix: ReturnType<typeof createInterventionMix>;
       ruleColor: string;
+      colorByCategory: Record<string, string>;
     }> = [];
 
     if (isCumulativeMode) {
@@ -231,10 +236,16 @@ export default function PlanPage() {
           );
           // Blend colors from all matching rules for this district
           const ruleColor = getBlendedMatchingRuleColor(districtId, visibleRules, metricValuesByDistrict);
+          // Convert colorByCategory Map to Record
+          const colorByCategory: Record<string, string> = {};
+          result.colorByCategory.forEach((color, catId) => {
+            colorByCategory[String(catId)] = color;
+          });
           updates.push({
             districtIds: [districtId],
             interventionMix,
             ruleColor: ruleColor ?? "",
+            colorByCategory,
           });
         }
       }
@@ -260,10 +271,17 @@ export default function PlanPage() {
           interventionCategories!
         );
 
+        // All categories from this rule get the rule's color
+        const colorByCategory: Record<string, string> = {};
+        defaultRule.interventionsByCategory.forEach((_, catId) => {
+          colorByCategory[String(catId)] = defaultRule.color;
+        });
+
         updates.push({
           districtIds: allDistrictIds,
           interventionMix: defaultMix,
           ruleColor: defaultRule.color,
+          colorByCategory,
         });
       }
 
@@ -294,10 +312,17 @@ export default function PlanPage() {
             interventionCategories!
           );
 
+          // All categories from this rule get the rule's color
+          const colorByCategory: Record<string, string> = {};
+          rule.interventionsByCategory.forEach((_, catId) => {
+            colorByCategory[String(catId)] = rule.color;
+          });
+
           updates.push({
             districtIds: finalDistrictIds,
             interventionMix,
             ruleColor: rule.color,
+            colorByCategory,
           });
         }
       }
@@ -309,7 +334,7 @@ export default function PlanPage() {
         update.districtIds,
         update.interventionMix,
         interventionCategories!,
-        { replace: isCumulativeMode, ruleColor: update.ruleColor }
+        { replace: isCumulativeMode, ruleColor: update.ruleColor, colorByCategory: update.colorByCategory }
       );
     }
 
@@ -550,6 +575,8 @@ export default function PlanPage() {
             onGenerateFromGuidelines={handleGenerateFromGuidelines}
             isCumulativeMode={isCumulativeMode}
             onToggleCumulativeMode={setIsCumulativeMode}
+            selectedRuleId={selectedRuleId}
+            onSelectRule={setSelectedRuleId}
           />
          </div>
 
@@ -591,6 +618,11 @@ export default function PlanPage() {
                     seasonality: seasonalityByOrgUnit,
                   }}
                   hasRules={savedRules.length > 0}
+                  selectedRuleId={selectedRuleId}
+                  savedRules={savedRules}
+                  metricValuesByType={metricValuesByType}
+                  populationByOrgUnit={metricValuesByType[POPULATION_METRIC_ID]}
+                  onSelectionCleared={() => setSelectedRuleId(null)}
                   onSetAsExceptions={(districtIds) => {
                     // Transpose metricValuesByType to the format expected by findRulesMatchingDistrict:
                     // from metricTypeId -> orgUnitId -> value to districtId -> metricTypeId -> value

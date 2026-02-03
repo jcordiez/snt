@@ -1,5 +1,4 @@
 "use client";
-
 import { Plus, Wand2, Blend, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +31,10 @@ interface RulesSidebarProps {
   isCumulativeMode?: boolean;
   /** Toggle cumulative mode */
   onToggleCumulativeMode?: (value: boolean) => void;
+  /** Currently selected rule ID (controlled) */
+  selectedRuleId?: string | null;
+  /** Callback when a rule is selected/deselected */
+  onSelectRule?: (ruleId: string | null) => void;
 }
 
 export function RulesSidebar({
@@ -44,16 +47,23 @@ export function RulesSidebar({
   onToggleVisibility,
   getDistrictName,
   onGenerateFromGuidelines,
+  selectedRuleId,
+  onSelectRule,
 }: RulesSidebarProps) {
+  const handleSelectRule = (ruleId: string) => {
+    const newValue = selectedRuleId === ruleId ? null : ruleId;
+    onSelectRule?.(newValue);
+  };
+
   return (
     <div className="flex flex-col h-full min-h-0 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b shrink-0">
+      <div className="flex items-center justify-between px-4 py-4 border-b border-[#E3E8EF] shrink-0">
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-accent/20">
             <Blend className="w-4 h-4 text-accent" />
           </div>
-          <h2 className="text-lg font-semibold">Interventions</h2>
+          <h2 className="text-lg font-medium text-primary">Interventions</h2>
         </div>
         <div className="flex items-center gap-1">
           {/* Magic wand dropdown for generating rules from guidelines */}
@@ -97,8 +107,8 @@ export function RulesSidebar({
       </div>
 
       {/* Scrollable list of rules */}
-      <div className="flex-1 overflow-y-auto min-h-0 ">
-        <div className="divide-y divide-[#E3E8EF]">
+      <div className="flex-1 overflow-y-auto min-h-0 p-4">
+        <div className="flex flex-col gap-2">
           {rules.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-4">
               No rules yet. Click + to add a rule.
@@ -114,6 +124,8 @@ export function RulesSidebar({
                 onDelete={onDeleteRule}
                 onToggleVisibility={onToggleVisibility}
                 getDistrictName={getDistrictName}
+                isSelected={selectedRuleId === rule.id}
+                onSelect={handleSelectRule}
               />
             ))
           )}

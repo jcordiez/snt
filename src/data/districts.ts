@@ -17,6 +17,10 @@ export interface DistrictProperties {
   interventionMixLabel?: string;
   /** Color assigned by a rule, used for map rendering */
   ruleColor?: string;
+  /** Per-category colors (categoryId -> color) for tooltip display */
+  colorByCategory?: Record<string, string>;
+  /** Per-intervention colors (intervention short_name -> color) for tooltip display */
+  colorByInterventionName?: Record<string, string>;
 }
 
 export interface Region {

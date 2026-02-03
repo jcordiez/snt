@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Map, MapControls, useMap } from "@/components/ui/map";
 import { DistrictLayer } from "./district-layer";
 // import { MapLegend } from "./map-legend";
@@ -8,6 +8,9 @@ import { SelectionWidget } from "./selection-widget";
 import { countryConfig, Province, DistrictProperties } from "@/data/districts";
 import { useDistrictSelection } from "@/hooks/use-district-selection";
 import { MapLegend } from "./map-legend";
+import { findMatchingDistrictIds } from "@/hooks/use-district-rules";
+import type { SavedRule } from "@/types/rule";
+import type { Rule } from "@/types/intervention";
 
 /** Metric values by org unit ID for tooltip display */
 export interface MetricValuesByOrgUnit {
@@ -33,6 +36,16 @@ interface InterventionMapProps {
   onSetAsExceptions?: (districtIds: string[]) => void;
   /** Callback when "Remove from exceptions" is clicked in SelectionWidget */
   onRemoveFromExceptions?: (districtIds: string[]) => void;
+  /** Callback when selection is cleared (e.g., clicking outside districts) */
+  onSelectionCleared?: () => void;
+  /** Currently selected rule ID for highlighting matching districts */
+  selectedRuleId?: string | null;
+  /** All saved rules for evaluating matching districts */
+  savedRules?: SavedRule[];
+  /** Metric values by type for rule evaluation: metricTypeId -> orgUnitId -> value */
+  metricValuesByType?: Record<number, Record<number, number>>;
+  /** Population values by org unit ID */
+  populationByOrgUnit?: Record<number, number>;
 }
 
 /**
@@ -74,7 +87,7 @@ function MapAutoZoom({ selectedProvince }: { selectedProvince?: Province | null 
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function InterventionMap({ selectedProvince, highlightedDistrictIds = [], districts, onSelectMix, metricValuesByOrgUnit, hasRules = false, onSetAsExceptions, onRemoveFromExceptions }: InterventionMapProps) {
+export function InterventionMap({ selectedProvince, highlightedDistrictIds = [], districts, onSelectMix, metricValuesByOrgUnit, hasRules = false, onSetAsExceptions, onRemoveFromExceptions, onSelectionCleared, selectedRuleId, savedRules, metricValuesByType, populationByOrgUnit }: InterventionMapProps) {
   // Compute active district IDs based on selected province
   // When a province is selected, only districts in that province are active/selectable
   const activeDistrictIds = useMemo(() => {
@@ -92,7 +105,72 @@ export function InterventionMap({ selectedProvince, highlightedDistrictIds = [],
 
   // Selection state for district multi-select feature
   // Pass activeDistrictIds so selection is cleared when districts become inactive
-  const { selectedDistrictIds, selectDistrict, clearSelection, selectionCount } = useDistrictSelection({ activeDistrictIds });
+  const { selectedDistrictIds, selectDistrict, clearSelection, setSelection, selectionCount } = useDistrictSelection({ activeDistrictIds });
+
+  // Track whether selection was set by rule selection (to avoid clearing on click)
+  const selectionFromRuleRef = useRef(false);
+
+  // When a rule is selected, find and select all matching districts
+  useEffect(() => {
+    if (!selectedRuleId || !savedRules || !districts) {
+      // No rule selected - don't clear selection automatically as user might have manual selection
+      return;
+    }
+
+    const rule = savedRules.find((r) => r.id === selectedRuleId);
+    if (!rule) {
+      return;
+    }
+
+    // Convert rule criteria to the format expected by findMatchingDistrictIds
+    const rulesForEvaluation: Rule[] = rule.criteria.map((criterion) => ({
+      id: criterion.id,
+      metricTypeId: criterion.metricTypeId,
+      operator: criterion.operator,
+      value: criterion.value,
+    }));
+
+    // For "all districts" rules, select all districts (respecting province filter)
+    let matchingDistrictIds: string[];
+    if (rule.isAllDistricts) {
+      matchingDistrictIds = districts.features
+        .filter((f) => !selectedProvince || f.properties.regionId === selectedProvince.id)
+        .map((f) => f.properties.districtId);
+    } else {
+      matchingDistrictIds = findMatchingDistrictIds(
+        districts,
+        rulesForEvaluation,
+        selectedProvince?.id ?? null,
+        metricValuesByType
+      );
+    }
+
+    // Filter out excluded districts (exceptions)
+    const finalDistrictIds = rule.excludedDistrictIds?.length
+      ? matchingDistrictIds.filter((id) => !rule.excludedDistrictIds!.includes(id))
+      : matchingDistrictIds;
+
+    // Mark that this selection came from rule selection
+    selectionFromRuleRef.current = true;
+    setSelection(finalDistrictIds);
+  }, [selectedRuleId, savedRules, districts, selectedProvince, metricValuesByType, setSelection]);
+
+  // Handler for clearing selection (e.g., clicking outside districts)
+  const handleClearSelection = useCallback(() => {
+    clearSelection();
+    onSelectionCleared?.();
+  }, [clearSelection, onSelectionCleared]);
+
+  // Calculate total population of selected districts
+  const selectedPopulation = useMemo(() => {
+    if (!populationByOrgUnit || selectedDistrictIds.size === 0) return 0;
+    let total = 0;
+    selectedDistrictIds.forEach((districtId) => {
+      const pop = populationByOrgUnit[Number(districtId)];
+      if (pop) total += pop;
+    });
+    return total;
+  }, [populationByOrgUnit, selectedDistrictIds]);
 
   // Handlers for SelectionWidget actions
   const handleSetAsExceptions = useCallback(() => {
@@ -121,6 +199,7 @@ export function InterventionMap({ selectedProvince, highlightedDistrictIds = [],
           districts={districts}
           metricValuesByOrgUnit={metricValuesByOrgUnit}
           onDistrictClick={selectDistrict}
+          onClearSelection={handleClearSelection}
         />
         <MapAutoZoom selectedProvince={selectedProvince} />
         <MapControls
@@ -135,8 +214,9 @@ export function InterventionMap({ selectedProvince, highlightedDistrictIds = [],
       {/* Selection Widget - shows when districts are selected */}
       <SelectionWidget
         selectionCount={selectionCount}
+        totalPopulation={selectedPopulation}
         onSetAsExceptions={handleSetAsExceptions}
-        onRemoveFromExceptions={handleRemoveFromExceptions}
+        onClearSelection={handleClearSelection}
         hasRules={hasRules}
       />
 

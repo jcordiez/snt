@@ -27,6 +27,10 @@ interface RuleCardProps {
   onToggleVisibility: (ruleId: string) => void;
   /** Function to look up district name by ID */
   getDistrictName: (districtId: string) => string;
+  /** Whether this card is selected */
+  isSelected?: boolean;
+  /** Callback when card is clicked to select/deselect */
+  onSelect?: (ruleId: string) => void;
 }
 
 // Default coverage percentage for display (matches rule-edit-modal.tsx)
@@ -41,6 +45,8 @@ export function RuleCard({
   onDelete,
   onToggleVisibility,
   getDistrictName,
+  isSelected,
+  onSelect,
 }: RuleCardProps) {
   const isVisible = rule.isVisible !== false; // Default to true if undefined
 
@@ -71,13 +77,18 @@ export function RuleCard({
 
   return (
     <div
-      className={`group p-2 text-card-foreground transition-colors ${!isVisible ? 'opacity-40' : ''}`}
+      className={`group p-1 text-card-foreground transition-colors rounded-lg cursor-pointer hover:border-secondary/50 duration-300 ${
+        isSelected
+          ? 'outline outline-2 outline-accent border border-transparent'
+          : 'border border-[#E3E8EF]'
+      } ${!isVisible ? 'opacity-40' : ''}`}
+      onClick={() => onSelect?.(rule.id)}
     >
       {/* Header */}
-      <div className="py-4 px-4 flex items-center justify-between">
+      <div className="py-2 px-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div
-            className="w-4 h-4 flex-shrink-0 rounded-[4px]"
+            className="w-3 h-3 flex-shrink-0 rounded-[4px]"
             style={{ backgroundColor: rule.color }}
           />
           <h3 className="text-md font-semibold text-primary">{rule.title}</h3>
@@ -86,8 +97,11 @@ export function RuleCard({
           <Button
             variant="ghost"
             size="icon"
-            className="h-7 w-7 text-slate-700"
-            onClick={() => onToggleVisibility(rule.id)}
+            className="h-7 w-7 text-secondary"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleVisibility(rule.id);
+            }}
             title={isVisible ? "Hide rule" : "Show rule"}
           >
             {isVisible ? (
@@ -135,22 +149,46 @@ export function RuleCard({
 
           {/* Intervention tags and exceptions */}
           {(interventionTags.length > 0 || (rule.excludedDistrictIds && rule.excludedDistrictIds.length > 0)) && (
-            <div className="flex items-start justify-between gap-2 mt-4 mb-2">
-              <div className="flex flex-wrap gap-1 flex-1">
-                {interventionTags.map((tag) => (
+            <div className="flex items-start justify-between gap-2 mt-4">
+              <div className="flex gap-1 flex-1">
+                {interventionTags.slice(0, 2).map((tag) => (
                   <span
                     key={tag.name}
-                    className="inline-flex items-center rounded-sm bg-[#ECEDEE] px-2 py-1 text-sm font-medium tracking-wide text-primary"
+                    className="max-w-[120px] truncate items-center rounded-sm bg-[#ECEDEE] px-2 py-1 text-sm font-medium tracking-wide text-primary"
                   >
                     {tag.name}
                   </span>
                 ))}
+                {interventionTags.length > 2 && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="hover:bg-accent/20 hover:text-accent inline-flex items-center rounded-sm border-secondary/20 border px-2 py-1 text-sm font-medium tracking-wide text-secondary cursor-default">
+                          +{interventionTags.length - 2}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="p-4">
+                        <table className="text-xs ">
+
+                          <tbody>
+                            {interventionTags.map((tag) => (
+                              <tr key={tag.name}>
+                                <td className=" py-1">{tag.name}</td>
+                                <td className="text-right py-1">{tag.coverage}%</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
               </div>
               {rule.excludedDistrictIds && rule.excludedDistrictIds.length > 0 && (
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="inline-flex items-center justify-center rounded-full bg-primary w-6 h-6 text-sm font-medium text-white shrink-0 cursor-default">
+                      <span className="inline-flex items-center justify-center rounded-full bg-[#FF9800] w-6 h-6 text-sm font-medium text-white shrink-0 cursor-default">
                         {rule.excludedDistrictIds.length}
                       </span>
                     </TooltipTrigger>

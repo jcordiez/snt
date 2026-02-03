@@ -9,6 +9,8 @@ export interface UseDistrictSelectionReturn {
   selectDistrict: (districtId: string, shiftKey: boolean) => void;
   /** Clear all selected districts */
   clearSelection: () => void;
+  /** Set the selection to a specific set of district IDs */
+  setSelection: (districtIds: string[]) => void;
   /** Check if a district is selected */
   isSelected: (districtId: string) => boolean;
   /** Number of selected districts */
@@ -70,6 +72,10 @@ export function useDistrictSelection(options?: UseDistrictSelectionOptions): Use
     setSelectedDistrictIds(new Set());
   }, []);
 
+  const setSelection = useCallback((districtIds: string[]) => {
+    setSelectedDistrictIds(new Set(districtIds));
+  }, []);
+
   const isSelected = useCallback(
     (districtId: string) => selectedDistrictIds.has(districtId),
     [selectedDistrictIds]
@@ -79,6 +85,7 @@ export function useDistrictSelection(options?: UseDistrictSelectionOptions): Use
     selectedDistrictIds,
     selectDistrict,
     clearSelection,
+    setSelection,
     isSelected,
     selectionCount: selectedDistrictIds.size,
   };

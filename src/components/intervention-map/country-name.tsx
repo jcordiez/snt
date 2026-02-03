@@ -6,7 +6,7 @@ interface CountryNameProps {
 
 export function CountryName({ name }: CountryNameProps) {
   return (
-    <h1 className="text-lg md:text-lg font-semibold text-left">
+    <h1 className="text-lg md:text-xl font-medium text-left text-primary">
       {name}
     </h1>
   );

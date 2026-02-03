@@ -247,11 +247,13 @@ export function getDistrictInterventions(
 ): {
   interventionsByCategory: Map<number, number>;
   coverageByCategory: Map<number, number>;
+  colorByCategory: Map<number, string>;
 } | null {
   const districtMetrics = metricValues[districtId];
   let lastMatch: SavedRule | null = null;
   const mergedInterventions = new Map<number, number>();
   const mergedCoverage = new Map<number, number>();
+  const mergedColors = new Map<number, string>();
   let hasMatch = false;
 
   for (const rule of rules) {
@@ -281,6 +283,7 @@ export function getDistrictInterventions(
         // Merge: later rules overwrite per category key
         rule.interventionsByCategory.forEach((intId, catId) => {
           mergedInterventions.set(catId, intId);
+          mergedColors.set(catId, rule.color); // Track which rule's color for this category
         });
         if (rule.coverageByCategory) {
           rule.coverageByCategory.forEach((cov, catId) => {
@@ -294,11 +297,17 @@ export function getDistrictInterventions(
   if (!hasMatch) return null;
 
   if (isCumulative) {
-    return { interventionsByCategory: mergedInterventions, coverageByCategory: mergedCoverage };
+    return { interventionsByCategory: mergedInterventions, coverageByCategory: mergedCoverage, colorByCategory: mergedColors };
   } else {
+    // In exclusive mode, all categories come from the same rule
+    const lastMatchColors = new Map<number, string>();
+    lastMatch!.interventionsByCategory.forEach((_, catId) => {
+      lastMatchColors.set(catId, lastMatch!.color);
+    });
     return {
       interventionsByCategory: new Map(lastMatch!.interventionsByCategory),
       coverageByCategory: lastMatch!.coverageByCategory ? new Map(lastMatch!.coverageByCategory) : new Map(),
+      colorByCategory: lastMatchColors,
     };
   }
 }
@@ -372,8 +381,110 @@ function hexToRgb(hex: string): [number, number, number] {
   ];
 }
 
-function rgbToHex(r: number, g: number, b: number): string {
-  return "#" + [r, g, b].map((v) => Math.round(v).toString(16).padStart(2, "0")).join("");
+/**
+ * Convert RGB to HSL.
+ * Returns [h, s, l] where h is 0-360, s and l are 0-100.
+ */
+function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+
+  if (max === min) {
+    return [0, 0, l * 100];
+  }
+
+  const d = max - min;
+  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+  let h = 0;
+  switch (max) {
+    case r:
+      h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+      break;
+    case g:
+      h = ((b - r) / d + 2) / 6;
+      break;
+    case b:
+      h = ((r - g) / d + 4) / 6;
+      break;
+  }
+
+  return [h * 360, s * 100, l * 100];
+}
+
+/**
+ * Convert HSL to RGB.
+ * h is 0-360, s and l are 0-100.
+ */
+function hslToRgb(h: number, s: number, l: number): [number, number, number] {
+  h /= 360;
+  s /= 100;
+  l /= 100;
+
+  if (s === 0) {
+    const gray = Math.round(l * 255);
+    return [gray, gray, gray];
+  }
+
+  const hue2rgb = (p: number, q: number, t: number) => {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1 / 6) return p + (q - p) * 6 * t;
+    if (t < 1 / 2) return q;
+    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+    return p;
+  };
+
+  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+  const p = 2 * l - q;
+
+  return [
+    Math.round(hue2rgb(p, q, h + 1 / 3) * 255),
+    Math.round(hue2rgb(p, q, h) * 255),
+    Math.round(hue2rgb(p, q, h - 1 / 3) * 255),
+  ];
+}
+
+/**
+ * Convert hex color to HSL.
+ */
+function hexToHsl(hex: string): [number, number, number] {
+  const [r, g, b] = hexToRgb(hex);
+  return rgbToHsl(r, g, b);
+}
+
+/**
+ * Convert HSL to hex color string.
+ */
+function hslToHex(h: number, s: number, l: number): string {
+  const [r, g, b] = hslToRgb(h, s, l);
+  return "#" + [r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("");
+}
+
+/**
+ * Compute the circular mean of angles (for hue blending).
+ * Angles are in degrees (0-360).
+ */
+function circularMean(angles: number[]): number {
+  let sinSum = 0;
+  let cosSum = 0;
+
+  for (const angle of angles) {
+    const rad = (angle * Math.PI) / 180;
+    sinSum += Math.sin(rad);
+    cosSum += Math.cos(rad);
+  }
+
+  const meanRad = Math.atan2(sinSum / angles.length, cosSum / angles.length);
+  let meanDeg = (meanRad * 180) / Math.PI;
+  if (meanDeg < 0) meanDeg += 360;
+
+  return meanDeg;
 }
 
 /**
@@ -418,16 +529,22 @@ export function getBlendedMatchingRuleColor(
   if (matchingColors.length === 0) return defaultColor;
   if (matchingColors.length === 1) return matchingColors[0];
 
-  // Average the RGB values of all matching rule colors
-  let rSum = 0, gSum = 0, bSum = 0;
-  for (const color of matchingColors) {
-    const [r, g, b] = hexToRgb(color);
-    rSum += r;
-    gSum += g;
-    bSum += b;
-  }
-  const n = matchingColors.length;
-  return rgbToHex(rSum / n, gSum / n, bSum / n);
+  // Blend colors in HSL space for more vibrant results
+  const hslColors = matchingColors.map(hexToHsl);
+  const hues = hslColors.map(([h]) => h);
+  const saturations = hslColors.map(([, s]) => s);
+  const lightnesses = hslColors.map(([, , l]) => l);
+
+  // Use circular mean for hue (handles wraparound at 360°)
+  const avgHue = circularMean(hues);
+  // Average saturation and lightness normally
+  const avgSat = saturations.reduce((a, b) => a + b, 0) / saturations.length;
+  const avgLight = lightnesses.reduce((a, b) => a + b, 0) / lightnesses.length;
+
+  // Boost saturation slightly to keep colors vibrant when blending
+  const boostedSat = Math.min(100, avgSat * 1.1);
+
+  return hslToHex(avgHue, boostedSat, avgLight);
 }
 
 export interface DistrictWithProperties {
