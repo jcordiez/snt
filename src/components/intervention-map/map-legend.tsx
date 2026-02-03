@@ -98,14 +98,14 @@ export function MapLegend({ districts, onSelectMix }: MapLegendProps) {
   const nonSelectableLabels = ["No data", "No interventions assigned"];
 
   return (
-    <div className="absolute bottom-3 left-3 z-10 bg-white/90 backdrop-blur-sm rounded-lg shadow-md px-3 py-2 border border-gray-200">
+    <div className="absolute bottom-3 left-3 z-10 bg-[#1F2B3D]/75 backdrop-blur-sm rounded-lg shadow-md px-3 py-2">
       <div className="flex items-center justify-between gap-2 mb-1.5">
-        <div className="text-xs font-semibold text-gray-700">
+        <div className="text-xs font-semibold text-white">
           Intervention Mix
         </div>
         <button
           onClick={() => setCollapsed((c) => !c)}
-          className="text-gray-400 hover:text-gray-600 text-xs leading-none px-1"
+          className="text-white/70 hover:text-white text-xs leading-none px-1"
           aria-label={collapsed ? "Show legend" : "Hide legend"}
         >
           {collapsed ? "+" : "\u2212"}
@@ -118,17 +118,17 @@ export function MapLegend({ districts, onSelectMix }: MapLegendProps) {
             return (
               <div key={item.label} className="flex items-center gap-2">
                 <span
-                  className="w-3 h-3 rounded-sm flex-shrink-0 border border-gray-300"
+                  className="w-3 h-3 rounded-sm flex-shrink-0 border border-white/30"
                   style={{ backgroundColor: item.color }}
                 />
-                <span className="text-xs text-gray-600 flex-1">
+                <span className="text-xs text-white flex-1">
                   {item.label} ({item.districtCount})
                 </span>
                 {isSelectable && onSelectMix && (
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-5 px-1.5 text-xs"
+                    className="h-5 px-1.5 text-xs text-white hover:text-white hover:bg-white/20"
                     onClick={() => onSelectMix(item.label, item.districtIds)}
                   >
                     Select

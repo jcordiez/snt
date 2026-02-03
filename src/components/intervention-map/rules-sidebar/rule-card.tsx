@@ -9,6 +9,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { SavedRule } from "@/types/rule";
 import type { MetricType, InterventionCategory } from "@/types/intervention";
 
@@ -65,22 +71,22 @@ export function RuleCard({
 
   return (
     <div
-      className={`group text-card-foreground transition-colors ${!isVisible ? 'opacity-40' : ''}`}
+      className={`group p-2 text-card-foreground transition-colors ${!isVisible ? 'opacity-40' : ''}`}
     >
       {/* Header */}
-      <div className="py-3 px-4 flex items-center justify-between">
+      <div className="py-4 px-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div
-            className="w-4 h-4 rounded-sm flex-shrink-0"
+            className="w-4 h-4 flex-shrink-0 rounded-[4px]"
             style={{ backgroundColor: rule.color }}
           />
-          <h3 className="text-sm font-medium">{rule.title}</h3>
+          <h3 className="text-md font-semibold text-primary">{rule.title}</h3>
         </div>
         <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
           <Button
             variant="ghost"
             size="icon"
-            className="h-7 w-7 text-muted-foreground"
+            className="h-7 w-7 text-slate-700"
             onClick={() => onToggleVisibility(rule.id)}
             title={isVisible ? "Hide rule" : "Show rule"}
           >
@@ -121,23 +127,46 @@ export function RuleCard({
         <div className="pb-3 px-4 pt-0">
           {/* Criteria as text, max 2 lines, click ellipsis to expand */}
           <p
-            className={`text-xs text-muted-foreground ${showAllCriteria ? "" : "line-clamp-2 cursor-pointer"}`}
+            className={`text-xs text-secondary ${showAllCriteria ? "" : "line-clamp-2 cursor-pointer"}`}
             onClick={() => { if (!showAllCriteria) setShowAllCriteria(true); }}
           >
             {criteriaString}
           </p>
 
-          {/* Intervention tags */}
-          {interventionTags.length > 0 && (
-            <div className="flex flex-wrap gap-1 mt-3">
-              {interventionTags.map((tag) => (
-                <span
-                  key={tag.name}
-                  className="inline-flex items-center rounded-md bg-slate-200 px-1.5 py-0.5 text-xs font-semibold text-slate-600"
-                >
-                  {tag.name}
-                </span>
-              ))}
+          {/* Intervention tags and exceptions */}
+          {(interventionTags.length > 0 || (rule.excludedDistrictIds && rule.excludedDistrictIds.length > 0)) && (
+            <div className="flex items-start justify-between gap-2 mt-4 mb-2">
+              <div className="flex flex-wrap gap-1 flex-1">
+                {interventionTags.map((tag) => (
+                  <span
+                    key={tag.name}
+                    className="inline-flex items-center rounded-sm bg-[#ECEDEE] px-2 py-1 text-sm font-medium tracking-wide text-primary"
+                  >
+                    {tag.name}
+                  </span>
+                ))}
+              </div>
+              {rule.excludedDistrictIds && rule.excludedDistrictIds.length > 0 && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="inline-flex items-center justify-center rounded-full bg-primary w-6 h-6 text-sm font-medium text-white shrink-0 cursor-default">
+                        {rule.excludedDistrictIds.length}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-xs">
+                      <div className="text-xs">
+                        <div className="font-semibold mb-1">Exceptions:</div>
+                        <ul className="list-disc list-inside">
+                          {rule.excludedDistrictIds.map((id) => (
+                            <li key={id}>{getDistrictName(id)}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
             </div>
           )}
         </div>

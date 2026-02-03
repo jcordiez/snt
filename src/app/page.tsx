@@ -1,15 +1,8 @@
 "use client";
 
-import { SidebarTrigger } from "@/components/ui/sidebar";
-
 export default function WelcomePage() {
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <header className="px-6 py-4 border-b flex items-center">
-        <SidebarTrigger />
-      </header>
-
       {/* Main Content: Welcome Screen */}
       <main className="flex-1 flex items-center justify-center p-8">
         <div className="max-w-2xl text-center space-y-6">

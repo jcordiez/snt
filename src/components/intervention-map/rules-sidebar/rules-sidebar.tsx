@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Wand2 } from "lucide-react";
+import { Plus, Wand2, Blend, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -46,10 +46,15 @@ export function RulesSidebar({
   onGenerateFromGuidelines,
 }: RulesSidebarProps) {
   return (
-    <div className="w-96 border-l flex flex-col h-full min-h-0 overflow-hidden shrink-0">
+    <div className="flex flex-col h-full min-h-0 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b bg-white shrink-0">
-        <h2 className="text-sm font-semibold">Rules</h2>
+      <div className="flex items-center justify-between px-4 py-3 border-b shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-accent/20">
+            <Blend className="w-4 h-4 text-accent" />
+          </div>
+          <h2 className="text-lg font-semibold">Interventions</h2>
+        </div>
         <div className="flex items-center gap-1">
           {/* Magic wand dropdown for generating rules from guidelines */}
           <DropdownMenu>
@@ -59,7 +64,7 @@ export function RulesSidebar({
                 size="icon"
                 className="h-8 w-8"
               >
-                <Wand2 className="h-4 w-4" />
+                <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-64">
@@ -83,10 +88,8 @@ export function RulesSidebar({
 
           {/* Add rule button */}
           <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
             onClick={onAddRule}
+            className="bg-accent text-white"
           >
             <Plus className="h-4 w-4" />
           </Button>
@@ -94,8 +97,8 @@ export function RulesSidebar({
       </div>
 
       {/* Scrollable list of rules */}
-      <div className="flex-1 overflow-y-auto min-h-0">
-        <div className="divide-y">
+      <div className="flex-1 overflow-y-auto min-h-0 ">
+        <div className="divide-y divide-[#E3E8EF]">
           {rules.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-4">
               No rules yet. Click + to add a rule.

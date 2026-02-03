@@ -25,7 +25,6 @@ import { findMatchingDistrictIds, findRulesMatchingDistrict, findRulesWithDistri
 import { LegendSelectionPayload } from "@/types/intervention";
 import type { SavedRule } from "@/types/rule";
 import type { Rule } from "@/types/intervention";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import { toast } from "sonner";
 import { getPlanById, getDefaultRulesForNewPlan } from "@/data/predefined-plans";
 import { ComparisonSidebar, useComparisonSidebar } from "@/components/comparison-sidebar";
@@ -519,9 +518,8 @@ export default function PlanPage() {
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Header - Row 1: Country Name + Export */}
-      <header className="px-6 py-4 border-b flex items-center justify-between">
-        <div className="flex items-center gap-2">
-        <SidebarTrigger />
+      <header className="px-6 py-4 border-b bg-white flex items-center justify-between">
+        <div className="flex items-center gap-2 ml-12">
         <CountryName name={displayName} />
         {isEdited && (
           <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
@@ -535,50 +533,51 @@ export default function PlanPage() {
       </header>
 
       {/* Main Content: Two columns below header */}
-      <main className="flex-1 flex min-h-0 overflow-hidden relative">
+      <main className="flex-1 flex gap-4 p-4 min-h-0 overflow-hidden">
 
-         {/* Rules Sidebar - extends full height below header */}
-         <RulesSidebar
-          rules={savedRules}
-          metricTypes={metricTypes}
-          interventionCategories={interventionCategories ?? []}
-          onAddRule={handleAddRule}
-          onEditRule={handleEditRule}
-          onDeleteRule={handleDeleteRule}
-          onToggleVisibility={handleToggleRuleVisibility}
-          onReorderRules={handleReorderRules}
-          getDistrictName={getDistrictName}
-          onGenerateFromGuidelines={handleGenerateFromGuidelines}
-          isCumulativeMode={isCumulativeMode}
-          onToggleCumulativeMode={setIsCumulativeMode}
-        />
+         {/* Left Panel: Rules Sidebar */}
+         <div className="w-96 shrink-0 bg-white rounded-2xl overflow-hidden flex flex-col">
+           <RulesSidebar
+            rules={savedRules}
+            metricTypes={metricTypes}
+            interventionCategories={interventionCategories ?? []}
+            onAddRule={handleAddRule}
+            onEditRule={handleEditRule}
+            onDeleteRule={handleDeleteRule}
+            onToggleVisibility={handleToggleRuleVisibility}
+            onReorderRules={handleReorderRules}
+            getDistrictName={getDistrictName}
+            onGenerateFromGuidelines={handleGenerateFromGuidelines}
+            isCumulativeMode={isCumulativeMode}
+            onToggleCumulativeMode={setIsCumulativeMode}
+          />
+         </div>
 
-        {/* Left Column: Filter bar + Map */}
-        <div className="flex-1 flex flex-col min-h-0">
-          {/* Filter bar - only above map */}
-          <div className="px-6 py-3 border-b flex items-center justify-between">
-
-          <NavigationTabs activeTab={activeTab} onTabChange={setActiveTab} />
-          <div className="flex items-center gap-2">
-            <GeographicFilter
-              provinces={provinces}
-              selectedProvinceId={selectedProvince?.id ?? null}
-              onProvinceChange={setSelectedProvince}
-              isLoading={isLoading}
-            />
-            <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
-              Compare
-              <Switch
-                checked={isComparisonOpen}
-                onCheckedChange={toggleComparison}
+        {/* Right Panel: Filter bar + Map/List/Budget */}
+        <div className="flex-1 flex flex-col min-h-0 bg-white rounded-2xl overflow-hidden">
+          {/* Filter bar */}
+          <div className="px-6 py-3 border-b flex items-center justify-between shrink-0">
+            <NavigationTabs activeTab={activeTab} onTabChange={setActiveTab} />
+            <div className="flex items-center gap-2">
+              <GeographicFilter
+                provinces={provinces}
+                selectedProvinceId={selectedProvince?.id ?? null}
+                onProvinceChange={setSelectedProvince}
+                isLoading={isLoading}
               />
-            </label>
-          </div>
+              <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
+                Compare
+                <Switch
+                  checked={isComparisonOpen}
+                  onCheckedChange={toggleComparison}
+                />
+              </label>
+            </div>
           </div>
 
           {/* View Container */}
           <div className="flex-1 flex min-h-0 overflow-hidden">
-            <div className="flex-1 relative p-4 rounded-lg overflow-hidden min-h-0">
+            <div className="flex-1 relative overflow-hidden min-h-0">
               {activeTab === "map" && (
                 <InterventionMap
                   selectedProvince={selectedProvince}
@@ -729,7 +728,6 @@ export default function PlanPage() {
             />
           </div>
         </div>
-
       </main>
 
       {/* Add Intervention Sheet */}
