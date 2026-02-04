@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { ExceptionList } from "./exception-list";
 import { AddExceptionPopover } from "./add-exception-popover";
@@ -67,6 +67,8 @@ interface CriterionRowProps {
   metricTypes: MetricType[];
   onUpdate: (id: string, updates: Partial<RuleCriterion>) => void;
   onDelete: (id: string) => void;
+  autoFocus?: boolean;
+  onAutoFocused?: () => void;
 }
 
 function CriterionRow({
@@ -74,9 +76,24 @@ function CriterionRow({
   metricTypes,
   onUpdate,
   onDelete,
+  autoFocus,
+  onAutoFocused,
 }: CriterionRowProps) {
   const { min, max, isLoading } = useMetricValues(criterion.metricTypeId);
   const metricName = metricTypes.find((m) => m.id === criterion.metricTypeId)?.name ?? "Unknown";
+  const valueInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (autoFocus) {
+      // Delay to ensure the Radix dropdown menu has fully closed and released focus
+      const timer = setTimeout(() => {
+        valueInputRef.current?.focus();
+        onAutoFocused?.();
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only on mount
 
   return (
     <div className="flex items-center gap-2 group">
@@ -101,6 +118,7 @@ function CriterionRow({
       </Select>
 
       <Input
+        ref={valueInputRef}
         type="number"
         value={criterion.value}
         onChange={(e) => onUpdate(criterion.id, { value: e.target.value })}
@@ -151,6 +169,8 @@ interface RuleEditModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   rule: SavedRule | null;
+  /** Pre-select a specific category when creating a new rule */
+  initialCategoryId?: number | null;
   rulesCount: number;
   metricTypes: MetricType[];
   groupedMetricTypes: Record<string, MetricType[]>;
@@ -171,6 +191,7 @@ export function RuleEditModal({
   isOpen,
   onOpenChange,
   rule,
+  initialCategoryId,
   rulesCount,
   metricTypes: _metricTypes,
   groupedMetricTypes,
@@ -188,6 +209,7 @@ export function RuleEditModal({
   const [interventionsByCategory, setInterventionsByCategory] = useState<Map<number, number>>(new Map());
   const [coverageByCategory, setCoverageByCategory] = useState<Map<number, number>>(new Map());
   const [excludedDistrictIds, setExcludedDistrictIds] = useState<string[]>([]);
+  const [focusCriterionId, setFocusCriterionId] = useState<string | null>(null);
 
   // Convert criteria state to Rule format for the hook
   const rulesForHook = useMemo(() => {
@@ -236,17 +258,32 @@ export function RuleEditModal({
         setCoverageByCategory(initialCoverage);
         setExcludedDistrictIds(rule.excludedDistrictIds ?? []);
       } else {
-        const defaultTitle = `Category ${rulesCount + 1}`;
         const defaultColor = DEFAULT_COLORS[rulesCount % DEFAULT_COLORS.length];
-        setTitle(defaultTitle);
         setColor(defaultColor);
         setCriteria([]);
-        setInterventionsByCategory(new Map());
-        setCoverageByCategory(new Map());
         setExcludedDistrictIds([]);
+
+        if (initialCategoryId != null) {
+          // Pre-populate with the first intervention from the selected category
+          const category = interventionCategories.find((c) => c.id === initialCategoryId);
+          const firstIntervention = category?.interventions[0];
+          if (firstIntervention) {
+            setTitle(category?.name ?? `Category ${rulesCount + 1}`);
+            setInterventionsByCategory(new Map([[initialCategoryId, firstIntervention.id]]));
+            setCoverageByCategory(new Map([[initialCategoryId, DEFAULT_COVERAGE]]));
+          } else {
+            setTitle(`Category ${rulesCount + 1}`);
+            setInterventionsByCategory(new Map());
+            setCoverageByCategory(new Map());
+          }
+        } else {
+          setTitle(`Category ${rulesCount + 1}`);
+          setInterventionsByCategory(new Map());
+          setCoverageByCategory(new Map());
+        }
       }
     }
-  }, [isOpen, rule, rulesCount]);
+  }, [isOpen, rule, rulesCount, initialCategoryId, interventionCategories]);
 
   const handleUpdateCriterion = useCallback((id: string, updates: Partial<RuleCriterion>) => {
     setCriteria((prev) =>
@@ -259,7 +296,9 @@ export function RuleEditModal({
   }, []);
 
   const handleAddCriterion = useCallback((metricTypeId: number) => {
-    setCriteria((prev) => [...prev, { ...createEmptyCriterion(), metricTypeId }]);
+    const newCriterion = { ...createEmptyCriterion(), metricTypeId };
+    setFocusCriterionId(newCriterion.id);
+    setCriteria((prev) => [...prev, newCriterion]);
   }, []);
 
   const handleSelectIntervention = useCallback((categoryId: number, interventionId: number | null) => {
@@ -324,75 +363,16 @@ export function RuleEditModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
+      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col bg-white">
         <DialogHeader>
-          <DialogTitle>{isEditing ? "Edit Rule" : "Create Rule"}</DialogTitle>
-
+          <DialogTitle>{isEditing ? "Edit intervention" : "Create intervention"}</DialogTitle>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto space-y-8 py-4">
-          {/* Title input with color picker */}
-          <div>
-            <label htmlFor="rule-title" className="text-sm font-medium mb-2 block">
-              Rule Name
-            </label>
-            <div className="flex items-center gap-2">
-              <input
-                type="color"
-                value={color}
-                onChange={(e) => setColor(e.target.value)}
-                className="w-10 h-10 rounded border cursor-pointer p-1"
-              />
-              <Input
-                id="rule-title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Enter rule name..."
-                className="flex-1"
-              />
-            </div>
-          </div>
-
-          {/* Criteria section */}
-          <CollapsibleSection step={1} title="Selection Criteria">
-            <div className="space-y-3">
-              {criteria.map((criterion) => (
-                <CriterionRow
-                  key={criterion.id}
-                  criterion={criterion}
-                  metricTypes={_metricTypes}
-                  onUpdate={handleUpdateCriterion}
-                  onDelete={handleDeleteCriterion}
-                />
-              ))}
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="mt-2">
-                  Add Criterion
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
-                {Object.entries(groupedMetricTypes).map(([category, metrics]) => (
-                  <React.Fragment key={category}>
-                    <DropdownMenuLabel>{category}</DropdownMenuLabel>
-                    {metrics.map((metric) => (
-                      <DropdownMenuItem
-                        key={metric.id}
-                        onClick={() => handleAddCriterion(metric.id)}
-                      >
-                        {metric.name}
-                      </DropdownMenuItem>
-                    ))}
-                    <DropdownMenuSeparator />
-                  </React.Fragment>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </CollapsibleSection>
-
+        <div className="flex-1 overflow-y-auto space-y-6 py-4">
+          {/* Steps container */}
+          <div className="bg-[#F5F6F7] rounded-lg p-4 space-y-6">
           {/* Interventions section */}
-          <CollapsibleSection step={2} title="Interventions">
+          <CollapsibleSection step={1} title="Interventions">
             <div className="space-y-2">
               {Array.from(interventionsByCategory.entries()).map(([categoryId, interventionId]) => {
                 const category = interventionCategories.find((c) => c.id === categoryId);
@@ -459,7 +439,6 @@ export function RuleEditModal({
                   className="mt-2"
                   disabled={interventionsByCategory.size >= interventionCategories.length}
                 >
-    
                   Add Intervention
                 </Button>
               </DropdownMenuTrigger>
@@ -478,6 +457,46 @@ export function RuleEditModal({
             </DropdownMenu>
           </CollapsibleSection>
 
+          {/* Criteria section */}
+          <CollapsibleSection step={2} title="Selection Criteria">
+            <div className="space-y-3">
+              {criteria.map((criterion) => (
+                <CriterionRow
+                  key={criterion.id}
+                  criterion={criterion}
+                  metricTypes={_metricTypes}
+                  onUpdate={handleUpdateCriterion}
+                  autoFocus={criterion.id === focusCriterionId}
+                  onAutoFocused={() => setFocusCriterionId(null)}
+                  onDelete={handleDeleteCriterion}
+                />
+              ))}
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="mt-2">
+                  Add Criterion
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                {Object.entries(groupedMetricTypes).map(([category, metrics]) => (
+                  <React.Fragment key={category}>
+                    <DropdownMenuLabel>{category}</DropdownMenuLabel>
+                    {metrics.map((metric) => (
+                      <DropdownMenuItem
+                        key={metric.id}
+                        onClick={() => handleAddCriterion(metric.id)}
+                      >
+                        {metric.name}
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator />
+                  </React.Fragment>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </CollapsibleSection>
+
           {/* Exceptions section */}
           <CollapsibleSection step={3} title="Exceptions">
             <ExceptionList
@@ -491,12 +510,34 @@ export function RuleEditModal({
               onAddException={handleAddException}
               trigger={
                 <Button variant="ghost" size="sm" className="mt-2">
-    
                   Add Exception
                 </Button>
               }
             />
           </CollapsibleSection>
+          </div>
+
+          {/* Rule name and color */}
+          <div>
+            <label htmlFor="rule-title" className="text-sm font-medium mb-2 block">
+              Rule Name
+            </label>
+            <div className="flex items-center gap-2">
+              <input
+                type="color"
+                value={color}
+                onChange={(e) => setColor(e.target.value)}
+                className="w-10 h-10 rounded border cursor-pointer p-1"
+              />
+              <Input
+                id="rule-title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Enter rule name..."
+                className="flex-1"
+              />
+            </div>
+          </div>
         </div>
 
         <DialogFooter>

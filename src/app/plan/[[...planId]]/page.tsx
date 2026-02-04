@@ -11,6 +11,7 @@ import {
   BudgetView,
   type ViewTab,
 } from "@/components/intervention-map";
+import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { AddInterventionSheet } from "@/components/intervention-map/add-intervention";
@@ -100,6 +101,7 @@ export default function PlanPage() {
   const [legendSelectionPayload, setLegendSelectionPayload] = useState<LegendSelectionPayload | null>(null);
   const [editingRuleId, setEditingRuleId] = useState<string | null>(null);
   const [isRuleModalOpen, setIsRuleModalOpen] = useState(false);
+  const [initialCategoryId, setInitialCategoryId] = useState<number | null>(null);
   const [selectedRuleId, setSelectedRuleId] = useState<string | null>(null);
   const { isOpen: isComparisonOpen, toggle: toggleComparison } = useComparisonSidebar();
   const rulesInitialized = useRef(false);
@@ -393,6 +395,13 @@ export default function PlanPage() {
 
   const handleAddRule = useCallback(() => {
     setEditingRuleId(null);
+    setInitialCategoryId(null);
+    setIsRuleModalOpen(true);
+  }, []);
+
+  const handleAddRuleForCategory = useCallback((categoryId: number) => {
+    setEditingRuleId(null);
+    setInitialCategoryId(categoryId);
     setIsRuleModalOpen(true);
   }, []);
 
@@ -446,6 +455,7 @@ export default function PlanPage() {
     setIsRuleModalOpen(open);
     if (!open) {
       setEditingRuleId(null);
+      setInitialCategoryId(null);
     }
   }, []);
 
@@ -573,6 +583,7 @@ export default function PlanPage() {
             onReorderRules={handleReorderRules}
             getDistrictName={getDistrictName}
             onGenerateFromGuidelines={handleGenerateFromGuidelines}
+            onAddRuleForCategory={handleAddRuleForCategory}
             isCumulativeMode={isCumulativeMode}
             onToggleCumulativeMode={setIsCumulativeMode}
             selectedRuleId={selectedRuleId}
@@ -584,7 +595,13 @@ export default function PlanPage() {
         <div className="flex-1 flex flex-col min-h-0 bg-white rounded-2xl overflow-hidden">
           {/* Filter bar */}
           <div className="px-6 py-3 border-b flex items-center justify-between shrink-0">
-            <NavigationTabs activeTab={activeTab} onTabChange={setActiveTab} />
+            <div className="flex items-center gap-2">
+            
+              <NavigationTabs activeTab={activeTab} onTabChange={setActiveTab} />
+              <Button variant="ghost" disabled onClick={() => {}}>
+                <RefreshCw className="h-4 w-4" />
+              </Button>
+            </div>
             <div className="flex items-center gap-2">
               <GeographicFilter
                 provinces={provinces}
@@ -778,6 +795,7 @@ export default function PlanPage() {
         isOpen={isRuleModalOpen}
         onOpenChange={handleRuleModalOpenChange}
         rule={editingRule}
+        initialCategoryId={initialCategoryId}
         rulesCount={savedRules.length}
         metricTypes={metricTypes}
         groupedMetricTypes={metricTypes.reduce<Record<string, typeof metricTypes>>((acc, metric) => {

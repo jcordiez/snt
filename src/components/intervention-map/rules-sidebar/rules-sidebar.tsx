@@ -1,5 +1,5 @@
 "use client";
-import { Plus, Wand2, Blend, MoreHorizontal } from "lucide-react";
+import { Blend, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,6 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
 import { RuleCard } from "./rule-card";
 import type { SavedRule } from "@/types/rule";
@@ -27,6 +28,8 @@ interface RulesSidebarProps {
   getDistrictName: (districtId: string) => string;
   /** Callback when "Generate from Guidelines" is clicked with variation ID */
   onGenerateFromGuidelines?: (variationId: string) => void;
+  /** Callback when a specific category is selected from the add menu */
+  onAddRuleForCategory?: (categoryId: number) => void;
   /** Whether cumulative mode is active */
   isCumulativeMode?: boolean;
   /** Toggle cumulative mode */
@@ -47,6 +50,7 @@ export function RulesSidebar({
   onToggleVisibility,
   getDistrictName,
   onGenerateFromGuidelines,
+  onAddRuleForCategory,
   selectedRuleId,
   onSelectRule,
 }: RulesSidebarProps) {
@@ -66,43 +70,58 @@ export function RulesSidebar({
           <h2 className="text-lg font-medium text-primary">Interventions</h2>
         </div>
         <div className="flex items-center gap-1">
-          {/* Magic wand dropdown for generating rules from guidelines */}
+          {/* Add rule dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-              >
-                <MoreHorizontal className="h-4 w-4" />
+              <Button variant="outline">
+                Add
+                <ChevronDown className="h-3.5 w-3.5 ml-1" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-64">
-              <DropdownMenuLabel>Generate from Guidelines</DropdownMenuLabel>
+              {/* Intervention categories */}
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>Single intervention</DropdownMenuLabel>
+                {interventionCategories.map((category) => (
+                  <DropdownMenuItem
+                    key={category.id}
+                    onClick={() => onAddRuleForCategory?.(category.id)}
+                  >
+                    {category.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuGroup>
+
               <DropdownMenuSeparator />
-              {GUIDELINE_VARIATIONS.map((variation) => (
-                <DropdownMenuItem
-                  key={variation.id}
-                  onClick={() => onGenerateFromGuidelines?.(variation.id)}
-                >
-                  <div className="flex flex-col gap-1">
-                    <div className="font-medium">{variation.name}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {variation.focus}
+
+              {/* From guidelines */}
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>From guidelines</DropdownMenuLabel>
+                {GUIDELINE_VARIATIONS.map((variation) => (
+                  <DropdownMenuItem
+                    key={variation.id}
+                    onClick={() => onGenerateFromGuidelines?.(variation.id)}
+                  >
+                    <div className="flex flex-col gap-0.5">
+                      <div className="font-medium">{variation.name}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {variation.focus}
+                      </div>
                     </div>
-                  </div>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuGroup>
+
+              <DropdownMenuSeparator />
+
+              {/* Custom intervention mix */}
+              <DropdownMenuGroup>
+                <DropdownMenuItem onClick={onAddRule}>
+                  Custom intervention mix
                 </DropdownMenuItem>
-              ))}
+              </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
-
-          {/* Add rule button */}
-          <Button
-            onClick={onAddRule}
-            className="bg-accent text-white"
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
         </div>
       </div>
 
