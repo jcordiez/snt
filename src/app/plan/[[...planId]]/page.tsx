@@ -11,7 +11,14 @@ import {
   BudgetView,
   type ViewTab,
 } from "@/components/intervention-map";
+import { RefreshCw, MoreHorizontal, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { AddInterventionSheet } from "@/components/intervention-map/add-intervention";
 import { RulesSidebar, RuleEditModal } from "@/components/intervention-map/rules-sidebar";
@@ -100,6 +107,7 @@ export default function PlanPage() {
   const [legendSelectionPayload, setLegendSelectionPayload] = useState<LegendSelectionPayload | null>(null);
   const [editingRuleId, setEditingRuleId] = useState<string | null>(null);
   const [isRuleModalOpen, setIsRuleModalOpen] = useState(false);
+  const [initialInterventions, setInitialInterventions] = useState<{ categoryId: number; interventionId: number }[]>([]);
   const [selectedRuleId, setSelectedRuleId] = useState<string | null>(null);
   const { isOpen: isComparisonOpen, toggle: toggleComparison } = useComparisonSidebar();
   const rulesInitialized = useRef(false);
@@ -393,6 +401,13 @@ export default function PlanPage() {
 
   const handleAddRule = useCallback(() => {
     setEditingRuleId(null);
+    setInitialInterventions([]);
+    setIsRuleModalOpen(true);
+  }, []);
+
+  const handleAddRuleWithInterventions = useCallback((selections: { categoryId: number; interventionId: number }[]) => {
+    setEditingRuleId(null);
+    setInitialInterventions(selections);
     setIsRuleModalOpen(true);
   }, []);
 
@@ -446,6 +461,7 @@ export default function PlanPage() {
     setIsRuleModalOpen(open);
     if (!open) {
       setEditingRuleId(null);
+      setInitialInterventions([]);
     }
   }, []);
 
@@ -542,20 +558,36 @@ export default function PlanPage() {
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      {/* Header - Row 1: Country Name + Export */}
-      <header className="px-6 py-4 border-b bg-white flex items-center justify-between">
+      {/* Header - Row 1: Page Title */}
+      <header className="px-6 py-4 border-b bg-white flex items-center">
         <div className="flex items-center gap-2 ml-12">
-        <CountryName name={displayName} />
-        {isEdited && (
-          <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
-            Edited
-          </span>
-        )}
+          <CountryName name="SNT Malaria" />
         </div>
-        <Button onClick={handleExportPlan} variant="outline">
-          Export Plan
-        </Button>
       </header>
+
+      {/* Action Bar - Row 2: Plan name + Actions */}
+      <div className="px-6 py-2 flex items-center justify-between">
+        <span className="text-sm font-medium text-foreground ml-12">{displayName}</span>
+        <div className="flex items-center gap-2">
+          <Button onClick={handleExportPlan} variant="outline" size="sm">
+            <Download className="h-4 w-4 mr-2" />
+            Export plan
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <MoreHorizontal className="h-4 w-4" />
+                <span className="sr-only">More actions</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>Duplicate plan</DropdownMenuItem>
+              <DropdownMenuItem>Share plan</DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive">Delete plan</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
 
       {/* Main Content: Two columns below header */}
       <main className="flex-1 flex gap-4 p-4 min-h-0 overflow-hidden">
@@ -573,6 +605,7 @@ export default function PlanPage() {
             onReorderRules={handleReorderRules}
             getDistrictName={getDistrictName}
             onGenerateFromGuidelines={handleGenerateFromGuidelines}
+            onAddRuleWithInterventions={handleAddRuleWithInterventions}
             isCumulativeMode={isCumulativeMode}
             onToggleCumulativeMode={setIsCumulativeMode}
             selectedRuleId={selectedRuleId}
@@ -584,7 +617,11 @@ export default function PlanPage() {
         <div className="flex-1 flex flex-col min-h-0 bg-white rounded-2xl overflow-hidden">
           {/* Filter bar */}
           <div className="px-6 py-3 border-b flex items-center justify-between shrink-0">
-            <NavigationTabs activeTab={activeTab} onTabChange={setActiveTab} />
+            <div className="flex items-center gap-2">
+            
+              <NavigationTabs activeTab={activeTab} onTabChange={setActiveTab} />
+             
+            </div>
             <div className="flex items-center gap-2">
               <GeographicFilter
                 provinces={provinces}
@@ -604,7 +641,7 @@ export default function PlanPage() {
 
           {/* View Container */}
           <div className="flex-1 flex min-h-0 overflow-hidden">
-            <div className="flex-1 relative overflow-hidden min-h-0">
+            <div className="flex-1 relative overflow-hidden min-h-0 p-4 rounded-lg">
               {activeTab === "map" && (
                 <InterventionMap
                   selectedProvince={selectedProvince}
@@ -778,6 +815,7 @@ export default function PlanPage() {
         isOpen={isRuleModalOpen}
         onOpenChange={handleRuleModalOpenChange}
         rule={editingRule}
+        initialInterventions={initialInterventions}
         rulesCount={savedRules.length}
         metricTypes={metricTypes}
         groupedMetricTypes={metricTypes.reduce<Record<string, typeof metricTypes>>((acc, metric) => {

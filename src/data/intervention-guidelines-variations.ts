@@ -102,49 +102,6 @@ const CONSERVATIVE_VARIATION: GuidelineVariation = {
       ],
     },
     {
-      id: "irs",
-      name: "IRS",
-      description: "Indoor Residual Spraying for areas with high burden, insecticide resistance, and indoor-resting vectors",
-      criteria: [
-        {
-          id: "irs-incidence",
-          indicatorName: METRIC_DISPLAY_NAMES[METRIC_INCIDENCE_RATE],
-          metricTypeId: METRIC_INCIDENCE_RATE,
-          operator: ">",
-          threshold: "250",
-          dataSource: METRIC_DATA_SOURCES[METRIC_INCIDENCE_RATE],
-          description: METRIC_DESCRIPTIONS[METRIC_INCIDENCE_RATE],
-        },
-        {
-          id: "irs-prevalence",
-          indicatorName: METRIC_DISPLAY_NAMES[METRIC_PREVALENCE],
-          metricTypeId: METRIC_PREVALENCE,
-          operator: ">",
-          threshold: "0.10",
-          dataSource: METRIC_DATA_SOURCES[METRIC_PREVALENCE],
-          description: METRIC_DESCRIPTIONS[METRIC_PREVALENCE],
-        },
-        {
-          id: "irs-resistance",
-          indicatorName: METRIC_DISPLAY_NAMES[METRIC_INSECTICIDE_RESISTANCE],
-          metricTypeId: METRIC_INSECTICIDE_RESISTANCE,
-          operator: ">",
-          threshold: "0.5",
-          dataSource: METRIC_DATA_SOURCES[METRIC_INSECTICIDE_RESISTANCE],
-          description: METRIC_DESCRIPTIONS[METRIC_INSECTICIDE_RESISTANCE],
-        },
-        {
-          id: "irs-indoor-resting",
-          indicatorName: METRIC_DISPLAY_NAMES[METRIC_VECTOR_INDOOR_RESTING],
-          metricTypeId: METRIC_VECTOR_INDOOR_RESTING,
-          operator: ">",
-          threshold: "0.5",
-          dataSource: METRIC_DATA_SOURCES[METRIC_VECTOR_INDOOR_RESTING],
-          description: METRIC_DESCRIPTIONS[METRIC_VECTOR_INDOOR_RESTING],
-        },
-      ],
-    },
-    {
       id: "smc",
       name: "SMC (4 cycles)",
       description: "Seasonal Malaria Chemoprevention for high-burden seasonal areas",
@@ -238,31 +195,6 @@ const CONSERVATIVE_VARIATION: GuidelineVariation = {
       ],
     },
     {
-      id: "mda",
-      name: "MDA",
-      description: "Mass Drug Administration for very high burden areas targeting elimination",
-      criteria: [
-        {
-          id: "mda-incidence",
-          indicatorName: METRIC_DISPLAY_NAMES[METRIC_INCIDENCE_RATE],
-          metricTypeId: METRIC_INCIDENCE_RATE,
-          operator: ">",
-          threshold: "450",
-          dataSource: METRIC_DATA_SOURCES[METRIC_INCIDENCE_RATE],
-          description: METRIC_DESCRIPTIONS[METRIC_INCIDENCE_RATE],
-        },
-        {
-          id: "mda-prevalence",
-          indicatorName: METRIC_DISPLAY_NAMES[METRIC_PREVALENCE],
-          metricTypeId: METRIC_PREVALENCE,
-          operator: ">",
-          threshold: "0.35",
-          dataSource: METRIC_DATA_SOURCES[METRIC_PREVALENCE],
-          description: METRIC_DESCRIPTIONS[METRIC_PREVALENCE],
-        },
-      ],
-    },
-    {
       id: "rtss",
       name: "RTS,S Vaccination",
       description: "Malaria vaccine for areas with moderate-to-high transmission",
@@ -283,13 +215,13 @@ const CONSERVATIVE_VARIATION: GuidelineVariation = {
 
 /**
  * Variation 2: Moderate (Resource-Constrained)
- * Skips IRS, increases thresholds for cost-effective interventions
+ * Increases thresholds for cost-effective interventions
  */
 const MODERATE_VARIATION: GuidelineVariation = {
   id: "moderate",
   name: "Moderate (Resource-Constrained)",
   description: "Focus on most cost-effective interventions with higher thresholds",
-  focus: "Optimized for resource-constrained settings, excludes IRS",
+  focus: "Optimized for resource-constrained settings",
   guidelines: [
     {
       id: "itns-llins",
@@ -316,7 +248,6 @@ const MODERATE_VARIATION: GuidelineVariation = {
         },
       ],
     },
-    // IRS removed
     {
       id: "smc",
       name: "SMC (4 cycles)",
@@ -402,31 +333,6 @@ const MODERATE_VARIATION: GuidelineVariation = {
       ],
     },
     {
-      id: "mda",
-      name: "MDA",
-      description: "Mass Drug Administration for very high burden areas",
-      criteria: [
-        {
-          id: "mda-incidence",
-          indicatorName: METRIC_DISPLAY_NAMES[METRIC_INCIDENCE_RATE],
-          metricTypeId: METRIC_INCIDENCE_RATE,
-          operator: ">",
-          threshold: "500",
-          dataSource: METRIC_DATA_SOURCES[METRIC_INCIDENCE_RATE],
-          description: METRIC_DESCRIPTIONS[METRIC_INCIDENCE_RATE],
-        },
-        {
-          id: "mda-prevalence",
-          indicatorName: METRIC_DISPLAY_NAMES[METRIC_PREVALENCE],
-          metricTypeId: METRIC_PREVALENCE,
-          operator: ">",
-          threshold: "0.40",
-          dataSource: METRIC_DATA_SOURCES[METRIC_PREVALENCE],
-          description: METRIC_DESCRIPTIONS[METRIC_PREVALENCE],
-        },
-      ],
-    },
-    {
       id: "rtss",
       name: "RTS,S Vaccination",
       description: "Malaria vaccine for areas with moderate-to-high transmission",
@@ -477,49 +383,6 @@ const AGGRESSIVE_VARIATION: GuidelineVariation = {
           threshold: "0.005",
           dataSource: METRIC_DATA_SOURCES[METRIC_PREVALENCE],
           description: METRIC_DESCRIPTIONS[METRIC_PREVALENCE],
-        },
-      ],
-    },
-    {
-      id: "irs",
-      name: "IRS",
-      description: "Indoor Residual Spraying for areas with insecticide resistance",
-      criteria: [
-        {
-          id: "irs-incidence",
-          indicatorName: METRIC_DISPLAY_NAMES[METRIC_INCIDENCE_RATE],
-          metricTypeId: METRIC_INCIDENCE_RATE,
-          operator: ">",
-          threshold: "150",
-          dataSource: METRIC_DATA_SOURCES[METRIC_INCIDENCE_RATE],
-          description: METRIC_DESCRIPTIONS[METRIC_INCIDENCE_RATE],
-        },
-        {
-          id: "irs-prevalence",
-          indicatorName: METRIC_DISPLAY_NAMES[METRIC_PREVALENCE],
-          metricTypeId: METRIC_PREVALENCE,
-          operator: ">",
-          threshold: "0.05",
-          dataSource: METRIC_DATA_SOURCES[METRIC_PREVALENCE],
-          description: METRIC_DESCRIPTIONS[METRIC_PREVALENCE],
-        },
-        {
-          id: "irs-resistance",
-          indicatorName: METRIC_DISPLAY_NAMES[METRIC_INSECTICIDE_RESISTANCE],
-          metricTypeId: METRIC_INSECTICIDE_RESISTANCE,
-          operator: ">",
-          threshold: "0.3",
-          dataSource: METRIC_DATA_SOURCES[METRIC_INSECTICIDE_RESISTANCE],
-          description: METRIC_DESCRIPTIONS[METRIC_INSECTICIDE_RESISTANCE],
-        },
-        {
-          id: "irs-indoor-resting",
-          indicatorName: METRIC_DISPLAY_NAMES[METRIC_VECTOR_INDOOR_RESTING],
-          metricTypeId: METRIC_VECTOR_INDOOR_RESTING,
-          operator: ">",
-          threshold: "0.5",
-          dataSource: METRIC_DATA_SOURCES[METRIC_VECTOR_INDOOR_RESTING],
-          description: METRIC_DESCRIPTIONS[METRIC_VECTOR_INDOOR_RESTING],
         },
       ],
     },
@@ -608,31 +471,6 @@ const AGGRESSIVE_VARIATION: GuidelineVariation = {
       ],
     },
     {
-      id: "mda",
-      name: "MDA",
-      description: "Mass Drug Administration for high burden areas",
-      criteria: [
-        {
-          id: "mda-incidence",
-          indicatorName: METRIC_DISPLAY_NAMES[METRIC_INCIDENCE_RATE],
-          metricTypeId: METRIC_INCIDENCE_RATE,
-          operator: ">",
-          threshold: "300",
-          dataSource: METRIC_DATA_SOURCES[METRIC_INCIDENCE_RATE],
-          description: METRIC_DESCRIPTIONS[METRIC_INCIDENCE_RATE],
-        },
-        {
-          id: "mda-prevalence",
-          indicatorName: METRIC_DISPLAY_NAMES[METRIC_PREVALENCE],
-          metricTypeId: METRIC_PREVALENCE,
-          operator: ">",
-          threshold: "0.25",
-          dataSource: METRIC_DATA_SOURCES[METRIC_PREVALENCE],
-          description: METRIC_DESCRIPTIONS[METRIC_PREVALENCE],
-        },
-      ],
-    },
-    {
       id: "rtss",
       name: "RTS,S Vaccination",
       description: "Malaria vaccine for transmission areas",
@@ -653,7 +491,7 @@ const AGGRESSIVE_VARIATION: GuidelineVariation = {
 
 /**
  * Variation 4: Targeted (Seasonal Focus)
- * Removes PMC and MDA, emphasizes seasonal interventions
+ * Removes PMC, emphasizes seasonal interventions
  */
 const TARGETED_VARIATION: GuidelineVariation = {
   id: "targeted",
@@ -683,40 +521,6 @@ const TARGETED_VARIATION: GuidelineVariation = {
           threshold: "0.01",
           dataSource: METRIC_DATA_SOURCES[METRIC_PREVALENCE],
           description: METRIC_DESCRIPTIONS[METRIC_PREVALENCE],
-        },
-      ],
-    },
-    {
-      id: "irs",
-      name: "IRS",
-      description: "Indoor Residual Spraying for high-burden areas",
-      criteria: [
-        {
-          id: "irs-incidence",
-          indicatorName: METRIC_DISPLAY_NAMES[METRIC_INCIDENCE_RATE],
-          metricTypeId: METRIC_INCIDENCE_RATE,
-          operator: ">",
-          threshold: "250",
-          dataSource: METRIC_DATA_SOURCES[METRIC_INCIDENCE_RATE],
-          description: METRIC_DESCRIPTIONS[METRIC_INCIDENCE_RATE],
-        },
-        {
-          id: "irs-prevalence",
-          indicatorName: METRIC_DISPLAY_NAMES[METRIC_PREVALENCE],
-          metricTypeId: METRIC_PREVALENCE,
-          operator: ">",
-          threshold: "0.10",
-          dataSource: METRIC_DATA_SOURCES[METRIC_PREVALENCE],
-          description: METRIC_DESCRIPTIONS[METRIC_PREVALENCE],
-        },
-        {
-          id: "irs-resistance",
-          indicatorName: METRIC_DISPLAY_NAMES[METRIC_INSECTICIDE_RESISTANCE],
-          metricTypeId: METRIC_INSECTICIDE_RESISTANCE,
-          operator: ">",
-          threshold: "0.5",
-          dataSource: METRIC_DATA_SOURCES[METRIC_INSECTICIDE_RESISTANCE],
-          description: METRIC_DESCRIPTIONS[METRIC_INSECTICIDE_RESISTANCE],
         },
       ],
     },
@@ -754,7 +558,6 @@ const TARGETED_VARIATION: GuidelineVariation = {
         },
       ],
     },
-    // PMC removed
     {
       id: "iptp",
       name: "IPTp",
@@ -780,7 +583,6 @@ const TARGETED_VARIATION: GuidelineVariation = {
         },
       ],
     },
-    // MDA removed
     {
       id: "rtss",
       name: "RTS,S Vaccination",
@@ -802,7 +604,7 @@ const TARGETED_VARIATION: GuidelineVariation = {
 
 /**
  * Variation 5: Elimination Focus (Low Transmission)
- * For areas moving toward elimination, lower thresholds, remove MDA
+ * For areas moving toward elimination, lower thresholds
  */
 const ELIMINATION_VARIATION: GuidelineVariation = {
   id: "elimination",
@@ -832,22 +634,6 @@ const ELIMINATION_VARIATION: GuidelineVariation = {
           threshold: "0.005",
           dataSource: METRIC_DATA_SOURCES[METRIC_PREVALENCE],
           description: METRIC_DESCRIPTIONS[METRIC_PREVALENCE],
-        },
-      ],
-    },
-    {
-      id: "irs",
-      name: "IRS",
-      description: "Indoor Residual Spraying for elimination settings",
-      criteria: [
-        {
-          id: "irs-incidence",
-          indicatorName: METRIC_DISPLAY_NAMES[METRIC_INCIDENCE_RATE],
-          metricTypeId: METRIC_INCIDENCE_RATE,
-          operator: ">",
-          threshold: "100",
-          dataSource: METRIC_DATA_SOURCES[METRIC_INCIDENCE_RATE],
-          description: METRIC_DESCRIPTIONS[METRIC_INCIDENCE_RATE],
         },
       ],
     },
@@ -908,7 +694,6 @@ const ELIMINATION_VARIATION: GuidelineVariation = {
         },
       ],
     },
-    // MDA removed
     {
       id: "rtss",
       name: "RTS,S Vaccination",
@@ -933,8 +718,5 @@ const ELIMINATION_VARIATION: GuidelineVariation = {
  */
 export const GUIDELINE_VARIATIONS: GuidelineVariation[] = [
   CONSERVATIVE_VARIATION,
-  MODERATE_VARIATION,
-  AGGRESSIVE_VARIATION,
   TARGETED_VARIATION,
-  ELIMINATION_VARIATION,
 ];
