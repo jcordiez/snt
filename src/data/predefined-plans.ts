@@ -1,16 +1,14 @@
 import type { SavedRule } from "@/types/rule";
 
 /**
- * Intervention IDs by Category (from api/snt-malaria/intervention_categories/data.json):
- * - Category 37 (Case Management): 78 = CM, 79 = CM Subsidy
+ * Intervention IDs by Category (from data/interventions-categories/data.json):
+ * - Category 37 (Case Management): 78 = CM
  * - Category 38 (IPTp): 80 = IPTp (SP)
  * - Category 39 (PMC & SMC): 81 = PMC, 82 = SMC
  * - Category 40 (ITN Campaign): 83 = Dual AI, 84 = PBO, 85 = Standard Pyrethroid
  * - Category 41 (ITN Routine): 86 = Dual AI, 87 = PBO, 88 = Standard Pyrethroid
  * - Category 42 (Vaccination): 89 = R21
  * - Category 43 (Vector Control): 90 = LSM
- * - Category 44 (IRS): 91 = IRS Pyrethroid, 92 = IRS Organophosphate, 93 = IRS Carbamate
- * - Category 45 (MDA): 94 = MDA Single Round, 95 = MDA Multiple Rounds
  *
  * Metric Type IDs:
  * - Seasonality: 413
@@ -22,7 +20,6 @@ import type { SavedRule } from "@/types/rule";
  * - Vector indoor resting: 419
  * - Urban classification: 420
  * - PfPr2-10 (Malaria prevalence): 411
- * - LLIN usage: 416
  */
 
 // Category IDs
@@ -33,8 +30,6 @@ const CATEGORY_NETS_CAMPAIGN = 40;   // ITN Campaign
 const CATEGORY_NETS_ROUTINE = 41;    // ITN Routine
 const CATEGORY_VACCINATION = 42;     // Vaccination
 const CATEGORY_VECTOR_CONTROL = 43;  // Vector Control (LSM)
-const CATEGORY_IRS = 44;             // IRS
-const CATEGORY_MDA = 45;             // MDA
 
 // Intervention IDs
 const INTERVENTION_CM = 78;
@@ -48,12 +43,7 @@ const INTERVENTION_STANDARD_PYRETHROID_ROUTINE = 88;
 const INTERVENTION_PBO_ROUTINE = 87;
 const INTERVENTION_DUAL_AI_ROUTINE = 86;
 const INTERVENTION_R21 = 89;
-const INTERVENTION_IRS_PYRETHROID = 91; // eslint-disable-line @typescript-eslint/no-unused-vars
-const INTERVENTION_IRS_ORGANOPHOSPHATE = 92;
-const INTERVENTION_IRS_CARBAMATE = 93; // eslint-disable-line @typescript-eslint/no-unused-vars
-const INTERVENTION_MDA_SINGLE = 94; // eslint-disable-line @typescript-eslint/no-unused-vars
 const INTERVENTION_LSM = 90;
-const INTERVENTION_MDA_MULTIPLE = 95;
 
 // Metric Type IDs
 const METRIC_SEASONALITY = 413;
@@ -61,7 +51,6 @@ const METRIC_MORTALITY_RATE = 407;
 const METRIC_INCIDENCE_RATE = 410;
 const METRIC_INSECTICIDE_RESISTANCE = 412;
 const METRIC_PREVALENCE = 411;            // PfPr2-10
-const METRIC_LLIN_USAGE = 416; // eslint-disable-line @typescript-eslint/no-unused-vars
 const METRIC_CLINICAL_ATTACK_RATE = 417;
 const METRIC_VECTOR_OUTDOOR_BITING = 418;
 const METRIC_VECTOR_INDOOR_RESTING = 419;
@@ -89,7 +78,7 @@ export interface PlanDefinition {
  */
 const NSP_2026_30_PLAN: PlanDefinition = {
   id: "nsp-2026-30",
-  name: "NSP 2026-30",
+  name: "PATH Method 1",
   description: "National Strategic Plan 2026-2030",
   rules: [
     // Default Rule: All Remaining Districts
@@ -222,8 +211,8 @@ const NSP_2026_30_PLAN: PlanDefinition = {
  */
 const BAU_PLAN: PlanDefinition = {
   id: "bau",
-  name: "BAU",
-  description: "Business As Usual baseline plan",
+  name: "CM Only",
+  description: "Case Management only",
   rules: [
     // Default Rule: All Remaining Districts
     {
@@ -232,51 +221,11 @@ const BAU_PLAN: PlanDefinition = {
       color: RULE_COLORS[4],
       criteria: [],
       interventionsByCategory: new Map([
-        [CATEGORY_NETS_CAMPAIGN, INTERVENTION_STANDARD_PYRETHROID_CAMPAIGN], // Standard Pyrethroid Nets (Campaign)
-        [CATEGORY_NETS_ROUTINE, INTERVENTION_STANDARD_PYRETHROID_ROUTINE], // Standard Pyrethroid Nets (Routine)
         [CATEGORY_CM, INTERVENTION_CM], // CM
       ]),
       isAllDistricts: true,
     },
-    // Rule 1: Low Seasonality, High Incidence, Low Mortality, High Resistance
-    {
-      id: "bau-rule-1",
-      title: "Low Seasonality, High Incidence, Low Mortality, High Resistance",
-      color: RULE_COLORS[0],
-      criteria: [
-        {
-          id: "bau-r1-c1",
-          metricTypeId: METRIC_SEASONALITY,
-          operator: "<",
-          value: "0.7",
-        },
-        {
-          id: "bau-r1-c2",
-          metricTypeId: METRIC_INCIDENCE_RATE,
-          operator: ">=",
-          value: "500",
-        },
-        {
-          id: "bau-r1-c3",
-          metricTypeId: METRIC_MORTALITY_RATE,
-          operator: "<",
-          value: "10",
-        },
-        {
-          id: "bau-r1-c4",
-          metricTypeId: METRIC_INSECTICIDE_RESISTANCE,
-          operator: ">=",
-          value: "0.75",
-        },
-      ],
-      interventionsByCategory: new Map([
-        [CATEGORY_NETS_CAMPAIGN, INTERVENTION_DUAL_AI_CAMPAIGN], // Dual AI Nets (Campaign)
-        [CATEGORY_NETS_ROUTINE, INTERVENTION_DUAL_AI_ROUTINE], // Dual AI Nets (Routine)
-        [CATEGORY_CHEMOPREVENTION, INTERVENTION_PMC], // PMC
-        [CATEGORY_CM, INTERVENTION_CM], // CM
-      ]),
-      isAllDistricts: false,
-    },
+   
     
   ],
 };
@@ -290,16 +239,14 @@ const BAU_PLAN: PlanDefinition = {
  * RULE PRIORITY (evaluated in order, later rules override earlier ones):
  * 1. Default - Standard pyrethroid nets + CM (all remaining districts)
  * 2. ITNs/LLINS - Incidence >100, PfPr2-10 >1%, indoor-biting vectors
- * 3. IRS - Incidence >250, PfPr2-10 >10%, LLIN use <40%, high resistance, indoor-resting vectors
- * 4. SMC - High seasonality, PfPr2-10 >10%, clinical attack rate >0.1
- * 5. PMC - Incidence >250, PfPr2-10 >10%, non-seasonal, exclude SMC areas
- * 6. IPTp - Incidence >250, PfPr2-10 >10%
- * 7. MDA - Incidence >450, PfPr2-10 >35% (elimination settings)
- * 8. RTS,S - Incidence >250
+ * 3. SMC - High seasonality, PfPr2-10 >10%, clinical attack rate >0.1
+ * 4. PMC - Incidence >250, PfPr2-10 >10%, non-seasonal, exclude SMC areas
+ * 5. IPTp - Incidence >250, PfPr2-10 >10%
+ * 6. RTS,S - Incidence >250
  */
 const WHO_GUIDELINES_PLAN: PlanDefinition = {
   id: "who-guidelines",
-  name: "WHO Guidelines",
+  name: "Ideal Scenario",
   description: "WHO-recommended intervention criteria for malaria control (2024). All interventions fully implemented.",
   rules: [
     // DEFAULT RULE - All remaining districts
@@ -349,54 +296,7 @@ const WHO_GUIDELINES_PLAN: PlanDefinition = {
       ]),
     },
 
-    // RULE 2: IRS
-    // WHO Criteria: Incidence > 250/1000, PfPr2-10 > 10%, LLIN use < 40%,
-    //               insecticide resistance, indoor-resting vectors
-    {
-      id: "who-irs",
-      title: "IRS",
-      color: "#3b82f6", // Blue
-      criteria: [
-        {
-          id: "irs-incidence",
-          metricTypeId: METRIC_INCIDENCE_RATE,
-          operator: ">",
-          value: "250",
-        },
-        {
-          id: "irs-prevalence",
-          metricTypeId: METRIC_PREVALENCE,
-          operator: ">",
-          value: ".10",
-        },
-        /*{
-          id: "irs-llin-low",
-          metricTypeId: METRIC_LLIN_USAGE,
-          operator: "<",
-          value: "0.4", // < 40% LLIN use
-        },*/
-        {
-          id: "irs-resistance",
-          metricTypeId: METRIC_INSECTICIDE_RESISTANCE,
-          operator: ">",
-          value: "0.5", // > 50% survival (high resistance)
-        },
-        {
-          id: "irs-indoor-resting",
-          metricTypeId: METRIC_VECTOR_INDOOR_RESTING,
-          operator: ">",
-          value: "0.5", // > 50% rest indoors (IRS effective)
-        },
-      ],
-      interventionsByCategory: new Map([
-        [CATEGORY_IRS, INTERVENTION_IRS_ORGANOPHOSPHATE], // Use non-pyrethroid for resistance
-        [CATEGORY_NETS_CAMPAIGN, INTERVENTION_PBO_CAMPAIGN],
-        [CATEGORY_NETS_ROUTINE, INTERVENTION_PBO_ROUTINE],
-
-      ]),
-    },
-
-    // RULE 3: SMC (4 cycles)
+    // RULE 2: SMC (4 cycles)
     // WHO Criteria: Seasonality, PfPr2-10 > 10%, clinical attack rate > 0.1 episodes
     {
       id: "who-smc",
@@ -430,7 +330,7 @@ const WHO_GUIDELINES_PLAN: PlanDefinition = {
       ]),
     },
 
-    // RULE 4: PMC
+    // RULE 3: PMC
     // WHO Criteria: Incidence > 250/1000, PfPr2-10 > 10%, exclude SMC areas (non-seasonal)
     {
       id: "who-pmc",
@@ -464,7 +364,7 @@ const WHO_GUIDELINES_PLAN: PlanDefinition = {
       ]),
     },
 
-    // RULE 5: IPTp
+    // RULE 4: IPTp
     // WHO Criteria: Incidence > 250/1000, PfPr2-10 > 10%
     {
       id: "who-iptp",
@@ -492,35 +392,7 @@ const WHO_GUIDELINES_PLAN: PlanDefinition = {
       ]),
     },
 
-    // RULE 6: MDA
-    // WHO Criteria: Incidence > 450/1000, PfPr2-10 > 35% (elimination settings)
-    {
-      id: "who-mda",
-      title: "MDA",
-      color: "#ec4899", // Pink
-      criteria: [
-        {
-          id: "mda-incidence",
-          metricTypeId: METRIC_INCIDENCE_RATE,
-          operator: ">",
-          value: "450",
-        },
-        {
-          id: "mda-prevalence",
-          metricTypeId: METRIC_PREVALENCE,
-          operator: ">",
-          value: ".35",
-        },
-      ],
-      interventionsByCategory: new Map([
-        [CATEGORY_MDA, INTERVENTION_MDA_MULTIPLE], // Multiple rounds for high burden
-        [CATEGORY_NETS_CAMPAIGN, INTERVENTION_DUAL_AI_CAMPAIGN], // Dual AI for high burden
-        [CATEGORY_NETS_ROUTINE, INTERVENTION_DUAL_AI_ROUTINE],
-
-      ]),
-    },
-
-    // RULE 7: RTS,S Vaccination
+    // RULE 6: RTS,S Vaccination
     // WHO Criteria: Incidence > 250/1000
     {
       id: "who-rtss",
@@ -554,15 +426,13 @@ const WHO_GUIDELINES_PLAN: PlanDefinition = {
  * CUMULATIVE LOGIC:
  * - Incidence >100: Upgrade to PBO nets
  * - Incidence >250: Add R21 vaccination (cumulative with PBO nets)
- * - Incidence >250 + Prevalence >10% + Non-seasonal: Add PMC + IPTp (cumulative with R21)
  * - Incidence >250 + Prevalence >10% + Seasonal: Add SMC (cumulative with R21)
- * - Incidence >250 + High resistance: Add IRS (cumulative with R21)
- * - Incidence >450 + Prevalence >35%: Add MDA (cumulative with R21 + Dual AI nets)
+ * - Incidence >250 + Prevalence >10% + Non-seasonal: Add PMC + IPTp (cumulative with R21)
  *
- * Example: A district with Incidence=500, Prevalence=40% gets:
- *   - Dual AI nets (highest level)
+ * Example: A district with Incidence=300, Prevalence=15%, Non-seasonal gets:
+ *   - PBO nets (from >100 threshold)
  *   - R21 vaccine (from >250 threshold)
- *   - MDA (from >450 + >35% threshold)
+ *   - PMC + IPTp (from >250 + >10% + non-seasonal)
  *   - CM (always included)
  */
 const WHO_GUIDELINES_CUMULATIVE_PLAN: PlanDefinition = {
@@ -637,47 +507,7 @@ const WHO_GUIDELINES_CUMULATIVE_PLAN: PlanDefinition = {
       ]),
     },
 
-    // RULE 3: IRS - Add IRS for high resistance areas
-    {
-      id: "who-cum-irs",
-      title: "IRS + R21",
-      color: "#3b82f6", // Blue
-      criteria: [
-        {
-          id: "irs-incidence",
-          metricTypeId: METRIC_INCIDENCE_RATE,
-          operator: ">",
-          value: "250",
-        },
-        {
-          id: "irs-prevalence",
-          metricTypeId: METRIC_PREVALENCE,
-          operator: ">",
-          value: "0.10",
-        },
-        {
-          id: "irs-resistance",
-          metricTypeId: METRIC_INSECTICIDE_RESISTANCE,
-          operator: ">",
-          value: "0.5",
-        },
-        {
-          id: "irs-indoor-resting",
-          metricTypeId: METRIC_VECTOR_INDOOR_RESTING,
-          operator: ">",
-          value: "0.5",
-        },
-      ],
-      interventionsByCategory: new Map([
-        [CATEGORY_IRS, INTERVENTION_IRS_ORGANOPHOSPHATE], // Add IRS
-        [CATEGORY_VACCINATION, INTERVENTION_R21], // Cumulative: Keep R21
-        [CATEGORY_NETS_CAMPAIGN, INTERVENTION_PBO_CAMPAIGN],
-        [CATEGORY_NETS_ROUTINE, INTERVENTION_PBO_ROUTINE],
-
-      ]),
-    },
-
-    // RULE 4: SMC - Add SMC for seasonal areas
+    // RULE 3: SMC - Add SMC for seasonal areas
     {
       id: "who-cum-smc",
       title: "SMC + R21",
@@ -711,7 +541,7 @@ const WHO_GUIDELINES_CUMULATIVE_PLAN: PlanDefinition = {
       ]),
     },
 
-    // RULE 5: PMC + IPTp - Add both for non-seasonal high burden
+    // RULE 4: PMC + IPTp - Add both for non-seasonal high burden
     {
       id: "who-cum-pmc-iptp",
       title: "PMC + IPTp + R21",
@@ -746,33 +576,6 @@ const WHO_GUIDELINES_CUMULATIVE_PLAN: PlanDefinition = {
       ]),
     },
 
-    // RULE 6: MDA - Add MDA for very high burden (cumulative with R21)
-    {
-      id: "who-cum-mda",
-      title: "MDA + R21",
-      color: "#ec4899", // Pink
-      criteria: [
-        {
-          id: "mda-incidence",
-          metricTypeId: METRIC_INCIDENCE_RATE,
-          operator: ">",
-          value: "450",
-        },
-        {
-          id: "mda-prevalence",
-          metricTypeId: METRIC_PREVALENCE,
-          operator: ">",
-          value: "0.35",
-        },
-      ],
-      interventionsByCategory: new Map([
-        [CATEGORY_MDA, INTERVENTION_MDA_MULTIPLE], // Add MDA
-        [CATEGORY_VACCINATION, INTERVENTION_R21], // Cumulative: Keep R21 (incidence >450 also >250)
-        [CATEGORY_NETS_CAMPAIGN, INTERVENTION_DUAL_AI_CAMPAIGN], // Upgrade to Dual AI for highest burden
-        [CATEGORY_NETS_ROUTINE, INTERVENTION_DUAL_AI_ROUTINE],
-
-      ]),
-    },
   ],
 };
 
@@ -825,7 +628,7 @@ const TEST_PLAN: PlanDefinition = {
 /**
  * All predefined plans
  */
-export const PREDEFINED_PLANS: PlanDefinition[] = [BAU_PLAN, NSP_2026_30_PLAN, WHO_GUIDELINES_PLAN, WHO_GUIDELINES_CUMULATIVE_PLAN, TEST_PLAN];
+export const PREDEFINED_PLANS: PlanDefinition[] = [BAU_PLAN, NSP_2026_30_PLAN, WHO_GUIDELINES_PLAN, TEST_PLAN];
 
 /**
  * Get a plan by its ID

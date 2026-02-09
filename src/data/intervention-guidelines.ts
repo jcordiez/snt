@@ -27,7 +27,6 @@ const METRIC_SEASONALITY = 413;
 const METRIC_INCIDENCE_RATE = 410;
 const METRIC_INSECTICIDE_RESISTANCE = 412;
 const METRIC_PREVALENCE = 411; // PfPr2-10
-const METRIC_LLIN_USAGE = 416;
 const METRIC_CLINICAL_ATTACK_RATE = 417;
 const METRIC_VECTOR_OUTDOOR_BITING = 418;
 const METRIC_VECTOR_INDOOR_RESTING = 419;
@@ -41,7 +40,6 @@ const METRIC_DATA_SOURCES: Record<number, string> = {
   [METRIC_CLINICAL_ATTACK_RATE]: "MIS",
   [METRIC_VECTOR_OUTDOOR_BITING]: "MAP",
   [METRIC_VECTOR_INDOOR_RESTING]: "MAP",
-  [METRIC_LLIN_USAGE]: "DHS",
 };
 
 // Metric display names
@@ -53,7 +51,6 @@ const METRIC_DISPLAY_NAMES: Record<number, string> = {
   [METRIC_CLINICAL_ATTACK_RATE]: "Clinical Attack Rate",
   [METRIC_VECTOR_OUTDOOR_BITING]: "Vector Outdoor Biting",
   [METRIC_VECTOR_INDOOR_RESTING]: "Vector Indoor Resting",
-  [METRIC_LLIN_USAGE]: "LLIN Usage",
 };
 
 // Metric descriptions for tooltips
@@ -65,7 +62,6 @@ const METRIC_DESCRIPTIONS: Record<number, string> = {
   [METRIC_CLINICAL_ATTACK_RATE]: "Number of clinical malaria episodes per child per year",
   [METRIC_VECTOR_OUTDOOR_BITING]: "Proportion of mosquito biting occurring outdoors (0-1 scale)",
   [METRIC_VECTOR_INDOOR_RESTING]: "Proportion of mosquitoes resting indoors after blood meal (0-1 scale)",
-  [METRIC_LLIN_USAGE]: "Percentage of population sleeping under long-lasting insecticidal nets",
 };
 
 // Format threshold value for display
@@ -84,10 +80,6 @@ function formatThreshold(operator: string, value: string, metricTypeId: number):
     if (numValue < 1) {
       return `${operator} ${(numValue * 100).toFixed(0)}%`;
     }
-  }
-
-  if (metricTypeId === METRIC_LLIN_USAGE && numValue < 1) {
-    return `${operator} ${(numValue * 100).toFixed(0)}%`;
   }
 
   if (metricTypeId === METRIC_CLINICAL_ATTACK_RATE) {
@@ -137,49 +129,6 @@ export const INTERVENTION_GUIDELINES: InterventionGuideline[] = [
         threshold: "0.5",
         dataSource: METRIC_DATA_SOURCES[METRIC_VECTOR_OUTDOOR_BITING],
         description: METRIC_DESCRIPTIONS[METRIC_VECTOR_OUTDOOR_BITING],
-      },
-    ],
-  },
-  {
-    id: "irs",
-    name: "IRS",
-    description: "Indoor Residual Spraying for areas with high burden, insecticide resistance, and indoor-resting vectors",
-    criteria: [
-      {
-        id: "irs-incidence",
-        indicatorName: METRIC_DISPLAY_NAMES[METRIC_INCIDENCE_RATE],
-        metricTypeId: METRIC_INCIDENCE_RATE,
-        operator: ">",
-        threshold: "250",
-        dataSource: METRIC_DATA_SOURCES[METRIC_INCIDENCE_RATE],
-        description: METRIC_DESCRIPTIONS[METRIC_INCIDENCE_RATE],
-      },
-      {
-        id: "irs-prevalence",
-        indicatorName: METRIC_DISPLAY_NAMES[METRIC_PREVALENCE],
-        metricTypeId: METRIC_PREVALENCE,
-        operator: ">",
-        threshold: "0.10",
-        dataSource: METRIC_DATA_SOURCES[METRIC_PREVALENCE],
-        description: METRIC_DESCRIPTIONS[METRIC_PREVALENCE],
-      },
-      {
-        id: "irs-resistance",
-        indicatorName: METRIC_DISPLAY_NAMES[METRIC_INSECTICIDE_RESISTANCE],
-        metricTypeId: METRIC_INSECTICIDE_RESISTANCE,
-        operator: ">",
-        threshold: "0.5",
-        dataSource: METRIC_DATA_SOURCES[METRIC_INSECTICIDE_RESISTANCE],
-        description: METRIC_DESCRIPTIONS[METRIC_INSECTICIDE_RESISTANCE],
-      },
-      {
-        id: "irs-indoor-resting",
-        indicatorName: METRIC_DISPLAY_NAMES[METRIC_VECTOR_INDOOR_RESTING],
-        metricTypeId: METRIC_VECTOR_INDOOR_RESTING,
-        operator: ">",
-        threshold: "0.5",
-        dataSource: METRIC_DATA_SOURCES[METRIC_VECTOR_INDOOR_RESTING],
-        description: METRIC_DESCRIPTIONS[METRIC_VECTOR_INDOOR_RESTING],
       },
     ],
   },
@@ -271,31 +220,6 @@ export const INTERVENTION_GUIDELINES: InterventionGuideline[] = [
         metricTypeId: METRIC_PREVALENCE,
         operator: ">",
         threshold: "0.10",
-        dataSource: METRIC_DATA_SOURCES[METRIC_PREVALENCE],
-        description: METRIC_DESCRIPTIONS[METRIC_PREVALENCE],
-      },
-    ],
-  },
-  {
-    id: "mda",
-    name: "MDA",
-    description: "Mass Drug Administration for very high burden areas targeting elimination",
-    criteria: [
-      {
-        id: "mda-incidence",
-        indicatorName: METRIC_DISPLAY_NAMES[METRIC_INCIDENCE_RATE],
-        metricTypeId: METRIC_INCIDENCE_RATE,
-        operator: ">",
-        threshold: "450",
-        dataSource: METRIC_DATA_SOURCES[METRIC_INCIDENCE_RATE],
-        description: METRIC_DESCRIPTIONS[METRIC_INCIDENCE_RATE],
-      },
-      {
-        id: "mda-prevalence",
-        indicatorName: METRIC_DISPLAY_NAMES[METRIC_PREVALENCE],
-        metricTypeId: METRIC_PREVALENCE,
-        operator: ">",
-        threshold: "0.35",
         dataSource: METRIC_DATA_SOURCES[METRIC_PREVALENCE],
         description: METRIC_DESCRIPTIONS[METRIC_PREVALENCE],
       },

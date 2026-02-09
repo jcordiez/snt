@@ -5,7 +5,6 @@ import { CircleCheck } from "lucide-react";
 import type { DistrictProperties } from "@/data/districts";
 import type { InterventionCategory, Intervention } from "@/types/intervention";
 import type { SavedRule } from "@/types/rule";
-import { getLastMatchingRuleColor } from "@/hooks/use-district-rules";
 
 interface InterventionTableProps {
   districts: DistrictProperties[];
@@ -30,24 +29,6 @@ export function InterventionTable({
   const [hoveredDistrictId, setHoveredDistrictId] = useState<string | null>(null);
   // Track which row is currently selected
   const [selectedDistrictId, setSelectedDistrictId] = useState<string | null>(null);
-
-  // Transform metricValuesByType from Record<metricId, Record<districtId, value>>
-  // to Record<districtId, Record<metricId, value>> for getLastMatchingRuleColor
-  const metricValuesByDistrict = useMemo(() => {
-    const result: Record<string, Record<number, number>> = {};
-
-    for (const [metricIdStr, districtValues] of Object.entries(metricValuesByType)) {
-      const metricId = Number(metricIdStr);
-      for (const [districtId, value] of Object.entries(districtValues)) {
-        if (!result[districtId]) {
-          result[districtId] = {};
-        }
-        result[districtId][metricId] = value;
-      }
-    }
-
-    return result;
-  }, [metricValuesByType]);
 
   // Helper to convert hex color to rgba with opacity
   const hexToRgba = (hex: string, opacity: number): string => {
@@ -169,11 +150,7 @@ export function InterventionTable({
         </thead>
         <tbody>
           {districts.map((district) => {
-            const ruleColor = getLastMatchingRuleColor(
-              district.districtId,
-              rules,
-              metricValuesByDistrict
-            );
+            const ruleColor = district.ruleColor || null;
             const isHovered = hoveredDistrictId === district.districtId;
             const isSelected = selectedDistrictId === district.districtId;
             // Selected: 50%, Hovered (not selected): 45%, Default: 30%
@@ -198,7 +175,7 @@ export function InterventionTable({
                 selectedDistrictId === district.districtId ? null : district.districtId
               )}
             >
-              <td className="sticky left-0 z-10 bg-inherit border-r px-4 py-2 font-medium">
+              <td className="sticky left-0 z-10 bg-inherit border-r px-4 py-2">
                 {district.districtName}
               </td>
               {flattenedInterventions.map((item) => (

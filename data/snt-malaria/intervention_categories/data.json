@@ -221,26 +221,6 @@
                 "intervention_category": 44,
                 "created_at": "2025-12-18T14:16:00.000000Z",
                 "updated_at": "2025-12-18T14:16:00.000000Z"
-            },
-            {
-                "id": 92,
-                "name": "IRS - Organophosphate",
-                "short_name": "IRS (OP)",
-                "code": "irs_organophosphate",
-                "description": "Indoor residual spraying with organophosphate insecticides (for pyrethroid-resistant areas)",
-                "intervention_category": 44,
-                "created_at": "2025-12-18T14:16:00.010000Z",
-                "updated_at": "2025-12-18T14:16:00.010000Z"
-            },
-            {
-                "id": 93,
-                "name": "IRS - Carbamate",
-                "short_name": "IRS (CAR)",
-                "code": "irs_carbamate",
-                "description": "Indoor residual spraying with carbamate insecticides",
-                "intervention_category": 44,
-                "created_at": "2025-12-18T14:16:00.020000Z",
-                "updated_at": "2025-12-18T14:16:00.020000Z"
             }
         ],
         "created_by": 4,

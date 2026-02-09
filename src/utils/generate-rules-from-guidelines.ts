@@ -16,8 +16,6 @@ const CATEGORY_CHEMOPREVENTION = 39;
 const CATEGORY_NETS_CAMPAIGN = 40;
 const CATEGORY_NETS_ROUTINE = 41;
 const CATEGORY_VACCINATION = 42;
-const CATEGORY_IRS = 44;
-const CATEGORY_MDA = 45;
 
 // Intervention IDs (from predefined-plans.ts)
 const INTERVENTION_CM = 78;
@@ -29,8 +27,6 @@ const INTERVENTION_PBO_CAMPAIGN = 84;
 const INTERVENTION_STANDARD_PYRETHROID_ROUTINE = 88;
 const INTERVENTION_PBO_ROUTINE = 87;
 const INTERVENTION_R21 = 89;
-const INTERVENTION_IRS_ORGANOPHOSPHATE = 92;
-const INTERVENTION_MDA_MULTIPLE = 95;
 
 /**
  * Mapping from guideline ID to the single intervention it represents.
@@ -38,24 +34,20 @@ const INTERVENTION_MDA_MULTIPLE = 95;
  */
 const GUIDELINE_INTERVENTION_MAP: Record<string, [number, number]> = {
   "itns-llins": [CATEGORY_NETS_CAMPAIGN, INTERVENTION_PBO_CAMPAIGN],
-  "irs": [CATEGORY_IRS, INTERVENTION_IRS_ORGANOPHOSPHATE],
   "smc": [CATEGORY_CHEMOPREVENTION, INTERVENTION_SMC],
   "pmc": [CATEGORY_CHEMOPREVENTION, INTERVENTION_PMC],
   "iptp": [CATEGORY_IPTP, INTERVENTION_IPTP],
-  "mda": [CATEGORY_MDA, INTERVENTION_MDA_MULTIPLE],
   "rtss": [CATEGORY_VACCINATION, INTERVENTION_R21],
 };
 
 // Rule colors by guideline ID
 const RULE_COLORS: Record<string, string> = {
-  default: "#9ca3af",     // Gray
-  "itns-llins": "#f97316", // Orange
-  "rtss": "#f59e0b",       // Amber
-  "irs": "#3b82f6",        // Blue
-  "smc": "#22c55e",        // Green
-  "pmc": "#a855f7",        // Purple
-  "iptp": "#06b6d4",       // Cyan
-  "mda": "#ec4899",        // Pink
+  default: "#B0BEC5",     // Gray
+  "itns-llins": "#FFB74D", // Vibrant orange
+  "rtss": "#FFD54F",       // Vibrant amber
+  "smc": "#81C784",        // Vibrant green
+  "pmc": "#B39DDB",        // Vibrant purple
+  "iptp": "#4DD0E1",       // Vibrant cyan
 };
 
 /**

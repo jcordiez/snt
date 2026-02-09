@@ -96,7 +96,7 @@ export function applyPlanRules(
           }
 
           feature.properties.interventionMixLabel =
-            names.length > 0 ? names.join(" + ") : "None";
+            names.length > 0 ? names.join(" + ") : "";
           feature.properties.interventionCategoryAssignments = Object.fromEntries(existing);
           feature.properties.interventionCount = existing.size;
           feature.properties.ruleColor = rule.color;

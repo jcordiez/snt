@@ -145,8 +145,8 @@ function CriterionRow({
 }
 
 const DEFAULT_COLORS = [
-  "#3b82f6", "#ef4444", "#22c55e", "#f59e0b", "#8b5cf6",
-  "#ec4899", "#06b6d4", "#84cc16", "#f97316", "#6366f1",
+  "#64B5F6", "#EF9A9A", "#81C784", "#FFD54F", "#B39DDB",
+  "#F48FB1", "#4DD0E1", "#AED581", "#FFB74D", "#9FA8DA",
 ];
 
 // Default interventions for new rules (PRD Phase 7.1)
@@ -169,8 +169,8 @@ interface RuleEditModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   rule: SavedRule | null;
-  /** Pre-select a specific category when creating a new rule */
-  initialCategoryId?: number | null;
+  /** Pre-select interventions when creating a new rule */
+  initialInterventions?: { categoryId: number; interventionId: number }[];
   rulesCount: number;
   metricTypes: MetricType[];
   groupedMetricTypes: Record<string, MetricType[]>;
@@ -191,7 +191,7 @@ export function RuleEditModal({
   isOpen,
   onOpenChange,
   rule,
-  initialCategoryId,
+  initialInterventions = [],
   rulesCount,
   metricTypes: _metricTypes,
   groupedMetricTypes,
@@ -263,19 +263,23 @@ export function RuleEditModal({
         setCriteria([]);
         setExcludedDistrictIds([]);
 
-        if (initialCategoryId != null) {
-          // Pre-populate with the first intervention from the selected category
-          const category = interventionCategories.find((c) => c.id === initialCategoryId);
-          const firstIntervention = category?.interventions[0];
-          if (firstIntervention) {
-            setTitle(category?.name ?? `Category ${rulesCount + 1}`);
-            setInterventionsByCategory(new Map([[initialCategoryId, firstIntervention.id]]));
-            setCoverageByCategory(new Map([[initialCategoryId, DEFAULT_COVERAGE]]));
-          } else {
-            setTitle(`Category ${rulesCount + 1}`);
-            setInterventionsByCategory(new Map());
-            setCoverageByCategory(new Map());
+        if (initialInterventions.length > 0) {
+          // Pre-populate with the selected interventions
+          const newInterventions = new Map<number, number>();
+          const newCoverage = new Map<number, number>();
+          const names: string[] = [];
+          for (const { categoryId, interventionId } of initialInterventions) {
+            newInterventions.set(categoryId, interventionId);
+            newCoverage.set(categoryId, DEFAULT_COVERAGE);
+            const category = interventionCategories.find((c) => c.id === categoryId);
+            const intervention = category?.interventions.find((i) => i.id === interventionId);
+            if (intervention && !names.includes(intervention.short_name || intervention.name)) {
+              names.push(intervention.short_name || intervention.name);
+            }
           }
+          setTitle(names.join(" + ") || `Category ${rulesCount + 1}`);
+          setInterventionsByCategory(newInterventions);
+          setCoverageByCategory(newCoverage);
         } else {
           setTitle(`Category ${rulesCount + 1}`);
           setInterventionsByCategory(new Map());
@@ -283,7 +287,7 @@ export function RuleEditModal({
         }
       }
     }
-  }, [isOpen, rule, rulesCount, initialCategoryId, interventionCategories]);
+  }, [isOpen, rule, rulesCount, initialInterventions, interventionCategories]);
 
   const handleUpdateCriterion = useCallback((id: string, updates: Partial<RuleCriterion>) => {
     setCriteria((prev) =>

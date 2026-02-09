@@ -56,7 +56,7 @@ export function createInterventionMix(
 
   return {
     categoryAssignments: new Map(selectedInterventionsByCategory),
-    displayLabel: interventionNames.length > 0 ? interventionNames.join(" + ") : "None",
+    displayLabel: interventionNames.length > 0 ? interventionNames.join(" + ") : "",
   };
 }
 
@@ -105,7 +105,7 @@ export function mergeInterventionMixes(
 
   return {
     categoryAssignments: mergedAssignments,
-    displayLabel: interventionNames.length > 0 ? interventionNames.join(" + ") : "None",
+    displayLabel: interventionNames.length > 0 ? interventionNames.join(" + ") : "",
   };
 }
 
@@ -140,7 +140,7 @@ function transformOrgUnitsToGeoJSON(
         interventionStatus: "none" as InterventionStatus,
         interventionCount: 0,
         interventions: [],
-        interventionMixLabel: "None",
+        interventionMixLabel: "",
         interventionCategoryAssignments: {},
       },
       geometry: geometry as GeoJSON.MultiPolygon | GeoJSON.Polygon,

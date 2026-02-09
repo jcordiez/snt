@@ -48,15 +48,18 @@ export function SelectionWidget({
 
   return (
     <div
-      className="absolute top-3 left-3 z-10 bg-accent backdrop-blur-sm rounded-lg shadow-md px-3 py-2"
+      className="absolute top-3 left-3 z-10 bg-[#1F2B3D]/75 rounded-lg  px-3 py-2"
       role="region"
       aria-label="District selection"
       aria-live="polite"
     >
-      <div className="flex items-center gap-3">
-        <span className="text-sm font-semibold text-white">
-          {selectionCount} {districtLabel} selected{populationText}
+      <div className="flex items-center gap-3 text-sm text-white">
+        <span className="font-bold">
+          {selectionCount} 
         </span>
+         {districtLabel} selected
+         <span className="font-semibold">{populationText}</span>
+        
         <Button
           variant="ghost"
           size="sm"

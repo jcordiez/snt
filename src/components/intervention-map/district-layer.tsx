@@ -467,20 +467,21 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
       if (!e.features?.length) return;
 
       const props = e.features[0].properties;
-      const mixLabel = props.interventionMixLabel || "CM";
+      const mixLabel = props.interventionMixLabel || "";
       const colorByInterventionName = props.colorByInterventionName ?
         (typeof props.colorByInterventionName === 'string' ? JSON.parse(props.colorByInterventionName) : props.colorByInterventionName)
         : {};
       const defaultColor = props.ruleColor || "#ECEDEE";
 
       // Split the intervention mix label (e.g., "CM + IPTp + Dual AI") into individual interventions
-      const interventions = mixLabel.split(" + ");
-      const interventionTags = interventions
-        .map((intervention: string) => {
-          const color = colorByInterventionName[intervention] || defaultColor;
-          return `<span style="display: inline-block; background: ${color}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; margin-right: 4px; margin-bottom: 4px;">${intervention}</span>`;
-        })
-        .join("");
+      const interventionTags = mixLabel
+        ? mixLabel.split(" + ").filter((l: string) => l !== "None")
+            .map((intervention: string) => {
+              const color = colorByInterventionName[intervention] || defaultColor;
+              return `<span style="display: inline-block; background: ${color}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; margin-right: 4px; margin-bottom: 4px;">${intervention}</span>`;
+            })
+            .join("")
+        : "";
 
       // Get metric values for this district
       const districtId = Number(props.districtId);
@@ -518,7 +519,7 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
               <td style="text-align: right;">${seasonalityValue}</td>
             </tr>
           </table>
-          <div style="margin-top: 8px; display: flex; flex-wrap: wrap;">${interventionTags}</div>
+          ${interventionTags ? `<div style="margin-top: 8px; display: flex; flex-wrap: wrap;">${interventionTags}</div>` : ''}
         `)
         .addTo(map);
     };

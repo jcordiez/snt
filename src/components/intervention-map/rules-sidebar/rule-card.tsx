@@ -1,6 +1,7 @@
 "use client";
 
-import { Trash2, Pencil, Info } from "lucide-react";
+import React, { useState } from "react";
+import { Trash2, Pencil, Delete, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -39,16 +40,16 @@ export function RuleCard({
 }: RuleCardProps) {
   const isVisible = rule.isVisible !== false; // Default to true if undefined
 
-  // Build criteria details for tooltip
-  const criteriaDetails = rule.criteria.map((c) => {
-    const metric = metricTypes.find((m) => m.id === c.metricTypeId);
-    return `${metric?.name ?? "Unknown"} ${c.operator} ${c.value}`;
-  });
-  const criteriaCount = rule.criteria.length;
-  const criteriaLabel = rule.isAllDistricts
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  // Build criteria text
+  const criteriaText = rule.isAllDistricts
     ? "All districts"
-    : criteriaCount > 0
-      ? `${criteriaCount} ${criteriaCount === 1 ? "criterion" : "criteria"}`
+    : rule.criteria.length > 0
+      ? rule.criteria.map((c) => {
+          const metric = metricTypes.find((m) => m.id === c.metricTypeId);
+          return `${metric?.name ?? "Unknown"} ${c.operator} ${c.value}`;
+        }).join(", ")
       : "No criteria";
 
   // Build intervention names
@@ -65,7 +66,7 @@ export function RuleCard({
 
   return (
     <div
-      className={`group relative p-3 text-card-foreground transition-colors rounded-lg cursor-pointer hover:border-secondary/50 duration-300 ${
+      className={`group relative p-4 text-card-foreground transition-colors rounded-lg cursor-pointer hover:border-secondary/50 duration-300 ${
         isSelected
           ? 'outline outline-2 outline-accent border border-transparent'
           : 'border border-[#E3E8EF]'
@@ -73,11 +74,11 @@ export function RuleCard({
       onClick={() => onSelect?.(rule.id)}
     >
       {/* Floating action buttons */}
-      <div className="absolute top-1 right-1 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+      <div className="absolute top-3 right-3 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
         <Button
           variant="ghost"
           size="icon"
-          className="h-7 w-7 text-muted-foreground"
+          className="h-7 w-7 text-secondary hover:bg-secondary/10 hover:text-secondary-foreground"
           onClick={(e) => { e.stopPropagation(); onEdit(rule.id); }}
         >
           <Pencil className="h-3.5 w-3.5" />
@@ -85,17 +86,17 @@ export function RuleCard({
         <Button
           variant="ghost"
           size="icon"
-          className="h-7 w-7 text-destructive"
+          className="h-7 w-7 hover:bg-secondary/10 hover:text-secondary-foreground"
           onClick={(e) => { e.stopPropagation(); onDelete(rule.id); }}
         >
-          <Trash2 className="h-3.5 w-3.5" />
+          <Trash className="h-3.5 w-3.5" />
         </Button>
       </div>
 
       {/* Intervention title */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         <div
-          className="w-4 h-4 shrink-0 rounded cursor-pointer hover:opacity-80 transition-opacity"
+          className="w-4 h-4 shrink-0 rounded cursor-pointer hover:opacity-20 transition-opacity"
           style={isVisible
             ? { backgroundColor: rule.color }
             : { border: '2px solid #D1D5DB' }
@@ -111,28 +112,21 @@ export function RuleCard({
         </span>
       </div>
 
-      {/* Criteria + exceptions on same line */}
-      <div className="flex items-center gap-2 mt-2 ml-6">
-        <div className="flex items-center gap-1 flex-1">
-          {criteriaCount > 0 && !rule.isAllDistricts ? (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="h-3.5 w-3.5 text-secondary shrink-0 cursor-default" />
-                </TooltipTrigger>
-                <TooltipContent side="top" className="max-w-xs">
-                  <ul className="text-xs space-y-1">
-                    {criteriaDetails.map((detail, i) => (
-                      <li key={i}>{detail}</li>
-                    ))}
-                  </ul>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          ) : (
-            <Info className="h-3.5 w-3.5 text-secondary shrink-0" />
-          )}
-          <span className="text-xs text-secondary">{criteriaLabel}</span>
+      {/* Criteria text + exceptions */}
+      <div className="flex items-start gap-2 my-2 ml-7">
+        <div className="flex-1 min-w-0">
+          <p
+            className="text-xs leading-4 text-secondary cursor-pointer"
+            style={{
+              display: '-webkit-box',
+              WebkitBoxOrient: 'vertical' as never,
+              WebkitLineClamp: isExpanded ? 999 : 2,
+              overflow: 'hidden',
+            }}
+            onClick={(e) => { e.stopPropagation(); setIsExpanded(!isExpanded); }}
+          >
+            {criteriaText}
+          </p>
         </div>
         {rule.excludedDistrictIds && rule.excludedDistrictIds.length > 0 && (
           <TooltipProvider>
