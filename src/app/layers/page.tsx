@@ -640,9 +640,10 @@ export default function LayersPage() {
     <TooltipProvider>
       <div className="flex flex-col h-screen">
         {/* Header */}
-        <header className="px-4 py-3 flex items-center justify-between shrink-0">
-          <h1 className="text-xl font-semibold ml-12">Metric Layers</h1>
-        </header>
+        <header className="px-6 py-4 border-b bg-white flex items-center justify-between">
+        <h1 className="text-xl font-semibold ml-12">Data Layers</h1>
+        
+      </header>
 
         {/* Main Content - 2 Column Layout */}
         <main className="flex-1 flex gap-4 p-4 min-h-0 overflow-hidden">

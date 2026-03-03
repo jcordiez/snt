@@ -176,7 +176,7 @@ export default function PlanPage() {
     for (const rule of savedRules) {
       if (rule.isAllDistricts) {
         // All districts minus exclusions plus inclusions
-        let count = districts.features.length - (rule.excludedDistrictIds?.length ?? 0);
+        const count = districts.features.length - (rule.excludedDistrictIds?.length ?? 0);
         // Add inclusions that might not be in the base set (though for "all districts" they would be)
         counts[rule.id] = count;
       } else {
@@ -366,7 +366,7 @@ export default function PlanPage() {
         );
 
         // Apply exclusions and inclusions
-        let finalDistrictIds = rule.excludedDistrictIds?.length
+        const finalDistrictIds = rule.excludedDistrictIds?.length
           ? matchingDistrictIds.filter((id) => !rule.excludedDistrictIds!.includes(id))
           : [...matchingDistrictIds];
 
