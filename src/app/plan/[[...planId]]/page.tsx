@@ -9,19 +9,15 @@ import {
   NavigationTabs,
   ListView,
   BudgetView,
+  YearRangeSelector,
+  BUDGET_YEARS,
   type ViewTab,
 } from "@/components/intervention-map";
-import { RefreshCw, MoreHorizontal, Download } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { AddInterventionSheet } from "@/components/intervention-map/add-intervention";
-import { RulesSidebar, RuleEditModal } from "@/components/intervention-map/rules-sidebar";
+import { RulesSidebar, RuleEditModal, RuleEditorPanel } from "@/components/intervention-map/rules-sidebar";
 import { Province } from "@/data/districts";
 import { useOrgUnits, createInterventionMix } from "@/hooks/use-orgunits";
 import { useInterventionCategories } from "@/hooks/use-intervention-categories";
@@ -61,6 +57,8 @@ function serializeRule(rule: SavedRule): string {
       : [],
     isAllDistricts: rule.isAllDistricts ?? false,
     excludedDistrictIds: [...(rule.excludedDistrictIds ?? [])].sort(),
+    inclusionEntries: rule.inclusionEntries ?? [],
+    includedDistrictIds: [...(rule.includedDistrictIds ?? [])].sort(),
     isVisible: rule.isVisible ?? true,
   });
 }
@@ -96,6 +94,9 @@ export default function PlanPage() {
   const { valuesByOrgUnit: seasonalityByOrgUnit } = useMetricValues(413);    // Saisonnalité
   const [selectedProvince, setSelectedProvince] = useState<Province | null>(null);
   const [activeTab, setActiveTab] = useState<ViewTab>("map");
+  // Budget year range state (default to all years)
+  const [budgetStartYearIndex, setBudgetStartYearIndex] = useState(0);
+  const [budgetEndYearIndex, setBudgetEndYearIndex] = useState(BUDGET_YEARS.count - 1);
   const [savedRules, setSavedRules] = useState<SavedRule[]>([]);
   const [originalRules, setOriginalRules] = useState<SavedRule[]>([]);
   const [isCumulativeMode, setIsCumulativeMode] = useState(true);
@@ -109,6 +110,7 @@ export default function PlanPage() {
   const [isRuleModalOpen, setIsRuleModalOpen] = useState(false);
   const [initialInterventions, setInitialInterventions] = useState<{ categoryId: number; interventionId: number }[]>([]);
   const [selectedRuleId, setSelectedRuleId] = useState<string | null>(null);
+  const [autoFocusRuleId, setAutoFocusRuleId] = useState<string | null>(null);
   const { isOpen: isComparisonOpen, toggle: toggleComparison } = useComparisonSidebar();
   const rulesInitialized = useRef(false);
 
@@ -166,6 +168,55 @@ export default function PlanPage() {
     savedRules.length > 0 &&
     metricValuesLoaded;
 
+  // Compute matching district counts for each rule (for display in rule cards)
+  const matchingDistrictCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    if (!districts || !metricValuesLoaded) return counts;
+
+    for (const rule of savedRules) {
+      if (rule.isAllDistricts) {
+        // All districts minus exclusions plus inclusions
+        let count = districts.features.length - (rule.excludedDistrictIds?.length ?? 0);
+        // Add inclusions that might not be in the base set (though for "all districts" they would be)
+        counts[rule.id] = count;
+      } else {
+        const rulesForEvaluation: Rule[] = rule.criteria.map((criterion) => ({
+          id: criterion.id,
+          metricTypeId: criterion.metricTypeId,
+          operator: criterion.operator,
+          value: criterion.value,
+        }));
+
+        const matchingDistrictIds = findMatchingDistrictIds(
+          districts,
+          rulesForEvaluation,
+          null, // Don't filter by province for the count
+          metricValuesByType
+        );
+
+        // Apply exclusions
+        let finalCount = rule.excludedDistrictIds?.length
+          ? matchingDistrictIds.filter((id) => !rule.excludedDistrictIds!.includes(id)).length
+          : matchingDistrictIds.length;
+
+        // Add inclusions that aren't already matching
+        if (rule.includedDistrictIds?.length) {
+          const matchingSet = new Set(matchingDistrictIds);
+          const excludedSet = new Set(rule.excludedDistrictIds ?? []);
+          for (const id of rule.includedDistrictIds) {
+            if (!matchingSet.has(id) && !excludedSet.has(id)) {
+              finalCount++;
+            }
+          }
+        }
+
+        counts[rule.id] = finalCount;
+      }
+    }
+
+    return counts;
+  }, [districts, savedRules, metricValuesByType, metricValuesLoaded]);
+
   // Compute the rules key outside the effect to ensure consistent tracking
   const currentRulesKey = isReadyToApplyRules
     ? JSON.stringify({
@@ -177,6 +228,8 @@ export default function PlanPage() {
           isAllDistricts: r.isAllDistricts,
           color: r.color,
           excludedDistrictIds: r.excludedDistrictIds,
+          inclusionEntries: r.inclusionEntries,
+          includedDistrictIds: r.includedDistrictIds,
           isVisible: r.isVisible,
         })),
         selectedProvinceId: selectedProvince?.id ?? null,
@@ -237,18 +290,22 @@ export default function PlanPage() {
       for (const feature of filteredFeatures) {
         const districtId = feature.properties.districtId;
         const result = getDistrictInterventions(districtId, visibleRules, metricValuesByDistrict, true);
-        if (result && result.interventionsByCategory.size > 0) {
-          const interventionMix = createInterventionMix(
-            result.interventionsByCategory,
-            interventionCategories!
-          );
-          // Blend colors from all matching rules for this district
-          const ruleColor = getBlendedMatchingRuleColor(districtId, visibleRules, metricValuesByDistrict);
+        // Get blended color for matching rules (even if no interventions defined)
+        const ruleColor = getBlendedMatchingRuleColor(districtId, visibleRules, metricValuesByDistrict);
+
+        if (result || ruleColor) {
+          const interventionMix = result && result.interventionsByCategory.size > 0
+            ? createInterventionMix(result.interventionsByCategory, interventionCategories!)
+            : { categoryAssignments: new Map(), displayLabel: "None" };
+
           // Convert colorByCategory Map to Record
           const colorByCategory: Record<string, string> = {};
-          result.colorByCategory.forEach((color, catId) => {
-            colorByCategory[String(catId)] = color;
-          });
+          if (result) {
+            result.colorByCategory.forEach((color, catId) => {
+              colorByCategory[String(catId)] = color;
+            });
+          }
+
           updates.push({
             districtIds: [districtId],
             interventionMix,
@@ -265,7 +322,7 @@ export default function PlanPage() {
       const nonDefaultRules = visibleRules.filter((r) => !r.isAllDistricts);
 
       // First, prepare default rule update for all districts
-      if (defaultRule && defaultRule.interventionsByCategory.size > 0) {
+      if (defaultRule) {
         const allDistrictIds = districts!.features
           .filter((f) =>
             selectedProvince
@@ -274,10 +331,9 @@ export default function PlanPage() {
           )
           .map((f) => f.properties.districtId);
 
-        const defaultMix = createInterventionMix(
-          defaultRule.interventionsByCategory,
-          interventionCategories!
-        );
+        const defaultMix = defaultRule.interventionsByCategory.size > 0
+          ? createInterventionMix(defaultRule.interventionsByCategory, interventionCategories!)
+          : { categoryAssignments: new Map(), displayLabel: "None" };
 
         // All categories from this rule get the rule's color
         const colorByCategory: Record<string, string> = {};
@@ -309,16 +365,25 @@ export default function PlanPage() {
           metricValuesByType
         );
 
-        // Filter out excluded districts (exceptions)
-        const finalDistrictIds = rule.excludedDistrictIds?.length
+        // Apply exclusions and inclusions
+        let finalDistrictIds = rule.excludedDistrictIds?.length
           ? matchingDistrictIds.filter((id) => !rule.excludedDistrictIds!.includes(id))
-          : matchingDistrictIds;
+          : [...matchingDistrictIds];
 
-        if (finalDistrictIds.length > 0 && rule.interventionsByCategory.size > 0) {
-          const interventionMix = createInterventionMix(
-            rule.interventionsByCategory,
-            interventionCategories!
-          );
+        // Add explicitly included districts
+        if (rule.includedDistrictIds?.length) {
+          const matchingSet = new Set(finalDistrictIds);
+          for (const id of rule.includedDistrictIds) {
+            if (!matchingSet.has(id)) {
+              finalDistrictIds.push(id);
+            }
+          }
+        }
+
+        if (finalDistrictIds.length > 0) {
+          const interventionMix = rule.interventionsByCategory.size > 0
+            ? createInterventionMix(rule.interventionsByCategory, interventionCategories!)
+            : { categoryAssignments: new Map(), displayLabel: "None" };
 
           // All categories from this rule get the rule's color
           const colorByCategory: Record<string, string> = {};
@@ -400,10 +465,27 @@ export default function PlanPage() {
   }, [interventionCategories, updateDistricts]);
 
   const handleAddRule = useCallback(() => {
-    setEditingRuleId(null);
-    setInitialInterventions([]);
-    setIsRuleModalOpen(true);
-  }, []);
+    // Generate a unique ID
+    const newId = Math.random().toString(36).substring(2, 9);
+
+    // Generate a color based on the number of existing rules
+    const colors = ["#6366f1", "#8b5cf6", "#ec4899", "#f97316", "#14b8a6", "#22c55e", "#3b82f6", "#a855f7"];
+    const color = colors[savedRules.length % colors.length];
+
+    // Create a new empty rule
+    const newRule: SavedRule = {
+      id: newId,
+      title: "Untitled",
+      color,
+      criteria: [],
+      interventionsByCategory: new Map(),
+    };
+
+    // Add to saved rules and select it
+    setSavedRules((prev) => [...prev, newRule]);
+    setSelectedRuleId(newId);
+    setAutoFocusRuleId(newId);
+  }, [savedRules.length]);
 
   const handleAddRuleWithInterventions = useCallback((selections: { categoryId: number; interventionId: number }[]) => {
     setEditingRuleId(null);
@@ -558,60 +640,68 @@ export default function PlanPage() {
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      {/* Header - Row 1: Page Title */}
-      <header className="px-6 py-4 border-b bg-white flex items-center">
+      {/* Header - Row 1: Country Name + Export */}
+      <header className="px-6 py-4 border-b bg-white flex items-center justify-between">
         <div className="flex items-center gap-2 ml-12">
-          <CountryName name="SNT Malaria" />
+        <CountryName name={displayName} />
+        {isEdited && (
+          <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
+            Edited
+          </span>
+        )}
         </div>
+        <Button onClick={handleExportPlan} variant="outline">
+          Export Plan
+        </Button>
       </header>
-
-      {/* Action Bar - Row 2: Plan name + Actions */}
-      <div className="px-6 py-2 flex items-center justify-between">
-        <span className="text-sm font-medium text-foreground ml-12">{displayName}</span>
-        <div className="flex items-center gap-2">
-          <Button onClick={handleExportPlan} variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
-            Export plan
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <MoreHorizontal className="h-4 w-4" />
-                <span className="sr-only">More actions</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>Duplicate plan</DropdownMenuItem>
-              <DropdownMenuItem>Share plan</DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive">Delete plan</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
 
       {/* Main Content: Two columns below header */}
       <main className="flex-1 flex gap-4 p-4 min-h-0 overflow-hidden">
 
          {/* Left Panel: Rules Sidebar */}
-         <div className="w-96 shrink-0 bg-white rounded-2xl overflow-hidden flex flex-col">
+         <div className="w-80 shrink-0 bg-white rounded-2xl overflow-hidden flex flex-col">
            <RulesSidebar
             rules={savedRules}
-            metricTypes={metricTypes}
-            interventionCategories={interventionCategories ?? []}
             onAddRule={handleAddRule}
             onEditRule={handleEditRule}
             onDeleteRule={handleDeleteRule}
             onToggleVisibility={handleToggleRuleVisibility}
             onReorderRules={handleReorderRules}
             getDistrictName={getDistrictName}
-            onGenerateFromGuidelines={handleGenerateFromGuidelines}
-            onAddRuleWithInterventions={handleAddRuleWithInterventions}
-            isCumulativeMode={isCumulativeMode}
-            onToggleCumulativeMode={setIsCumulativeMode}
+            matchingDistrictCounts={matchingDistrictCounts}
             selectedRuleId={selectedRuleId}
-            onSelectRule={setSelectedRuleId}
+            onSelectRule={(ruleId) => {
+              setSelectedRuleId(ruleId);
+              setAutoFocusRuleId(null);
+            }}
           />
          </div>
+
+        {/* Middle Panel: Rule Editor (when a rule is selected) */}
+        {selectedRuleId && savedRules.find((r) => r.id === selectedRuleId) && (
+          <div className="w-96 shrink-0 overflow-hidden flex flex-col">
+            <RuleEditorPanel
+              rule={savedRules.find((r) => r.id === selectedRuleId)!}
+              metricTypes={metricTypes}
+              groupedMetricTypes={metricTypes.reduce<Record<string, typeof metricTypes>>((acc, metric) => {
+                const category = metric.category || "Other";
+                if (!acc[category]) acc[category] = [];
+                acc[category].push(metric);
+                return acc;
+              }, {})}
+              interventionCategories={interventionCategories ?? []}
+              onSave={handleSaveRule}
+              onClose={() => {
+                setSelectedRuleId(null);
+                setAutoFocusRuleId(null);
+              }}
+              getDistrictName={getDistrictName}
+              districts={districts}
+              metricValuesByType={metricValuesByType}
+              autoFocusTitle={autoFocusRuleId === selectedRuleId}
+            />
+          </div>
+        )}
 
         {/* Right Panel: Filter bar + Map/List/Budget */}
         <div className="flex-1 flex flex-col min-h-0 bg-white rounded-2xl overflow-hidden">
@@ -622,7 +712,19 @@ export default function PlanPage() {
               <NavigationTabs activeTab={activeTab} onTabChange={setActiveTab} />
              
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4">
+              {activeTab === "budget" && (
+                <div className="w-48">
+                  <YearRangeSelector
+                    startYearIndex={budgetStartYearIndex}
+                    endYearIndex={budgetEndYearIndex}
+                    onChange={(start, end) => {
+                      setBudgetStartYearIndex(start);
+                      setBudgetEndYearIndex(end);
+                    }}
+                  />
+                </div>
+              )}
               <GeographicFilter
                 provinces={provinces}
                 selectedProvinceId={selectedProvince?.id ?? null}
@@ -785,6 +887,8 @@ export default function PlanPage() {
                   districts={districts}
                   selectedProvince={selectedProvince}
                   interventionCategories={interventionCategories ?? []}
+                  startYearIndex={budgetStartYearIndex}
+                  endYearIndex={budgetEndYearIndex}
                 />
               )}
             </div>

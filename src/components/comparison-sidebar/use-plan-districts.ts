@@ -62,9 +62,20 @@ export function applyPlanRules(
       metricValuesByType
     );
 
-    const finalIds = rule.excludedDistrictIds?.length
+    // Apply exclusions and inclusions
+    let finalIds = rule.excludedDistrictIds?.length
       ? matchingIds.filter((id) => !rule.excludedDistrictIds!.includes(id))
       : matchingIds;
+
+    // Add explicitly included districts
+    if (rule.includedDistrictIds?.length) {
+      const matchingSet = new Set(finalIds);
+      for (const id of rule.includedDistrictIds) {
+        if (!matchingSet.has(id)) {
+          finalIds.push(id);
+        }
+      }
+    }
 
     if (finalIds.length > 0 && rule.interventionsByCategory.size > 0) {
       const mix = createInterventionMix(rule.interventionsByCategory, interventionCategories);

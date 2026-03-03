@@ -12,7 +12,6 @@ import {
   Layers,
   MessageSquareMore,
   Plus,
-  Search,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { PREDEFINED_PLANS } from "@/data/predefined-plans"
@@ -98,20 +97,20 @@ export function AppSidebarContent({ onNavigate }: AppSidebarContentProps) {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-4 space-y-6">
-        {/* Actions Group */}
+        {/* Main Navigation */}
         <div className="space-y-1">
           <NavItem
-            href="/plan"
-            icon={<Plus className="size-4" />}
-            label="New plan"
-            isActive={isNewPlanActive}
+            href="/layers"
+            icon={<Layers className="size-4" />}
+            label="Metric layers"
+            isActive={pathname === "/layers"}
             onClick={onNavigate}
           />
           <NavItem
-            href="/search"
-            icon={<Search className="size-4" />}
-            label="Search plans"
-            isActive={pathname === "/search"}
+            href="/plan"
+            icon={<Plus className="size-4" />}
+            label="Build plan"
+            isActive={isNewPlanActive}
             onClick={onNavigate}
           />
           <NavItem
@@ -128,13 +127,6 @@ export function AppSidebarContent({ onNavigate }: AppSidebarContentProps) {
           <p className="px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
             Settings
           </p>
-          <NavItem
-            href="/layers"
-            icon={<Layers className="size-4" />}
-            label="Metric layers"
-            isActive={pathname === "/layers"}
-            onClick={onNavigate}
-          />
           <NavItem
             href="/guidelines"
             icon={<BookOpen className="size-4" />}

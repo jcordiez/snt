@@ -262,7 +262,10 @@ export function getDistrictInterventions(
 
     let matches = false;
 
-    if (rule.isAllDistricts) {
+    // Check if district is explicitly included (overrides criteria)
+    if (rule.includedDistrictIds?.includes(districtId)) {
+      matches = true;
+    } else if (rule.isAllDistricts) {
       matches = true;
     } else if (rule.criteria.length > 0) {
       matches = rule.criteria.every((criterion) => {
@@ -328,6 +331,12 @@ export function getLastMatchingRuleColor(
 
     // Check if this district is excluded from this rule
     if (rule.excludedDistrictIds?.includes(districtId)) {
+      continue;
+    }
+
+    // Check if district is explicitly included (overrides criteria)
+    if (rule.includedDistrictIds?.includes(districtId)) {
+      lastMatchingColor = rule.color;
       continue;
     }
 
@@ -504,6 +513,12 @@ export function getBlendedMatchingRuleColor(
   for (const rule of rules) {
     if (rule.isVisible === false) continue;
     if (rule.excludedDistrictIds?.includes(districtId)) continue;
+
+    // Check if district is explicitly included (overrides criteria)
+    if (rule.includedDistrictIds?.includes(districtId)) {
+      matchingColors.push(rule.color);
+      continue;
+    }
 
     if (rule.isAllDistricts) {
       defaultColor = rule.color;

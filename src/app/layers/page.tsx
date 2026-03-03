@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Search, X, Plus, ChevronDown, ChevronRight, Info, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { Search, X, Plus, ChevronDown, ChevronRight, Eye, EyeOff, MoreHorizontal, Pencil, Trash2, Layers } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useMetricTypes } from "@/hooks/use-metric-types";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { useMetricValues } from "@/hooks/use-metric-values";
+import { useOrgUnits } from "@/hooks/use-orgunits";
+import { Map, MapControls, useMap } from "@/components/ui/map";
+import { countryConfig } from "@/data/districts";
+import maplibregl from "maplibre-gl";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,9 +23,18 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import type { MetricType } from "@/types/intervention";
+
+// Default color scale for metric visualization (green to red, 6 steps)
+const DEFAULT_COLOR_SCALE = [
+  "#22c55e", // green-500 (low)
+  "#84cc16", // lime-500
+  "#eab308", // yellow-500
+  "#f97316", // orange-500
+  "#ef4444", // red-500
+  "#dc2626", // red-600 (high)
+];
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
@@ -50,6 +59,8 @@ function LayerEditModal({ isOpen, onOpenChange, metric, onSave }: LayerEditModal
   const [source, setSource] = useState("");
   const [units, setUnits] = useState("");
   const [unitSymbol, setUnitSymbol] = useState("");
+  // Scale definition - 5 threshold values for 6 color buckets
+  const [thresholds, setThresholds] = useState<string[]>(["", "", "", "", ""]);
 
   // Reset form when modal opens
   useEffect(() => {
@@ -61,6 +72,19 @@ function LayerEditModal({ isOpen, onOpenChange, metric, onSave }: LayerEditModal
         setSource(metric.source || "");
         setUnits(metric.units || "");
         setUnitSymbol(metric.unit_symbol || "");
+        // Parse existing thresholds from domain (skip first and last which are min/max)
+        const domain = metric.legend_config?.domain || [];
+        if (domain.length >= 2) {
+          // Domain includes min and max, thresholds are the values in between
+          const innerThresholds = domain.slice(1, -1);
+          setThresholds(
+            Array.from({ length: 5 }, (_, i) =>
+              innerThresholds[i] !== undefined ? String(innerThresholds[i]) : ""
+            )
+          );
+        } else {
+          setThresholds(["", "", "", "", ""]);
+        }
       } else {
         // Create mode - reset to empty values
         setName("");
@@ -69,11 +93,32 @@ function LayerEditModal({ isOpen, onOpenChange, metric, onSave }: LayerEditModal
         setSource("");
         setUnits("");
         setUnitSymbol("");
+        setThresholds(["", "", "", "", ""]);
       }
     }
   }, [isOpen, metric]);
 
+  const handleThresholdChange = (index: number, value: string) => {
+    const newThresholds = [...thresholds];
+    newThresholds[index] = value;
+    setThresholds(newThresholds);
+  };
+
   const handleSave = () => {
+    // Parse thresholds to numbers, filter out empty ones
+    const parsedThresholds = thresholds
+      .map(t => t.trim())
+      .filter(t => t !== "")
+      .map(t => parseFloat(t))
+      .filter(t => !isNaN(t))
+      .sort((a, b) => a - b);
+
+    // Build domain array: [0, ...thresholds, max]
+    // For now, use 0 and 100 as default min/max if no thresholds defined
+    const domain = parsedThresholds.length > 0
+      ? [0, ...parsedThresholds, Math.max(...parsedThresholds) * 1.5]
+      : [0, 100];
+
     const metricData: MetricType = metric
       ? {
           ...metric,
@@ -83,9 +128,13 @@ function LayerEditModal({ isOpen, onOpenChange, metric, onSave }: LayerEditModal
           source: source.trim(),
           units: units.trim(),
           unit_symbol: unitSymbol.trim(),
+          legend_config: {
+            domain,
+            range: DEFAULT_COLOR_SCALE.slice(0, parsedThresholds.length + 1),
+          },
         }
       : {
-          id: 0, // Will be set by addMetric
+          id: 0,
           account: 0,
           name: name.trim(),
           description: description.trim(),
@@ -94,8 +143,11 @@ function LayerEditModal({ isOpen, onOpenChange, metric, onSave }: LayerEditModal
           units: units.trim(),
           unit_symbol: unitSymbol.trim(),
           comments: "",
-          legend_config: { domain: [0, 100], range: [] },
-          legend_type: "gradient",
+          legend_config: {
+            domain,
+            range: DEFAULT_COLOR_SCALE.slice(0, parsedThresholds.length + 1),
+          },
+          legend_type: "threshold",
           created_at: "",
           updated_at: "",
         };
@@ -109,17 +161,16 @@ function LayerEditModal({ isOpen, onOpenChange, metric, onSave }: LayerEditModal
   };
 
   const isCreateMode = !metric;
-
   const canSave = name.trim() !== "";
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>{isCreateMode ? "Create Layer" : "Edit Layer"}</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
+        <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto">
           <div className="space-y-2">
             <label htmlFor="layer-name" className="text-sm font-medium">
               Name <span className="text-destructive">*</span>
@@ -193,6 +244,40 @@ function LayerEditModal({ isOpen, onOpenChange, metric, onSave }: LayerEditModal
               />
             </div>
           </div>
+
+          {/* Scale Definition Section */}
+          <div className="space-y-3 pt-4 border-t">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium">Scale Thresholds</label>
+              <span className="text-xs text-muted-foreground">Define color breakpoints</span>
+            </div>
+
+            <div className="space-y-2">
+              {thresholds.map((threshold, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <div
+                    className="w-4 h-4 rounded-sm flex-shrink-0"
+                    style={{ backgroundColor: DEFAULT_COLOR_SCALE[index] }}
+                  />
+                  <span className="text-xs text-muted-foreground w-6">&lt;</span>
+                  <Input
+                    type="number"
+                    value={threshold}
+                    onChange={(e) => handleThresholdChange(index, e.target.value)}
+                    placeholder={`Threshold ${index + 1}`}
+                    className="flex-1"
+                  />
+                </div>
+              ))}
+              <div className="flex items-center gap-2">
+                <div
+                  className="w-4 h-4 rounded-sm flex-shrink-0"
+                  style={{ backgroundColor: DEFAULT_COLOR_SCALE[5] }}
+                />
+                <span className="text-xs text-muted-foreground">≥ last threshold</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <DialogFooter>
@@ -226,10 +311,10 @@ function DeleteConfirmDialog({ isOpen, onOpenChange, metric, onConfirm }: Delete
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Delete Layer</DialogTitle>
-          <DialogDescription>
-            Are you sure you want to delete &quot;{metric?.name}&quot;? This action cannot be undone.
-          </DialogDescription>
         </DialogHeader>
+        <p className="text-sm text-muted-foreground">
+          Are you sure you want to delete &quot;{metric?.name}&quot;? This action cannot be undone.
+        </p>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
@@ -243,36 +328,204 @@ function DeleteConfirmDialog({ isOpen, onOpenChange, metric, onConfirm }: Delete
   );
 }
 
-function LayerInfoTooltip({ metric }: { metric: MetricType }) {
-  const hasUnits = metric.units || metric.unit_symbol;
+// Map layer component for displaying metric values
+const SOURCE_ID = "metric-districts";
+const FILL_LAYER_ID = "metric-district-fills";
+const BORDER_LAYER_ID = "metric-district-borders";
+
+interface MetricMapLayerProps {
+  districts: GeoJSON.FeatureCollection | null;
+  valuesByOrgUnit: Record<number, number>;
+  metricType: MetricType | null;
+  min: number | null;
+  max: number | null;
+}
+
+function MetricMapLayer({ districts, valuesByOrgUnit, metricType, min, max }: MetricMapLayerProps) {
+  const { map, isLoaded } = useMap();
+  const layersAdded = useMemo(() => ({ current: false }), []);
+  const popupRef = useMemo(() => ({ current: null as maplibregl.Popup | null }), []);
+
+  // Build color expression based on thresholds
+  const colorExpression = useMemo(() => {
+    if (!metricType?.legend_config?.domain || min === null || max === null) {
+      return "#d1d5db"; // gray-300 fallback
+    }
+
+    const domain = metricType.legend_config.domain;
+    const colors = metricType.legend_config.range?.length > 0
+      ? metricType.legend_config.range
+      : DEFAULT_COLOR_SCALE;
+
+    // Build step expression
+    if (domain.length >= 2 && colors.length >= 2) {
+      const steps: unknown[] = ["step", ["get", "metricValue"], colors[0]];
+      for (let i = 1; i < domain.length && i < colors.length; i++) {
+        steps.push(domain[i], colors[i]);
+      }
+      return steps as maplibregl.ExpressionSpecification;
+    }
+
+    return "#d1d5db";
+  }, [metricType, min, max]);
+
+  // Enhance districts with metric values
+  const enhancedDistricts = useMemo(() => {
+    if (!districts) return null;
+
+    return {
+      ...districts,
+      features: districts.features.map((feature: GeoJSON.Feature) => ({
+        ...feature,
+        properties: {
+          ...feature.properties,
+          metricValue: valuesByOrgUnit[feature.properties?.districtId] ?? 0,
+        },
+      })),
+    };
+  }, [districts, valuesByOrgUnit]);
+
+  // Initialize layers
+  useEffect(() => {
+    if (!isLoaded || !map || !enhancedDistricts) return;
+
+    // Clean up existing layers first
+    try {
+      if (map.getLayer(BORDER_LAYER_ID)) map.removeLayer(BORDER_LAYER_ID);
+      if (map.getLayer(FILL_LAYER_ID)) map.removeLayer(FILL_LAYER_ID);
+      if (map.getSource(SOURCE_ID)) map.removeSource(SOURCE_ID);
+    } catch { /* ignore */ }
+
+    map.addSource(SOURCE_ID, {
+      type: "geojson",
+      data: enhancedDistricts,
+    });
+
+    map.addLayer({
+      id: FILL_LAYER_ID,
+      type: "fill",
+      source: SOURCE_ID,
+      paint: {
+        "fill-color": colorExpression,
+        "fill-opacity": 0.85,
+      },
+    });
+
+    map.addLayer({
+      id: BORDER_LAYER_ID,
+      type: "line",
+      source: SOURCE_ID,
+      paint: {
+        "line-color": "#ffffff",
+        "line-width": 1,
+      },
+    });
+
+    layersAdded.current = true;
+  }, [isLoaded, map, enhancedDistricts, colorExpression, layersAdded]);
+
+  // Update data when values change
+  useEffect(() => {
+    if (!isLoaded || !map || !layersAdded.current || !enhancedDistricts) return;
+
+    const source = map.getSource(SOURCE_ID) as maplibregl.GeoJSONSource;
+    if (source) {
+      source.setData(enhancedDistricts);
+    }
+
+    if (map.getLayer(FILL_LAYER_ID)) {
+      map.setPaintProperty(FILL_LAYER_ID, "fill-color", colorExpression);
+    }
+  }, [isLoaded, map, enhancedDistricts, colorExpression, layersAdded]);
+
+  // Tooltip on hover
+  useEffect(() => {
+    if (!isLoaded || !map || !metricType) return;
+
+    if (!popupRef.current) {
+      popupRef.current = new maplibregl.Popup({
+        closeButton: false,
+        closeOnClick: false,
+      });
+    }
+
+    const popup = popupRef.current;
+
+    const handleMouseMove = (e: maplibregl.MapMouseEvent & { features?: maplibregl.MapGeoJSONFeature[] }) => {
+      if (!e.features?.length) return;
+      const props = e.features[0].properties;
+      const value = props.metricValue ?? 0;
+
+      map.getCanvas().style.cursor = "pointer";
+      popup
+        .setLngLat(e.lngLat)
+        .setHTML(`
+          <div style="font-family: system-ui, sans-serif; padding: 4px 0;">
+            <strong style="font-size: 13px;">${props.districtName || "Unknown"}</strong>
+            <div style="margin-top: 4px; font-size: 12px;">
+              <span style="color: #666;">${metricType.name}:</span>
+              <span style="font-weight: 600; margin-left: 4px;">${value.toFixed(2)}${metricType.unit_symbol ? ` ${metricType.unit_symbol}` : ""}</span>
+            </div>
+          </div>
+        `)
+        .addTo(map);
+    };
+
+    const handleMouseLeave = () => {
+      map.getCanvas().style.cursor = "";
+      popup.remove();
+    };
+
+    map.on("mousemove", FILL_LAYER_ID, handleMouseMove);
+    map.on("mouseleave", FILL_LAYER_ID, handleMouseLeave);
+
+    return () => {
+      map.off("mousemove", FILL_LAYER_ID, handleMouseMove);
+      map.off("mouseleave", FILL_LAYER_ID, handleMouseLeave);
+      popup.remove();
+    };
+  }, [isLoaded, map, metricType, popupRef]);
+
+  // Cleanup
+  useEffect(() => {
+    return () => {
+      if (!map) return;
+      try {
+        if (map.getLayer(BORDER_LAYER_ID)) map.removeLayer(BORDER_LAYER_ID);
+        if (map.getLayer(FILL_LAYER_ID)) map.removeLayer(FILL_LAYER_ID);
+        if (map.getSource(SOURCE_ID)) map.removeSource(SOURCE_ID);
+      } catch { /* ignore */ }
+    };
+  }, [map]);
+
+  return null;
+}
+
+// Scale legend component
+function ScaleLegend({ metricType, min, max }: { metricType: MetricType | null; min: number | null; max: number | null }) {
+  if (!metricType) return null;
+
+  const domain = metricType.legend_config?.domain || [];
+  const colors = metricType.legend_config?.range?.length > 0
+    ? metricType.legend_config.range
+    : DEFAULT_COLOR_SCALE;
 
   return (
-    <div className="space-y-2 text-sm max-w-xs">
-      <div>
-        <div className="font-medium text-primary-foreground">{metric.name}</div>
-        {metric.description && (
-          <p className="text-primary-foreground/80 mt-1">{metric.description}</p>
-        )}
+    <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-md px-3 py-2">
+      <div className="text-xs font-semibold text-gray-700 mb-2">
+        {metricType.name}
+        {metricType.unit_symbol && <span className="font-normal text-gray-500 ml-1">({metricType.unit_symbol})</span>}
       </div>
-      <div className="space-y-1 text-primary-foreground/80">
-        {metric.source && (
-          <div>
-            <span className="font-medium">Source:</span> {metric.source}
-          </div>
-        )}
-        {hasUnits && (
-          <div>
-            <span className="font-medium">Units:</span>{" "}
-            {metric.units}
-            {metric.unit_symbol && ` (${metric.unit_symbol})`}
-          </div>
-        )}
-        {metric.updated_at && (
-          <div>
-            <span className="font-medium">Last updated:</span>{" "}
-            {formatDate(metric.updated_at)}
-          </div>
-        )}
+
+      <div className="flex h-3 rounded-sm overflow-hidden mb-1 w-32">
+        {colors.slice(0, 6).map((color, i) => (
+          <div key={i} className="flex-1" style={{ backgroundColor: color }} />
+        ))}
+      </div>
+
+      <div className="flex justify-between text-[10px] text-gray-600 w-32">
+        <span>{min !== null ? min.toFixed(0) : "0"}</span>
+        <span>{max !== null ? max.toFixed(0) : "100"}</span>
       </div>
     </div>
   );
@@ -280,14 +533,36 @@ function LayerInfoTooltip({ metric }: { metric: MetricType }) {
 
 export default function LayersPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(
-    new Set()
-  );
+  const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingMetric, setEditingMetric] = useState<MetricType | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deletingMetric, setDeletingMetric] = useState<MetricType | null>(null);
-  const { groupedByCategory, isLoading, addMetric } = useMetricTypes();
+  const [selectedMetricId, setSelectedMetricId] = useState<number | null>(null);
+  const [hiddenLayerIds, setHiddenLayerIds] = useState<Set<number>>(new Set());
+
+  const { groupedByCategory, isLoading: isLoadingMetrics, addMetric, data: metricTypes } = useMetricTypes();
+
+  // Toggle layer visibility
+  const toggleLayerVisibility = (metricId: number) => {
+    setHiddenLayerIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(metricId)) {
+        next.delete(metricId);
+      } else {
+        next.add(metricId);
+      }
+      return next;
+    });
+  };
+  const { data: districts } = useOrgUnits();
+  const { valuesByOrgUnit, min, max, isLoading: isLoadingValues } = useMetricValues(selectedMetricId);
+
+  // Get the selected metric type object
+  const selectedMetricType = useMemo((): MetricType | null => {
+    if (!selectedMetricId || !metricTypes) return null;
+    return metricTypes.find((m: MetricType) => m.id === selectedMetricId) || null;
+  }, [selectedMetricId, metricTypes]);
 
   const handleEditLayer = (metric: MetricType) => {
     setEditingMetric(metric);
@@ -296,7 +571,6 @@ export default function LayersPage() {
 
   const handleSaveLayer = (metricData: MetricType) => {
     if (editingMetric === null) {
-      // Create mode - add new metric
       const newMetric = addMetric({
         account: metricData.account,
         name: metricData.name,
@@ -311,7 +585,6 @@ export default function LayersPage() {
       });
       console.log("Created layer:", newMetric);
     } else {
-      // Edit mode - TODO: Implement actual save to API
       console.log("Saving layer:", metricData);
     }
     setEditingMetric(null);
@@ -328,7 +601,6 @@ export default function LayersPage() {
   };
 
   const handleConfirmDelete = () => {
-    // TODO: Implement actual delete to API
     console.log("Deleting layer:", deletingMetric);
     setDeletingMetric(null);
   };
@@ -343,6 +615,10 @@ export default function LayersPage() {
       }
       return next;
     });
+  };
+
+  const handleSelectLayer = (metric: MetricType) => {
+    setSelectedMetricId(selectedMetricId === metric.id ? null : metric.id);
   };
 
   // Filter layers by search query
@@ -362,115 +638,175 @@ export default function LayersPage() {
 
   return (
     <TooltipProvider>
-      <div className="flex flex-col h-full p-6">
-        <h1 className="text-2xl font-semibold">Available metrics</h1>
+      <div className="flex flex-col h-screen">
+        {/* Header */}
+        <header className="px-4 py-3 flex items-center justify-between shrink-0">
+          <h1 className="text-xl font-semibold ml-12">Metric Layers</h1>
+        </header>
 
-      <div className="flex items-center gap-4 mt-4">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Search layers..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 pr-9"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
-        </div>
-        <Button className="ml-auto" onClick={handleCreateLayer}>
-          <Plus className="h-4 w-4 mr-2" />
-          Create layer
-        </Button>
-      </div>
-
-      <div className="mt-6 space-y-2">
-        {isLoading ? (
-          <div className="text-muted-foreground">Loading layers...</div>
-        ) : categories.length === 0 ? (
-          <div className="text-muted-foreground">No layers found</div>
-        ) : (
-          categories.map((category) => {
-            const isCollapsed = collapsedCategories.has(category);
-            const metrics = filteredGroupedByCategory[category];
-
-            return (
-              <div key={category} className="border rounded-lg">
-                <button
-                  onClick={() => toggleCategory(category)}
-                  className="flex items-center gap-2 w-full px-4 py-3 text-left hover:bg-muted/50 transition-colors"
-                >
-                  {isCollapsed ? (
-                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                  )}
-                  <span className="font-semibold">{category}</span>
-                  <span className="text-muted-foreground text-sm">
-                    ({metrics.length})
-                  </span>
-                </button>
-
-                {!isCollapsed && (
-                  <div className="border-t">
-                    {metrics.map((metric) => (
-                      <div
-                        key={metric.id}
-                        className="flex items-center px-4 py-2 hover:bg-muted/50 transition-colors border-b last:border-b-0"
-                      >
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <button className="p-1 rounded hover:bg-muted mr-2">
-                              <Info className="h-4 w-4 text-muted-foreground" />
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent side="right" className="p-3">
-                            <LayerInfoTooltip metric={metric} />
-                          </TooltipContent>
-                        </Tooltip>
-                        <span className="flex-1">{metric.name}</span>
-                        <span className="text-sm text-muted-foreground mr-4">
-                          {metric.legend_config?.domain && metric.legend_config.domain.length >= 2 && (
-                            <>
-                              {Math.min(...metric.legend_config.domain)}-{Math.max(...metric.legend_config.domain)}
-                            </>
-                          )}
-                        </span>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <button className="p-1 rounded hover:bg-muted">
-                              <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-                            </button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleEditLayer(metric)}>
-                              <Pencil className="h-4 w-4 mr-2" />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              className="text-destructive focus:text-destructive"
-                              onClick={() => handleDeleteLayer(metric)}
-                            >
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    ))}
-                  </div>
+        {/* Main Content - 2 Column Layout */}
+        <main className="flex-1 flex gap-4 p-4 min-h-0 overflow-hidden">
+          {/* Left Column - Layer List */}
+          <div className="w-80 shrink-0 bg-white rounded-2xl overflow-hidden flex flex-col">
+            {/* Search + Create */}
+            <div className="px-4 py-3 border-b flex items-center gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Search layers..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 pr-9"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
                 )}
               </div>
-            );
-          })
-        )}
-      </div>
+              <Button size="icon" onClick={handleCreateLayer} className="shrink-0">
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {/* Layer List */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-2">
+              {isLoadingMetrics ? (
+                <div className="text-muted-foreground">Loading layers...</div>
+              ) : categories.length === 0 ? (
+                <div className="text-muted-foreground">No layers found</div>
+              ) : (
+                categories.map((category) => {
+                  const isCollapsed = collapsedCategories.has(category);
+                  const metrics = filteredGroupedByCategory[category];
+
+                  return (
+                    <div key={category} className="border rounded-lg bg-white">
+                      <button
+                        onClick={() => toggleCategory(category)}
+                        className="flex items-center gap-2 w-full px-4 py-3 text-left hover:bg-muted/50 transition-colors"
+                      >
+                        {isCollapsed ? (
+                          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                        )}
+                        <span className="font-semibold">{category}</span>
+                        <span className="text-muted-foreground text-sm">
+                          ({metrics.length})
+                        </span>
+                      </button>
+
+                      {!isCollapsed && (
+                        <div className="border-t">
+                          {metrics.map((metric) => {
+                            const isHidden = hiddenLayerIds.has(metric.id);
+                            return (
+                            <div
+                              key={metric.id}
+                              onClick={() => handleSelectLayer(metric)}
+                              className={`flex items-center px-4 py-2 cursor-pointer transition-colors border-b last:border-b-0 ${
+                                selectedMetricId === metric.id
+                                  ? "bg-primary/10 border-l-2 border-l-primary"
+                                  : "hover:bg-muted/50"
+                              }`}
+                            >
+                              <button
+                                className="p-1 rounded hover:bg-muted mr-2"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleLayerVisibility(metric.id);
+                                }}
+                              >
+                                {isHidden ? (
+                                  <EyeOff className="h-4 w-4 text-muted-foreground" />
+                                ) : (
+                                  <Eye className="h-4 w-4 text-muted-foreground" />
+                                )}
+                              </button>
+                              <span className={`flex-1 ${isHidden ? "text-muted-foreground" : ""}`}>
+                                {metric.name}
+                              </span>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <button
+                                    className="p-1 rounded hover:bg-muted"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                                  </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuItem onClick={() => handleEditLayer(metric)}>
+                                    <Pencil className="h-4 w-4 mr-2" />
+                                    Edit
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    className="text-destructive focus:text-destructive"
+                                    onClick={() => handleDeleteLayer(metric)}
+                                  >
+                                    <Trash2 className="h-4 w-4 mr-2" />
+                                    Delete
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
+                          );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+
+          {/* Right Column - Map */}
+          <div className="flex-1 flex flex-col min-h-0 bg-white rounded-2xl overflow-hidden">
+            {/* Filter bar */}
+            <div className="px-6 py-3 border-b flex items-center shrink-0">
+              <span className="text-sm font-medium">
+                {selectedMetricType ? selectedMetricType.name : "Map Preview"}
+              </span>
+            </div>
+
+            {/* Map Container */}
+            <div className="flex-1 relative min-h-0">
+              {selectedMetricId ? (
+                <>
+                  <Map center={countryConfig.center} zoom={countryConfig.zoom} theme="light">
+                    <MetricMapLayer
+                      districts={districts}
+                      valuesByOrgUnit={valuesByOrgUnit}
+                      metricType={selectedMetricType}
+                      min={min}
+                      max={max}
+                    />
+                    <MapControls position="bottom-right" showZoom={true} />
+                  </Map>
+                  <ScaleLegend metricType={selectedMetricType} min={min} max={max} />
+                  {isLoadingValues && (
+                    <div className="absolute inset-0 bg-white/50 flex items-center justify-center">
+                      <div className="text-muted-foreground">Loading data...</div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="h-full flex items-center justify-center bg-gray-50">
+                  <div className="text-center text-muted-foreground">
+                    <Layers className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                    <p>Select a layer to view on the map</p>
+                </div>
+              </div>
+            )}
+            </div>
+          </div>
+        </main>
       </div>
 
       <LayerEditModal

@@ -12,6 +12,20 @@ export interface RuleCriterion {
 }
 
 /**
+ * Represents an inclusion entry - a region or district explicitly included in a rule.
+ */
+export interface InclusionEntry {
+  /** Unique ID of the region or district */
+  id: string;
+  /** Display name */
+  name: string;
+  /** Level of the organizational unit */
+  level: 'region' | 'district';
+  /** All district IDs contained in this entry (for regions, all child districts) */
+  districtIds: string[];
+}
+
+/**
  * Represents a saved rule that combines selection criteria with intervention assignments.
  * Rules are displayed in the sidebar and can be edited/reapplied.
  */
@@ -28,6 +42,10 @@ export interface SavedRule {
   isAllDistricts?: boolean;
   /** Array of district IDs to exclude from this rule's selection criteria */
   excludedDistrictIds?: string[];
+  /** Array of inclusion entries (regions or districts) to include in this rule */
+  inclusionEntries?: InclusionEntry[];
+  /** @deprecated Use inclusionEntries instead. Kept for backward compatibility. */
+  includedDistrictIds?: string[];
   /** When false, the rule is hidden and not applied to the map or list view */
   isVisible?: boolean;
 }

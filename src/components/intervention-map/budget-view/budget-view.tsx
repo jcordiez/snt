@@ -6,10 +6,13 @@ import type { DistrictProperties, Province } from "@/data/districts";
 import type { InterventionCategory, Intervention } from "@/types/intervention";
 import { CostSummary } from "./cost-summary";
 import { CategoryPieChart } from "./category-pie-chart";
+import { BudgetMap } from "./budget-map";
+import { useDistrictCosts } from "@/hooks/use-district-costs";
 import {
   INTERVENTION_COSTS,
   DEFAULT_COST,
   getTotalCost,
+  getCumulativeCostBreakdown,
   type CostBreakdown,
 } from "./cost-data";
 
@@ -20,6 +23,10 @@ interface BudgetViewProps {
   > | null;
   selectedProvince: Province | null;
   interventionCategories: InterventionCategory[];
+  /** Start year index (0-based, 0 = first budget year) */
+  startYearIndex: number;
+  /** End year index (0-based, inclusive) */
+  endYearIndex: number;
 }
 
 interface InterventionCostData {
@@ -45,6 +52,8 @@ export function BudgetView({
   districts,
   selectedProvince,
   interventionCategories,
+  startYearIndex,
+  endYearIndex,
 }: BudgetViewProps) {
   // Build intervention lookup maps
   const interventionLookup = useMemo(() => {
@@ -73,7 +82,7 @@ export function BudgetView({
       .map((feature) => feature.properties);
   }, [districts, selectedProvince]);
 
-  // Calculate costs per intervention
+  // Calculate costs per intervention (with cumulative year range and inflation)
   const interventionCosts = useMemo(() => {
     const costMap = new Map<number, InterventionCostData>();
 
@@ -85,7 +94,13 @@ export function BudgetView({
         const info = interventionLookup.get(id);
         if (!info) continue;
 
-        const costs: CostBreakdown = INTERVENTION_COSTS[id] || DEFAULT_COST;
+        const baseCosts: CostBreakdown = INTERVENTION_COSTS[id] || DEFAULT_COST;
+        // Calculate cumulative costs over selected year range with inflation
+        const costs = getCumulativeCostBreakdown(
+          baseCosts,
+          startYearIndex,
+          endYearIndex
+        );
         const totalCost = getTotalCost(costs);
 
         if (costMap.has(id)) {
@@ -113,7 +128,7 @@ export function BudgetView({
     }
 
     return Array.from(costMap.values());
-  }, [filteredDistricts, interventionLookup]);
+  }, [filteredDistricts, interventionLookup, startYearIndex, endYearIndex]);
 
   // Aggregate costs by category
   const categoryCosts = useMemo(() => {
@@ -140,6 +155,14 @@ export function BudgetView({
     return interventionCosts.reduce((sum, i) => sum + i.totalCost, 0);
   }, [interventionCosts]);
 
+  // Get per-district costs for the map (with year range)
+  const { costByDistrictId, minCost, maxCost } = useDistrictCosts(
+    districts,
+    selectedProvince?.id,
+    startYearIndex,
+    endYearIndex
+  );
+
   if (!districts?.features.length) {
     return (
       <div className="flex items-center justify-center h-full text-muted-foreground">
@@ -157,13 +180,30 @@ export function BudgetView({
   }
 
   return (
-    <div className="flex flex-col h-full overflow-auto p-6 gap-6">
-      {/* Total Cost Summary */}
-      <CostSummary totalCost={totalCost} />
-      <div className="rounded-lg p-4">
-          <CategoryPieChart categoryCosts={categoryCosts} />
+    <div className="h-full grid grid-cols-3 gap-4 p-4">
+      {/* Left Column (1/3 width) */}
+      <div className="col-span-1 flex flex-col gap-4">
+        {/* Top Row (1/3 height) - Total Cost */}
+        <div className="h-1/3 rounded-lg border bg-card p-4 flex items-center justify-center">
+          <CostSummary totalCost={totalCost} />
         </div>
 
+        {/* Bottom Row (2/3 height) - Pie Chart with Legend */}
+        <div className="flex-1 min-h-0 rounded-lg border bg-card p-4">
+          <CategoryPieChart categoryCosts={categoryCosts} />
+        </div>
+      </div>
+
+      {/* Right Column (2/3 width) - Map */}
+      <div className="col-span-2">
+        <BudgetMap
+          districts={districts}
+          selectedProvince={selectedProvince}
+          costByDistrictId={costByDistrictId}
+          minCost={minCost}
+          maxCost={maxCost}
+        />
+      </div>
     </div>
   );
 }

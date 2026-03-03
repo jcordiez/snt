@@ -18,6 +18,10 @@ interface MapLegendProps {
     DistrictProperties
   > | null;
   onSelectMix?: (mixLabel: string, districtIds: string[]) => void;
+  /** Currently selected rule ID for filtering legend items */
+  selectedRuleId?: string | null;
+  /** District IDs that match the selected rule */
+  selectedRuleDistrictIds?: string[];
 }
 
 /**
@@ -87,11 +91,17 @@ function computeLegendItems(
   }));
 }
 
-export function MapLegend({ districts, onSelectMix }: MapLegendProps) {
+export function MapLegend({ districts, onSelectMix, selectedRuleId, selectedRuleDistrictIds }: MapLegendProps) {
   const [collapsed, setCollapsed] = useState(false);
   const legendItems = useMemo(
     () => computeLegendItems(districts ?? null),
     [districts]
+  );
+
+  // When a rule is selected, determine which legend items have districts in that rule
+  const selectedRuleDistrictSet = useMemo(
+    () => new Set(selectedRuleDistrictIds ?? []),
+    [selectedRuleDistrictIds]
   );
 
   // Labels that should not show a "Select" button
@@ -115,8 +125,11 @@ export function MapLegend({ districts, onSelectMix }: MapLegendProps) {
         <div className="flex flex-col gap-1">
           {legendItems.map((item) => {
             const isSelectable = !nonSelectableLabels.includes(item.label) && item.districtIds.length > 0;
+            // When a rule is selected, check if this legend item has any districts in the selected rule
+            const isInSelectedRule = !selectedRuleId || item.districtIds.some((id) => selectedRuleDistrictSet.has(id));
+            const itemOpacity = isInSelectedRule ? 1 : 0.2;
             return (
-              <div key={item.label} className="flex items-center gap-2">
+              <div key={item.label} className="flex items-center gap-2" style={{ opacity: itemOpacity }}>
                 <span
                   className="w-3 h-3 rounded-sm flex-shrink-0 border border-white/30"
                   style={{ backgroundColor: item.color }}
