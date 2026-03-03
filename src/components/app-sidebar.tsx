@@ -102,7 +102,7 @@ export function AppSidebarContent({ onNavigate }: AppSidebarContentProps) {
           <NavItem
             href="/layers"
             icon={<Layers className="size-4" />}
-            label="Metric layers"
+            label="Data layers"
             isActive={pathname === "/layers"}
             onClick={onNavigate}
           />

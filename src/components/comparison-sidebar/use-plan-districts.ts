@@ -63,7 +63,7 @@ export function applyPlanRules(
     );
 
     // Apply exclusions and inclusions
-    let finalIds = rule.excludedDistrictIds?.length
+    const finalIds = rule.excludedDistrictIds?.length
       ? matchingIds.filter((id) => !rule.excludedDistrictIds!.includes(id))
       : matchingIds;
 
