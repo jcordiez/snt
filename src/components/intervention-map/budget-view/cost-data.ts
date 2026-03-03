@@ -48,3 +48,56 @@ export const DEFAULT_COST: CostBreakdown = {
   distribution: 30000,
   support: 15000,
 };
+
+// Annual inflation rate (e.g., 0.05 = 5%)
+export const INFLATION_RATE = 0.05;
+
+// Budget years configuration
+export const BUDGET_YEARS = {
+  start: 2025,
+  end: 2027,
+  count: 3,
+};
+
+/**
+ * Calculate the cost for a specific year with inflation applied
+ * Year 1 (2025) = base cost
+ * Year 2 (2026) = base cost * (1 + inflation)
+ * Year 3 (2027) = base cost * (1 + inflation)^2
+ */
+export function getCostForYear(baseCost: number, yearIndex: number): number {
+  return baseCost * Math.pow(1 + INFLATION_RATE, yearIndex);
+}
+
+/**
+ * Calculate cumulative cost over a range of years (inclusive)
+ * @param baseCost - The base cost (year 1)
+ * @param startYearIndex - Starting year index (0-based, 0 = 2025)
+ * @param endYearIndex - Ending year index (0-based, inclusive)
+ */
+export function getCumulativeCost(
+  baseCost: number,
+  startYearIndex: number,
+  endYearIndex: number
+): number {
+  let total = 0;
+  for (let i = startYearIndex; i <= endYearIndex; i++) {
+    total += getCostForYear(baseCost, i);
+  }
+  return total;
+}
+
+/**
+ * Calculate cumulative cost breakdown over a range of years
+ */
+export function getCumulativeCostBreakdown(
+  breakdown: CostBreakdown,
+  startYearIndex: number,
+  endYearIndex: number
+): CostBreakdown {
+  return {
+    procurement: getCumulativeCost(breakdown.procurement, startYearIndex, endYearIndex),
+    distribution: getCumulativeCost(breakdown.distribution, startYearIndex, endYearIndex),
+    support: getCumulativeCost(breakdown.support, startYearIndex, endYearIndex),
+  };
+}

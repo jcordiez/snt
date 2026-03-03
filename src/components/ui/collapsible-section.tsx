@@ -22,12 +22,12 @@ export function CollapsibleSection({
     <div className={className}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          {step !== undefined && (
+          {/*step !== undefined && (
             <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-700 text-white text-xs font-medium shrink-0">
               {step}
             </span>
-          )}
-          <span className="text-sm font-medium">{title}</span>
+          )*/}
+          <span className="text-md font-medium">{title}</span>
         </div>
         {action && <div>{action}</div>}
       </div>

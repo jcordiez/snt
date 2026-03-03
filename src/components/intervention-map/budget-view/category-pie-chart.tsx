@@ -87,9 +87,9 @@ export function CategoryPieChart({ categoryCosts }: CategoryPieChartProps) {
             <Pie
               data={data}
               cx="50%"
-              cy="45%"
-              innerRadius={100}
-              outerRadius={200}
+              cy="40%"
+              innerRadius={75}
+              outerRadius={135}
               paddingAngle={2}
               dataKey="value"
               nameKey="name"

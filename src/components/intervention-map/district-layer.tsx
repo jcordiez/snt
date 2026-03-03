@@ -186,8 +186,8 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
       type: "line",
       source: SOURCE_ID,
       paint: {
-        "line-color": "#7C3AED", // accent color (purple)
-        "line-width": 3,
+        "line-color": "#ffffff",
+        "line-width": 1,
       },
       filter: ["in", ["get", "districtId"], ["literal", []]], // Initially empty
     });
@@ -291,25 +291,41 @@ export function DistrictLayer({ selectedProvinceId, highlightedDistrictIds = [],
     }
   }, [isLoaded, map, highlightedDistrictIds]);
 
-  // Update selection layer filter when selectedDistrictIds changes
+  // Update opacity of non-selected districts when selectedDistrictIds changes
   useEffect(() => {
     if (!isLoaded || !map || !layersAdded.current) return;
 
     const selectedIds = selectedDistrictIds ? Array.from(selectedDistrictIds) : [];
 
+    // Ensure selection border layer has correct styling (white, 1px)
+    map.setPaintProperty(SELECTION_BORDER_LAYER_ID, "line-color", "#ffffff");
+    map.setPaintProperty(SELECTION_BORDER_LAYER_ID, "line-width", 1);
+
     if (selectedIds.length > 0) {
+      // Show white border on selected districts
       map.setFilter(SELECTION_BORDER_LAYER_ID, [
         "in",
         ["get", "districtId"],
         ["literal", selectedIds],
       ]);
+
+      // Reduce opacity of non-selected districts
+      const opacityExpression: MapLibreGL.ExpressionSpecification = [
+        "case",
+        ["in", ["get", "districtId"], ["literal", selectedIds]],
+        0.99,  // Selected districts: full opacity
+        0.15   // Non-selected districts: 15% opacity
+      ];
+      map.setPaintProperty(ACTIVE_FILL_LAYER_ID, "fill-opacity", opacityExpression);
     } else {
-      // Hide selection layer when no districts selected
+      // Hide selection border when no districts selected
       map.setFilter(SELECTION_BORDER_LAYER_ID, [
         "in",
         ["get", "districtId"],
         ["literal", []],
       ]);
+      // No selection: all districts at full opacity
+      map.setPaintProperty(ACTIVE_FILL_LAYER_ID, "fill-opacity", 0.99);
     }
   }, [isLoaded, map, selectedDistrictIds]);
 

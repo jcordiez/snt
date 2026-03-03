@@ -7,5 +7,5 @@ export { GeographicFilter } from "./geographic-filter";
 export { NavigationTabs } from "./navigation-tabs";
 export type { ViewTab } from "./navigation-tabs";
 export { ListView } from "./list-view";
-export { BudgetView } from "./budget-view";
+export { BudgetView, YearRangeSelector, BUDGET_YEARS } from "./budget-view";
 export * from "./add-intervention";

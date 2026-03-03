@@ -110,16 +110,15 @@ export function InterventionMap({ selectedProvince, highlightedDistrictIds = [],
   // Track whether selection was set by rule selection (to avoid clearing on click)
   const selectionFromRuleRef = useRef(false);
 
-  // When a rule is selected, find and select all matching districts
-  useEffect(() => {
+  // Compute district IDs matching the selected rule (used for both selection and legend filtering)
+  const selectedRuleDistrictIds = useMemo(() => {
     if (!selectedRuleId || !savedRules || !districts) {
-      // No rule selected - don't clear selection automatically as user might have manual selection
-      return;
+      return [];
     }
 
     const rule = savedRules.find((r) => r.id === selectedRuleId);
     if (!rule) {
-      return;
+      return [];
     }
 
     // Convert rule criteria to the format expected by findMatchingDistrictIds
@@ -145,15 +144,34 @@ export function InterventionMap({ selectedProvince, highlightedDistrictIds = [],
       );
     }
 
-    // Filter out excluded districts (exceptions)
+    // Apply exclusions and inclusions
     const finalDistrictIds = rule.excludedDistrictIds?.length
       ? matchingDistrictIds.filter((id) => !rule.excludedDistrictIds!.includes(id))
-      : matchingDistrictIds;
+      : [...matchingDistrictIds];
+
+    // Add explicitly included districts
+    if (rule.includedDistrictIds?.length) {
+      const matchingSet = new Set(finalDistrictIds);
+      for (const id of rule.includedDistrictIds) {
+        if (!matchingSet.has(id)) {
+          finalDistrictIds.push(id);
+        }
+      }
+    }
+
+    return finalDistrictIds;
+  }, [selectedRuleId, savedRules, districts, selectedProvince, metricValuesByType]);
+
+  // When a rule is selected, set the selection to matching districts
+  useEffect(() => {
+    if (!selectedRuleId || selectedRuleDistrictIds.length === 0) {
+      return;
+    }
 
     // Mark that this selection came from rule selection
     selectionFromRuleRef.current = true;
-    setSelection(finalDistrictIds);
-  }, [selectedRuleId, savedRules, districts, selectedProvince, metricValuesByType, setSelection]);
+    setSelection(selectedRuleDistrictIds);
+  }, [selectedRuleId, selectedRuleDistrictIds, setSelection]);
 
   // Handler for clearing selection (e.g., clicking outside districts)
   const handleClearSelection = useCallback(() => {
@@ -211,7 +229,9 @@ export function InterventionMap({ selectedProvince, highlightedDistrictIds = [],
         />
       </Map>
 
-      {/* Selection Widget - shows when districts are selected */}
+
+
+      {/* 
       <SelectionWidget
         selectionCount={selectionCount}
         totalPopulation={selectedPopulation}
@@ -219,9 +239,14 @@ export function InterventionMap({ selectedProvince, highlightedDistrictIds = [],
         onClearSelection={handleClearSelection}
         hasRules={hasRules}
       />
-
+ */}
       {/* Map Legend */}
-      <MapLegend districts={districts} onSelectMix={onSelectMix} />
+      <MapLegend
+        districts={districts}
+        onSelectMix={onSelectMix}
+        selectedRuleId={selectedRuleId}
+        selectedRuleDistrictIds={selectedRuleDistrictIds}
+      />
       
     </div>
   );
