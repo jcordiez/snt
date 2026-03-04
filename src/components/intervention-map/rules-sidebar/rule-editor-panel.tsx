@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { X, Trash2, Plus, MapPin, Users } from "lucide-react";
+import { ChevronLeft, X, Trash2, Plus, MapPin, Users } from "lucide-react";
 import { ExceptionList } from "./exception-list";
 import { AddExceptionPopover } from "./add-exception-popover";
 import { AddInclusionPopover } from "./add-inclusion-popover";
@@ -11,7 +11,6 @@ import { useDistrictRules } from "@/hooks/use-district-rules";
 import type { DistrictProperties } from "@/data/districts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Slider } from "@/components/ui/slider";
 import {
   Select,
   SelectContent,
@@ -27,23 +26,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useMetricValues } from "@/hooks/use-metric-values";
 import type { MetricType, RuleOperator, InterventionCategory } from "@/types/intervention";
 import type { SavedRule, RuleCriterion, InclusionEntry } from "@/types/rule";
 
 function formatNumber(value: number): string {
   return value.toLocaleString("en-US", { maximumFractionDigits: 2 });
-}
-
-/**
- * Calculate the step size for a slider based on the max value.
- */
-function getSliderStep(max: number | null): number {
-  if (max === null) return 1;
-  if (max < 1) return 0.05;
-  if (max < 1000) return 5;
-  if (max < 10000) return 100;
-  return 5000;
 }
 
 const OPERATORS: { value: RuleOperator; label: string }[] = [
@@ -89,17 +76,25 @@ function CriterionRow({
   onUpdate,
   onDelete,
 }: CriterionRowProps) {
-  const { min, max, isLoading } = useMetricValues(criterion.metricTypeId);
-  const metricName = metricTypes.find((m) => m.id === criterion.metricTypeId)?.name ?? "Unknown";
+  const metricType = metricTypes.find((m) => m.id === criterion.metricTypeId);
+  const metricName = metricType?.name ?? "Unknown";
 
-  const step = getSliderStep(max);
-  const sliderMin = min ?? 0;
-  const sliderMax = max ?? 100;
-  const currentValue = criterion.value ? Number(criterion.value) : sliderMin;
+  // Get threshold values from the metric's legend_config domain
+  const thresholdValues = useMemo(() => {
+    const domain = metricType?.legend_config?.domain || [];
+    // Domain is [min, threshold1, threshold2, ..., max]
+    // We want all values as selectable thresholds
+    return domain.filter((v, i, arr) => i > 0 || arr.length === 1);
+  }, [metricType]);
 
-  const handleSliderChange = (values: number[]) => {
-    onUpdate(criterion.id, { value: String(values[0]) });
-  };
+  // Auto-select first threshold value if none selected
+  useEffect(() => {
+    if (!criterion.value && thresholdValues.length > 0) {
+      onUpdate(criterion.id, { value: String(thresholdValues[0]) });
+    }
+  }, [criterion.id, criterion.value, thresholdValues, onUpdate]);
+
+  const currentValue = criterion.value || (thresholdValues.length > 0 ? String(thresholdValues[0]) : "");
 
   return (
     <div className="flex items-center gap-2 group">
@@ -123,30 +118,27 @@ function CriterionRow({
         </SelectContent>
       </Select>
 
-      <span className="text-sm font-semibold w-[30px] text-right  tabular-nums shrink-0">
-        {isLoading ? "..." : formatNumber(currentValue)}
-      </span>
-
-      {!isLoading && min !== null && max !== null ? (
-        <Slider
-          value={[currentValue]}
-          onValueChange={handleSliderChange}
-          min={sliderMin}
-          max={sliderMax}
-          step={step}
-          className="flex-1"
-        />
-      ) : (
-        <div className="flex-1" />
-      )}
-
-      
+      <Select
+        value={currentValue}
+        onValueChange={(value) => onUpdate(criterion.id, { value })}
+      >
+        <SelectTrigger className="flex-1">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {thresholdValues.map((threshold) => (
+            <SelectItem key={threshold} value={String(threshold)}>
+              {formatNumber(threshold)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
       <Button
         variant="ghost"
         size="icon"
         onClick={() => onDelete(criterion.id)}
-        className="opacity-0 group-hover:opacity-100  transition-opacity shrink-0 h-8 w-8"
+        className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0 h-8 w-8"
       >
         <X className="h-3.5 w-3.5" />
       </Button>
@@ -401,14 +393,11 @@ export function RuleEditorPanel({
   return (
     <div className="flex flex-col h-full min-h-0 overflow-hidden bg-slate-50 rounded-2xl">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-[#E3E8EF] shrink-0">
-        <div className="flex items-center gap-3 flex-1">
-          <input
-            type="color"
-            value={color}
-            onChange={(e) => setColor(e.target.value)}
-            className="w-6 h-6 rounded border cursor-pointer p-0.5"
-          />
+      <div className="flex items-center p-4 border-b border-[#E3E8EF] shrink-0">
+        <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 shrink-0">
+          <ChevronLeft className="h-5 w-5" />
+        </Button>
+        <div className="flex-1">
           <Input
             ref={titleInputRef}
             value={title}
@@ -417,9 +406,12 @@ export function RuleEditorPanel({
             placeholder="Rule name..."
           />
         </div>
-        <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
-          <X className="h-4 w-4" />
-        </Button>
+        <input
+          type="color"
+          value={color}
+          onChange={(e) => setColor(e.target.value)}
+          className="w-6 h-6 rounded border cursor-pointer p-0.5 shrink-0"
+        />
       </div>
 
       {/* Scrollable content */}

@@ -43,7 +43,7 @@ const GUIDELINE_INTERVENTION_MAP: Record<string, [number, number]> = {
 // Rule colors by guideline ID
 const RULE_COLORS: Record<string, string> = {
   default: "#B0BEC5",     // Gray
-  "itns-llins": "#FFB74D", // Vibrant orange
+  "itns-llins": "#aaaa66", // Vibrant orange
   "rtss": "#FFD54F",       // Vibrant amber
   "smc": "#81C784",        // Vibrant green
   "pmc": "#B39DDB",        // Vibrant purple
