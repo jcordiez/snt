@@ -4,8 +4,6 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
   BookOpen,
-  Calculator,
-  CircleDollarSign,
   CircleHelp,
   CircleUser,
   GitCompareArrows,
@@ -120,32 +118,11 @@ export function AppSidebarContent({ onNavigate }: AppSidebarContentProps) {
             isActive={pathname === "/compare"}
             onClick={onNavigate}
           />
-        </div>
-
-        {/* Settings Group */}
-        <div className="space-y-1">
-          <p className="px-3 text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
-            Settings
-          </p>
           <NavItem
             href="/guidelines"
             icon={<BookOpen className="size-4" />}
-            label="Intervention guidelines"
+            label="Settings"
             isActive={pathname === "/guidelines"}
-            onClick={onNavigate}
-          />
-          <NavItem
-            href="/cost-settings"
-            icon={<CircleDollarSign className="size-4" />}
-            label="Cost settings"
-            isActive={pathname === "/cost-settings"}
-            onClick={onNavigate}
-          />
-          <NavItem
-            href="/composite-scores"
-            icon={<Calculator className="size-4" />}
-            label="Composite scores"
-            isActive={pathname === "/composite-scores"}
             onClick={onNavigate}
           />
         </div>

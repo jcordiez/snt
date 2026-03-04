@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { X, Plus, ChevronDown, ChevronRight, Eye, EyeOff, MoreHorizontal, Pencil, Trash2, Layers, Check, Ban, Filter, Pin } from "lucide-react";
+import { X, Plus, ChevronDown, ChevronRight, Eye, EyeOff, MoreHorizontal, Pencil, Trash2, Layers, Check, Ban, Filter, Pin, GitCompare, Blend } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useMetricTypes } from "@/hooks/use-metric-types";
@@ -16,6 +16,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuCheckboxItem,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
   Dialog,
@@ -531,6 +533,61 @@ function ScaleLegend({ metricType, min, max }: { metricType: MetricType | null; 
   );
 }
 
+// Comparison map panel component
+interface ComparisonMapPanelProps {
+  metricType: MetricType;
+  districts: GeoJSON.FeatureCollection | null;
+  onRemove: () => void;
+}
+
+// Country bounds for fitting the map
+const countryBounds: [[number, number], [number, number]] = [
+  [countryConfig.bounds.west, countryConfig.bounds.south],
+  [countryConfig.bounds.east, countryConfig.bounds.north],
+];
+
+function ComparisonMapPanel({ metricType, districts, onRemove }: ComparisonMapPanelProps) {
+  const { valuesByOrgUnit, min, max, isLoading } = useMetricValues(metricType.id);
+
+  return (
+    <div className="flex flex-col bg-white rounded-lg overflow-hidden border border-gray-200">
+      <div className="px-3 py-2 border-b flex items-center justify-between bg-gray-50">
+        <span className="text-xs font-medium truncate flex-1" title={metricType.name}>
+          {metricType.name}
+        </span>
+        <button
+          onClick={onRemove}
+          className="p-1 rounded hover:bg-gray-200 text-gray-400 hover:text-gray-600"
+        >
+          <X className="h-3 w-3" />
+        </button>
+      </div>
+      <div className="relative h-72">
+        {isLoading ? (
+          <div className="h-full flex items-center justify-center bg-gray-50">
+            <span className="text-xs text-muted-foreground">Loading...</span>
+          </div>
+        ) : (
+          <Map
+            bounds={countryBounds}
+            fitBoundsOptions={{ padding: 10 }}
+            attributionControl={false}
+            theme="light"
+          >
+            <MetricMapLayer
+              districts={districts}
+              valuesByOrgUnit={valuesByOrgUnit}
+              metricType={metricType}
+              min={min}
+              max={max}
+            />
+          </Map>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function LayersPage() {
   const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -541,8 +598,33 @@ export default function LayersPage() {
   const [hiddenLayerIds, setHiddenLayerIds] = useState<Set<number>>(new Set());
   const [excludedLayerIds, setExcludedLayerIds] = useState<Set<number>>(new Set());
   const [showActiveOnly, setShowActiveOnly] = useState(false);
+  const [comparisonLayerIds, setComparisonLayerIds] = useState<Set<number>>(new Set());
 
   const { groupedByCategory, isLoading: isLoadingMetrics, addMetric, data: metricTypes } = useMetricTypes();
+
+  // Toggle layer for comparison
+  const toggleComparisonLayer = (metricId: number) => {
+    setComparisonLayerIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(metricId)) {
+        next.delete(metricId);
+      } else {
+        next.add(metricId);
+      }
+      return next;
+    });
+  };
+
+  // Clear all comparison layers
+  const clearComparisonLayers = () => {
+    setComparisonLayerIds(new Set());
+  };
+
+  // Get comparison metrics
+  const comparisonMetrics = useMemo(() => {
+    if (!metricTypes) return [];
+    return metricTypes.filter((m) => comparisonLayerIds.has(m.id));
+  }, [metricTypes, comparisonLayerIds]);
 
   // Toggle layer visibility
   const toggleLayerVisibility = (metricId: number) => {
@@ -671,19 +753,9 @@ export default function LayersPage() {
                 </div>
                 <h2 className="text-lg font-medium text-primary">Available metrics</h2>
               </div>
-              <div className="flex items-center gap-1">
-                {/*<Button
-                  variant={showActiveOnly ? "default" : "ghost"}
-                  size="icon"
-                  onClick={() => setShowActiveOnly(!showActiveOnly)}
-                  title={showActiveOnly ? "Showing active layers only" : "Show all layers"}
-                >
-                  <Pin className="h-4 w-4" />
-                </Button>
-                */}<Button variant="outline" size="icon" onClick={handleCreateLayer}>
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
+              <Button variant="outline" size="icon" onClick={handleCreateLayer}>
+                <Plus className="h-4 w-4" />
+              </Button>
             </div>
 
             {/* Layer List */}
@@ -702,67 +774,66 @@ export default function LayersPage() {
                       <div
                         className="flex items-center gap-2 w-full px-4 py-3 text-left hover:bg-muted/50 transition-colors"
                       >
-                    
                         <span className="font-semibold">{category}</span>
-          
                       </div>
 
                       {!isCollapsed && (
                         <div className="border-t">
                           {metrics.map((metric) => {
-                            const isHidden = hiddenLayerIds.has(metric.id);
                             const isExcluded = excludedLayerIds.has(metric.id);
                             return (
-                            <div
-                              key={metric.id}
-                              onClick={() => handleSelectLayer(metric)}
-                              className={`group flex items-center px-4 py-2 cursor-pointer transition-colors border-b last:border-b-0 ${
-                                selectedMetricId === metric.id
-                                  ? "bg-accent/10 "
-                                  : "hover:bg-muted/50"
-                              }`}
-                            >
-                              <span className={`flex-1 ${isExcluded ? "opacity-30 " : ""}`}>
-                                {metric.name}
-                              </span>
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <button
-                                    className="p-1 rounded hover:bg-muted opacity-0 group-hover:opacity-100 transition-opacity"
-                                    onClick={(e) => e.stopPropagation()}
-                                  >
-                                    <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-                                  </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  <DropdownMenuItem onClick={() => toggleLayerAvailability(metric.id)}>
-                                    {isExcluded ? (
-                                      <>
-                                        <Check className="h-4 w-4 mr-2" />
-                                        Include in available layers
-                                      </>
-                                    ) : (
-                                      <>
-                                        <Ban className="h-4 w-4 mr-2" />
-                                        Exclude from available layers
-                                      </>
-                                    )}
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => handleEditLayer(metric)}>
-                                    <Pencil className="h-4 w-4 mr-2" />
-                                    Edit
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    className="text-destructive focus:text-destructive"
-                                    onClick={() => handleDeleteLayer(metric)}
-                                  >
-                                    <Trash2 className="h-4 w-4 mr-2" />
-                                    Delete
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </div>
-                          );
+                              <div
+                                key={metric.id}
+                                onClick={() => handleSelectLayer(metric)}
+                                className={`group flex items-center px-4 py-2 cursor-pointer transition-colors border-b last:border-b-0 ${
+                                  selectedMetricId === metric.id
+                                    ? "bg-accent/10"
+                                    : "hover:bg-muted/50"
+                                }`}
+                              >
+                                <span className={`flex-1 ${isExcluded ? "opacity-30" : ""}`}>
+                                  {metric.name}
+                                </span>
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <button
+                                      className="p-1 rounded hover:bg-muted opacity-0 group-hover:opacity-100 transition-opacity"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                                    </button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end">
+                                    <DropdownMenuItem onClick={() => {
+                                      handleEditLayer(metric);
+                                    }}>
+                                      <Pencil className="h-4 w-4 mr-2" />
+                                      Edit
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => toggleLayerAvailability(metric.id)}>
+                                      {isExcluded ? (
+                                        <>
+                                          <Check className="h-4 w-4 mr-2" />
+                                          Include in available layers
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Ban className="h-4 w-4 mr-2" />
+                                          Exclude from available layers
+                                        </>
+                                      )}
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                      className="text-destructive focus:text-destructive"
+                                      onClick={() => handleDeleteLayer(metric)}
+                                    >
+                                      <Trash2 className="h-4 w-4 mr-2" />
+                                      Delete
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </div>
+                            );
                           })}
                         </div>
                       )}
@@ -776,41 +847,95 @@ export default function LayersPage() {
           {/* Right Column - Map */}
           <div className="flex-1 flex flex-col min-h-0 bg-white rounded-2xl overflow-hidden">
             {/* Filter bar */}
-            <div className="px-6 py-3 border-b flex items-center shrink-0">
+            <div className="px-6 py-3 border-b flex items-center justify-between shrink-0">
               <span className="text-sm font-medium">
                 {selectedMetricType ? selectedMetricType.name : "Map Preview"}
               </span>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Blend className="h-4 w-4" />
+                  Combine...
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <GitCompare className="h-4 w-4" />
+                      Compare
+                      {comparisonLayerIds.size > 0 && (
+                        <span className="ml-1 px-1.5 py-0.5 text-xs bg-accent text-white rounded-full">
+                          {comparisonLayerIds.size}
+                        </span>
+                      )}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-64">
+                    <DropdownMenuCheckboxItem
+                      checked={comparisonLayerIds.size === 0}
+                      onCheckedChange={() => clearComparisonLayers()}
+                    >
+                      No comparison
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuSeparator />
+                    {metricTypes?.map((metric) => (
+                      <DropdownMenuCheckboxItem
+                        key={metric.id}
+                        checked={comparisonLayerIds.has(metric.id)}
+                        onCheckedChange={() => toggleComparisonLayer(metric.id)}
+                      >
+                        {metric.name}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
 
-            {/* Map Container */}
-            <div className="flex-1 relative min-h-0">
-              {selectedMetricId ? (
-                <>
-                  <Map center={countryConfig.center} zoom={countryConfig.zoom} theme="light">
-                    <MetricMapLayer
-                      districts={districts}
-                      valuesByOrgUnit={valuesByOrgUnit}
-                      metricType={selectedMetricType}
-                      min={min}
-                      max={max}
-                    />
-                    <MapControls position="bottom-right" showZoom={true} />
-                  </Map>
-                  <ScaleLegend metricType={selectedMetricType} min={min} max={max} />
-                  {isLoadingValues && (
-                    <div className="absolute inset-0 bg-white/50 flex items-center justify-center">
-                      <div className="text-muted-foreground">Loading data...</div>
+            {/* Map and Comparison Container */}
+            <div className="flex-1 flex min-h-0">
+              {/* Main Map */}
+              <div className="flex-1 relative min-h-0">
+                {selectedMetricId ? (
+                  <>
+                    <Map center={countryConfig.center} zoom={countryConfig.zoom} theme="light">
+                      <MetricMapLayer
+                        districts={districts}
+                        valuesByOrgUnit={valuesByOrgUnit}
+                        metricType={selectedMetricType}
+                        min={min}
+                        max={max}
+                      />
+                      <MapControls position="bottom-right" showZoom={true} />
+                    </Map>
+                    <ScaleLegend metricType={selectedMetricType} min={min} max={max} />
+                    {isLoadingValues && (
+                      <div className="absolute inset-0 bg-white/50 flex items-center justify-center">
+                        <div className="text-muted-foreground">Loading data...</div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="h-full flex items-center justify-center bg-gray-50">
+                    <div className="text-center text-muted-foreground">
+                      <Layers className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                      <p>Select a layer to view on the map</p>
                     </div>
-                  )}
-                </>
-              ) : (
-                <div className="h-full flex items-center justify-center bg-gray-50">
-                  <div className="text-center text-muted-foreground">
-                    <Layers className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                    <p>Select a layer to view on the map</p>
-                </div>
+                  </div>
+                )}
               </div>
-            )}
+
+              {/* Comparison Column */}
+              {comparisonMetrics.length > 0 && (
+                <div className="w-96 shrink-0 border-l bg-gray-50 p-3 overflow-y-auto flex flex-col gap-3">
+                  {comparisonMetrics.map((metric) => (
+                    <ComparisonMapPanel
+                      key={metric.id}
+                      metricType={metric}
+                      districts={districts}
+                      onRemove={() => toggleComparisonLayer(metric.id)}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </main>
