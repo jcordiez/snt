@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Search, X, Plus, ChevronDown, ChevronRight, Eye, EyeOff, MoreHorizontal, Pencil, Trash2, Layers } from "lucide-react";
+import { X, Plus, ChevronDown, ChevronRight, Eye, EyeOff, MoreHorizontal, Pencil, Trash2, Layers, Check, Ban, Filter, Pin } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useMetricTypes } from "@/hooks/use-metric-types";
@@ -532,7 +532,6 @@ function ScaleLegend({ metricType, min, max }: { metricType: MetricType | null; 
 }
 
 export default function LayersPage() {
-  const [searchQuery, setSearchQuery] = useState("");
   const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingMetric, setEditingMetric] = useState<MetricType | null>(null);
@@ -540,12 +539,27 @@ export default function LayersPage() {
   const [deletingMetric, setDeletingMetric] = useState<MetricType | null>(null);
   const [selectedMetricId, setSelectedMetricId] = useState<number | null>(null);
   const [hiddenLayerIds, setHiddenLayerIds] = useState<Set<number>>(new Set());
+  const [excludedLayerIds, setExcludedLayerIds] = useState<Set<number>>(new Set());
+  const [showActiveOnly, setShowActiveOnly] = useState(false);
 
   const { groupedByCategory, isLoading: isLoadingMetrics, addMetric, data: metricTypes } = useMetricTypes();
 
   // Toggle layer visibility
   const toggleLayerVisibility = (metricId: number) => {
     setHiddenLayerIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(metricId)) {
+        next.delete(metricId);
+      } else {
+        next.add(metricId);
+      }
+      return next;
+    });
+  };
+
+  // Toggle layer availability (include/exclude from available layers)
+  const toggleLayerAvailability = (metricId: number) => {
+    setExcludedLayerIds((prev) => {
       const next = new Set(prev);
       if (next.has(metricId)) {
         next.delete(metricId);
@@ -621,13 +635,13 @@ export default function LayersPage() {
     setSelectedMetricId(selectedMetricId === metric.id ? null : metric.id);
   };
 
-  // Filter layers by search query
+  // Filter layers by active status
   const filteredGroupedByCategory = Object.entries(groupedByCategory).reduce<
     Record<string, typeof groupedByCategory[string]>
   >((acc, [category, metrics]) => {
-    const filteredMetrics = metrics.filter((metric) =>
-      metric.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredMetrics = metrics.filter((metric) => {
+      return !showActiveOnly || !excludedLayerIds.has(metric.id);
+    });
     if (filteredMetrics.length > 0) {
       acc[category] = filteredMetrics;
     }
@@ -641,41 +655,39 @@ export default function LayersPage() {
       <div className="flex flex-col h-screen">
         {/* Header */}
         <header className="px-6 py-4 border-b bg-white flex items-center justify-between">
-        <h1 className="text-xl font-semibold ml-12">Data Layers</h1>
+        <h1 className="text-xl ml-12">Manage data</h1>
         
       </header>
 
         {/* Main Content - 2 Column Layout */}
         <main className="flex-1 flex gap-4 p-4 min-h-0 overflow-hidden">
           {/* Left Column - Layer List */}
-          <div className="w-80 shrink-0 bg-white rounded-2xl overflow-hidden flex flex-col">
-            {/* Search + Create */}
-            <div className="px-4 py-3 border-b flex items-center gap-2">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="text"
-                  placeholder="Search layers..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 pr-9"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                )}
+          <div className="w-96 shrink-0 bg-white rounded-2xl overflow-hidden flex flex-col">
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-[#E3E8EF] shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-accent/20">
+                  <Layers className="w-4 h-4 text-accent" />
+                </div>
+                <h2 className="text-lg font-medium text-primary">Available metrics</h2>
               </div>
-              <Button size="icon" onClick={handleCreateLayer} className="shrink-0">
-                <Plus className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center gap-1">
+                {/*<Button
+                  variant={showActiveOnly ? "default" : "ghost"}
+                  size="icon"
+                  onClick={() => setShowActiveOnly(!showActiveOnly)}
+                  title={showActiveOnly ? "Showing active layers only" : "Show all layers"}
+                >
+                  <Pin className="h-4 w-4" />
+                </Button>
+                */}<Button variant="outline" size="icon" onClick={handleCreateLayer}>
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
 
             {/* Layer List */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-2">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {isLoadingMetrics ? (
                 <div className="text-muted-foreground">Loading layers...</div>
               ) : categories.length === 0 ? (
@@ -686,62 +698,56 @@ export default function LayersPage() {
                   const metrics = filteredGroupedByCategory[category];
 
                   return (
-                    <div key={category} className="border rounded-lg bg-white">
-                      <button
-                        onClick={() => toggleCategory(category)}
+                    <div key={category}>
+                      <div
                         className="flex items-center gap-2 w-full px-4 py-3 text-left hover:bg-muted/50 transition-colors"
                       >
-                        {isCollapsed ? (
-                          <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                        ) : (
-                          <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                        )}
+                    
                         <span className="font-semibold">{category}</span>
-                        <span className="text-muted-foreground text-sm">
-                          ({metrics.length})
-                        </span>
-                      </button>
+          
+                      </div>
 
                       {!isCollapsed && (
                         <div className="border-t">
                           {metrics.map((metric) => {
                             const isHidden = hiddenLayerIds.has(metric.id);
+                            const isExcluded = excludedLayerIds.has(metric.id);
                             return (
                             <div
                               key={metric.id}
                               onClick={() => handleSelectLayer(metric)}
-                              className={`flex items-center px-4 py-2 cursor-pointer transition-colors border-b last:border-b-0 ${
+                              className={`group flex items-center px-4 py-2 cursor-pointer transition-colors border-b last:border-b-0 ${
                                 selectedMetricId === metric.id
-                                  ? "bg-primary/10 border-l-2 border-l-primary"
+                                  ? "bg-accent/10 "
                                   : "hover:bg-muted/50"
                               }`}
                             >
-                              <button
-                                className="p-1 rounded hover:bg-muted mr-2"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  toggleLayerVisibility(metric.id);
-                                }}
-                              >
-                                {isHidden ? (
-                                  <EyeOff className="h-4 w-4 text-muted-foreground" />
-                                ) : (
-                                  <Eye className="h-4 w-4 text-muted-foreground" />
-                                )}
-                              </button>
-                              <span className={`flex-1 ${isHidden ? "text-muted-foreground" : ""}`}>
+                              <span className={`flex-1 ${isExcluded ? "opacity-30 " : ""}`}>
                                 {metric.name}
                               </span>
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <button
-                                    className="p-1 rounded hover:bg-muted"
+                                    className="p-1 rounded hover:bg-muted opacity-0 group-hover:opacity-100 transition-opacity"
                                     onClick={(e) => e.stopPropagation()}
                                   >
                                     <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
                                   </button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
+                                  <DropdownMenuItem onClick={() => toggleLayerAvailability(metric.id)}>
+                                    {isExcluded ? (
+                                      <>
+                                        <Check className="h-4 w-4 mr-2" />
+                                        Include in available layers
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Ban className="h-4 w-4 mr-2" />
+                                        Exclude from available layers
+                                      </>
+                                    )}
+                                  </DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => handleEditLayer(metric)}>
                                     <Pencil className="h-4 w-4 mr-2" />
                                     Edit
