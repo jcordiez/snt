@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Pencil, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -47,40 +47,40 @@ export function RuleCard({
       } ${!isVisible ? 'opacity-40' : ''}`}
       onClick={() => onSelect?.(rule.id)}
     >
-      {/* Floating action buttons */}
-      <div className="absolute top-3 right-3 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-7 w-7 hover:bg-secondary/10 hover:text-secondary-foreground"
-          onClick={(e) => { e.stopPropagation(); onDelete(rule.id); }}
-        >
-          <Trash className="h-3.5 w-3.5" />
-        </Button>
-      </div>
-
-      {/* Intervention title */}
-      <div className="flex items-center gap-3">
-        <div
-          className="w-4 h-4 shrink-0 rounded cursor-pointer hover:opacity-20 transition-opacity"
-          style={isVisible
-            ? { backgroundColor: rule.color }
-            : { border: '2px solid #D1D5DB' }
-          }
-          title={isVisible ? "Hide rule" : "Show rule"}
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleVisibility(rule.id);
-          }}
-        />
-        <span className="text-md font-semibold text-primary truncate">
+      {/* Intervention title with color indicator on right */}
+      <div className="flex items-start gap-3">
+        <span className="text-md font-semibold text-primary line-clamp-2 flex-1">
           {rule.title}
         </span>
+        {/* Color indicator / Delete button container */}
+        <div className="relative w-4 h-4 shrink-0">
+          {/* Color indicator - hidden on hover */}
+          <div
+            className="absolute inset-0 rounded cursor-pointer transition-opacity group-hover:opacity-0"
+            style={isVisible
+              ? { backgroundColor: rule.color }
+              : { border: '2px solid #D1D5DB' }
+            }
+            title={isVisible ? "Hide rule" : "Show rule"}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleVisibility(rule.id);
+            }}
+          />
+          {/* Delete button - shown on hover */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute inset-0 w-4 h-4 p-0 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-transparent hover:text-red-500"
+            onClick={(e) => { e.stopPropagation(); onDelete(rule.id); }}
+          >
+            <Trash className="h-3.5 w-3.5" />
+          </Button>
+        </div>
       </div>
 
       {/* District count + inclusion/exclusion badges */}
-      <div className="flex items-center gap-2 my-2 ml-7">
+      <div className="flex items-center gap-2 mt-2">
         <span className="inline-flex items-center px-2 py-1 rounded-sm bg-[#ECEDEE] text-xs font-medium text-[#3A4454] tracking-wide">
           {matchingDistrictCount} district{matchingDistrictCount !== 1 ? "s" : ""}
         </span>

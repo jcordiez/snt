@@ -17,7 +17,7 @@ import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { AddInterventionSheet } from "@/components/intervention-map/add-intervention";
-import { RulesSidebar, RuleEditModal, RuleEditorPanel } from "@/components/intervention-map/rules-sidebar";
+import { RulesSidebar, RuleEditModal } from "@/components/intervention-map/rules-sidebar";
 import { Province } from "@/data/districts";
 import { useOrgUnits, createInterventionMix } from "@/hooks/use-orgunits";
 import { useInterventionCategories } from "@/hooks/use-intervention-categories";
@@ -658,8 +658,8 @@ export default function PlanPage() {
       {/* Main Content: Two columns below header */}
       <main className="flex-1 flex gap-4 p-4 min-h-0 overflow-hidden">
 
-         {/* Left Panel: Rules Sidebar */}
-         <div className="w-80 shrink-0 bg-white rounded-2xl overflow-hidden flex flex-col">
+         {/* Left Panel: Rules Sidebar with embedded editor */}
+         <div className="w-96 shrink-0 bg-white rounded-2xl overflow-hidden flex flex-col">
            <RulesSidebar
             rules={savedRules}
             onAddRule={handleAddRule}
@@ -673,35 +673,27 @@ export default function PlanPage() {
             onSelectRule={(ruleId) => {
               setSelectedRuleId(ruleId);
               setAutoFocusRuleId(null);
+              if (ruleId === null) {
+                setHighlightedDistrictIds([]);
+              }
             }}
-          />
-         </div>
-
-        {/* Middle Panel: Rule Editor (when a rule is selected) */}
-        {selectedRuleId && savedRules.find((r) => r.id === selectedRuleId) && (
-          <div className="w-96 shrink-0 overflow-hidden flex flex-col">
-            <RuleEditorPanel
-              rule={savedRules.find((r) => r.id === selectedRuleId)!}
-              metricTypes={metricTypes}
-              groupedMetricTypes={metricTypes.reduce<Record<string, typeof metricTypes>>((acc, metric) => {
+            onGenerateFromGuidelines={() => handleGenerateFromGuidelines("conservative")}
+            editorProps={{
+              metricTypes,
+              groupedMetricTypes: metricTypes.reduce<Record<string, typeof metricTypes>>((acc, metric) => {
                 const category = metric.category || "Other";
                 if (!acc[category]) acc[category] = [];
                 acc[category].push(metric);
                 return acc;
-              }, {})}
-              interventionCategories={interventionCategories ?? []}
-              onSave={handleSaveRule}
-              onClose={() => {
-                setSelectedRuleId(null);
-                setAutoFocusRuleId(null);
-              }}
-              getDistrictName={getDistrictName}
-              districts={districts}
-              metricValuesByType={metricValuesByType}
-              autoFocusTitle={autoFocusRuleId === selectedRuleId}
-            />
-          </div>
-        )}
+              }, {}),
+              interventionCategories: interventionCategories ?? [],
+              onSave: handleSaveRule,
+              districts,
+              metricValuesByType,
+              autoFocusRuleId,
+            }}
+          />
+         </div>
 
         {/* Right Panel: Filter bar + Map/List/Budget */}
         <div className="flex-1 flex flex-col min-h-0 bg-white rounded-2xl overflow-hidden">

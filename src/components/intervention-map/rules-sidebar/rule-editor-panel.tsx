@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { X, Trash2, Plus, MapPin, Users } from "lucide-react";
+import { ChevronLeft, X, Trash2, Plus, MapPin, Users } from "lucide-react";
 import { ExceptionList } from "./exception-list";
 import { AddExceptionPopover } from "./add-exception-popover";
 import { AddInclusionPopover } from "./add-inclusion-popover";
@@ -401,14 +401,11 @@ export function RuleEditorPanel({
   return (
     <div className="flex flex-col h-full min-h-0 overflow-hidden bg-slate-50 rounded-2xl">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-[#E3E8EF] shrink-0">
-        <div className="flex items-center gap-3 flex-1">
-          <input
-            type="color"
-            value={color}
-            onChange={(e) => setColor(e.target.value)}
-            className="w-6 h-6 rounded border cursor-pointer p-0.5"
-          />
+      <div className="flex items-center p-4 border-b border-[#E3E8EF] shrink-0">
+        <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 shrink-0">
+          <ChevronLeft className="h-5 w-5" />
+        </Button>
+        <div className="flex-1">
           <Input
             ref={titleInputRef}
             value={title}
@@ -417,9 +414,12 @@ export function RuleEditorPanel({
             placeholder="Rule name..."
           />
         </div>
-        <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
-          <X className="h-4 w-4" />
-        </Button>
+        <input
+          type="color"
+          value={color}
+          onChange={(e) => setColor(e.target.value)}
+          className="w-6 h-6 rounded border cursor-pointer p-0.5 shrink-0"
+        />
       </div>
 
       {/* Scrollable content */}

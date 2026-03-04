@@ -163,15 +163,21 @@ export function InterventionMap({ selectedProvince, highlightedDistrictIds = [],
   }, [selectedRuleId, savedRules, districts, selectedProvince, metricValuesByType]);
 
   // When a rule is selected, set the selection to matching districts
+  // When a rule is deselected, clear the selection
   useEffect(() => {
-    if (!selectedRuleId || selectedRuleDistrictIds.length === 0) {
+    if (!selectedRuleId) {
+      clearSelection();
+      return;
+    }
+
+    if (selectedRuleDistrictIds.length === 0) {
       return;
     }
 
     // Mark that this selection came from rule selection
     selectionFromRuleRef.current = true;
     setSelection(selectedRuleDistrictIds);
-  }, [selectedRuleId, selectedRuleDistrictIds, setSelection]);
+  }, [selectedRuleId, selectedRuleDistrictIds, setSelection, clearSelection]);
 
   // Handler for clearing selection (e.g., clicking outside districts)
   const handleClearSelection = useCallback(() => {
